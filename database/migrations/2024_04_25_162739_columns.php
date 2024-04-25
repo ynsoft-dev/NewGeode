@@ -14,10 +14,16 @@ return new class extends Migration
         Schema::create('columns', function (Blueprint $table) {
             $table->id();
             $table->string('name', 20);
+            // $table->string('ray', 20);
             // $table->integer('capacity');
-            $table->unsignedBigInteger('site_id');
-            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
+            // $table->unsignedBigInteger('site_id');
+            // $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
+            // $table->unsignedBigInteger('ray_id');
+            // $table->foreign('ray_id')->references('id')->on('rays')->onDelete('cascade');
+            $table->foreignId('site_id')->constrained();
+            $table->foreignId('ray_id')->constrained();
             $table->timestamps();
+
         });
     }
 

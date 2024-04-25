@@ -387,6 +387,10 @@ return [
                     'text' => 'Columns',
                     'url' => 'columns',
                 ],
+                [
+                    'text' => 'Shelves',
+                    'url' => 'shelves',
+                ],
             ],
         ],
         ['header' => 'DIRECTIONS'],

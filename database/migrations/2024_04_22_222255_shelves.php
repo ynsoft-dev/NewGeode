@@ -11,11 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rays', function (Blueprint $table) {
+        Schema::create('shelves', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 999);
+            $table->string('name', 20);
+            $table->string('column', 20);
+            // $table->integer('capacity');
+            // $table->unsignedBigInteger('ray_id');
+            // $table->foreign('ray_id')->references('id')->on('rays')->onDelete('cascade');
             // $table->unsignedBigInteger('site_id');
             // $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
+            $table->foreignId('ray_id')->constrained();
             $table->foreignId('site_id')->constrained();
             $table->timestamps();
         });
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rays');
+        Schema::dropIfExists('shelves');
     }
 };

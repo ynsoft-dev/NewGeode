@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1>Columns lists</h1>
+<h1>Shelves lists</h1>
 <div class="text-center">
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-    Add Column
+    Add Shelf
   </button>
 </div>
 @stop
@@ -58,15 +58,15 @@
 $heads = [
 '#',
 'name',
-'ray',
-'site',
+'country',
+'state',
+'city',
 
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
 
 @endphp
 
-<!-- {{-- Minimal example / fill data using the component slot --}} -->
 <x-adminlte-datatable id="table1" :heads="$heads" striped hoverable with-buttons>
   @php
   $config['dom'] = '<"row" <"col-sm-7" B> <"col-sm-5 d-flex justify-content-end" i> >
@@ -76,18 +76,21 @@ $heads = [
           $config["lengthMenu"] = [ 10, 50, 100, 500];
           @endphp
           <?php $i = 0     ?>
-          @foreach($columns as $column)
+          @foreach($shelves as $shelf)
           <?php $i++ ?>
           <tr>
             <td>{{$i}}</td>
-            <td>{{$column->name}}</td>
-            <td>{{$column->ray->name}}</td>
-            <td>{{$column->site->name}}</td>
+            <td>{{$shelf->name}}</td>
+            <td>{{$shelf->column}}</td>
+            <td>{{$shelf->ray}}</td>
+            <td>{{$shelf->site->name}}</td>
 
 
           </tr>
           @endforeach
 </x-adminlte-datatable>
+
+
 
 
 <!-- Add -->
@@ -110,21 +113,31 @@ $heads = [
           </div>
 
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Site</label>
-          <select name="Site" class="form-control" required>
-            <option value="" selected disabled> -- select site --</option>
-            @foreach ($sites as $site)
-            <option value="{{ $site->id }}">{{ $site->name }}</option>
+          <select id="country-dropdown" class="form-control">
+
+            <option value="">-- Select Country --</option>
+
+            @foreach ($countries as $data)
+
+            <option value="{{$data->id}}">
+
+              {{$data->name}}
+
+            </option>
+
             @endforeach
+
           </select>
 
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Ray</label>
-          <!-- <select name="ray" id="ray" class="form-control" required>
-          </select>  -->
+          <select id="state-dropdown" class="form-control">
 
+          </select>>
 
-          <select name="ray" id="ray" class="form-control" required>
+          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
+          <select id="city-dropdown" class="form-control">
+
           </select>
-
 
           <div class="modal-footer">
             <button type="submit" class="btn btn-success">Confirm</button>
@@ -142,29 +155,121 @@ $heads = [
 @endsection
 
 @section('js')
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
-  $(document).ready(function() {
-    $('select[name="Site"]').on('change', function() {
-      var SiteId = $(this).val();
-      if (SiteId) {
-        $.ajax({
-          url: "{{ URL::to('site') }}/" + SiteId,
-          type: "GET",
-          dataType: "json",
-          success: function(data) {
-            $('select[name="ray"]').empty();
-            // Values from controller
-            $.each(data, function(key, value) {
-              // Append option with ray ID as value
-              $('select[name="ray"]').append('<option value="' +
-                key + '">' + value + '</option>');
+
+    $(document).ready(function () {
+
+
+
+        /*------------------------------------------
+
+        --------------------------------------------
+
+        Country Dropdown Change Event
+
+        --------------------------------------------
+
+        --------------------------------------------*/
+
+        $('#country-dropdown').on('change', function () {
+
+            var idCountry = this.value;
+
+            $("#state-dropdown").html('');
+
+            $.ajax({
+
+                url: "{{url('api/fetch-states')}}",
+
+                type: "POST",
+
+                data: {
+
+                    country_id: idCountry,
+
+                    _token: '{{csrf_token()}}'
+
+                },
+
+                dataType: 'json',
+
+                success: function (result) {
+
+                    $('#state-dropdown').html('<option value="">-- Select State --</option>');
+
+                    $.each(result.states, function (key, value) {
+
+                        $("#state-dropdown").append('<option value="' + value
+
+                            .id + '">' + value.name + '</option>');
+
+                    });
+
+                    $('#city-dropdown').html('<option value="">-- Select City --</option>');
+
+                }
+
             });
-          },
+
         });
-      } else {
-        console.log('AJAX load did not work');
-      }
+
+
+
+        /*------------------------------------------
+
+        --------------------------------------------
+
+        State Dropdown Change Event
+
+        --------------------------------------------
+
+        --------------------------------------------*/
+
+        $('#state-dropdown').on('change', function () {
+
+            var idState = this.value;
+
+            $("#city-dropdown").html('');
+
+            $.ajax({
+
+                url: "{{url('api/fetch-cities')}}",
+
+                type: "POST",
+
+                data: {
+
+                    state_id: idState,
+
+                    _token: '{{csrf_token()}}'
+
+                },
+
+                dataType: 'json',
+
+                success: function (res) {
+
+                    $('#city-dropdown').html('<option value="">-- Select City --</option>');
+
+                    $.each(res.cities, function (key, value) {
+
+                        $("#city-dropdown").append('<option value="' + value
+
+                            .id + '">' + value.name + '</option>');
+
+                    });
+
+                }
+
+            });
+
+        });
+
+
+
     });
-  });
+
 </script>
 @stop

@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1>Columns lists</h1>
+<h1>Shelves lists</h1>
 <div class="text-center">
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-    Add Column
+    Add Shelf
   </button>
 </div>
 @stop
@@ -60,6 +60,7 @@ $heads = [
 'name',
 'ray',
 'site',
+'column',
 
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
@@ -76,13 +77,14 @@ $heads = [
           $config["lengthMenu"] = [ 10, 50, 100, 500];
           @endphp
           <?php $i = 0     ?>
-          @foreach($columns as $column)
+          @foreach($shelves as $shelf)
           <?php $i++ ?>
           <tr>
             <td>{{$i}}</td>
-            <td>{{$column->name}}</td>
-            <td>{{$column->ray->name}}</td>
-            <td>{{$column->site->name}}</td>
+            <td>{{$shelf->name}}</td>
+            <td>{{$shelf->column}}</td>
+            <td>{{$shelf->ray}}</td>
+            <td>{{$shelf->site->name}}</td>
 
 
           </tr>
@@ -101,7 +103,7 @@ $heads = [
         </button>
       </div>
       <div class="modal-body">
-        <form action="{{ route('columns.store') }}" method="post" autocomplete="off">
+        <form action="{{ route('shelves.store') }}" method="post" autocomplete="off">
           {{ csrf_field() }}
 
           <div class="form-group">
@@ -118,13 +120,12 @@ $heads = [
           </select>
 
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Ray</label>
-          <!-- <select name="ray" id="ray" class="form-control" required>
-          </select>  -->
-
-
           <select name="ray" id="ray" class="form-control" required>
           </select>
 
+          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
+          <select name="column" id="column" class="form-control" required>
+          </select>
 
           <div class="modal-footer">
             <button type="submit" class="btn btn-success">Confirm</button>
@@ -144,6 +145,7 @@ $heads = [
 @section('js')
 <script>
   $(document).ready(function() {
+
     $('select[name="Site"]').on('change', function() {
       var SiteId = $(this).val();
       if (SiteId) {
@@ -155,9 +157,8 @@ $heads = [
             $('select[name="ray"]').empty();
             // Values from controller
             $.each(data, function(key, value) {
-              // Append option with ray ID as value
               $('select[name="ray"]').append('<option value="' +
-                key + '">' + value + '</option>');
+                value + '">' + value + '</option>');
             });
           },
         });
@@ -165,6 +166,35 @@ $heads = [
         console.log('AJAX load did not work');
       }
     });
+
+
+
+
+    $('select[name="ray"]').on('change', function() {
+    var rayId = $(this).val();
+    console.log("Ray ID:", rayId); // Ajoutez cette ligne pour vérifier la valeur de l'ID du rayon
+    if (rayId) {
+        $.ajax({
+            url: "{{ URL::to('ray-columns') }}/" + rayId,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                $('select[name="column"]').empty();
+                // Values from controller
+                $.each(data.columns, function(key, value) {
+                    $('select[name="column"]').append('<option value="' +
+                        value.id + '">' + value.name + '</option>');
+                });
+            },
+        });
+    } else {
+        console.log('AJAX load did not work');
+    }
+});
+
+
+
+
   });
 </script>
 @stop

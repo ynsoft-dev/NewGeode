@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Column extends Model
+class shelf extends Model
 {
     protected $fillable = [
         'name',
-        // 'ray',
+        'column',
         'site_id',
-        // 'capacity',
         'ray_id',
+        
        
     ];
 
@@ -25,6 +25,4 @@ class Column extends Model
     {
         return $this->belongsTo(Ray::class, 'ray_id');
     }
- 
 }
-

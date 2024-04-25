@@ -17,7 +17,8 @@ class ColumnController extends Controller
     {
         $sites=Site::all();
         $columns=Column::all();
-        return view('columns.columns',compact('sites','columns'));
+        $rays=Ray::all();
+        return view('columns.columns',compact('sites','columns','rays'));
       
     }
 
@@ -35,13 +36,16 @@ class ColumnController extends Controller
      */
     public function store(Request $request)
     {
-        // Column::create([
-        //     'name' => $request->name,
-        //     'ray_id' => $request->ray_id,
-        //     // 'site_id' => $request->site_id,
-        // ]);
-        // session()->flash('Add', 'Column successfully added');
-        // return redirect('/etageres');
+        Column::create([
+            'name' => $request->name,
+            
+            
+            'site_id' => $request->Site,
+            'ray_id' => $request->ray,
+            // 'site_id' => $request->site_id,
+        ]);
+        session()->flash('Add', 'Column successfully added');
+        return redirect('/columns');
     }
 
     /**
@@ -89,19 +93,29 @@ class ColumnController extends Controller
         // return back();
     }
 
-    public function getrays($id)
+    public function getRays($id)
     {
-        // Log the received ID
-        error_log('Received ID: ' . $id);
+      
     
         // Fetch rays based on the received site ID
         $rays = DB::table("rays")->where("site_id", $id)->pluck("name", "id");
     
-        // Log the retrieved rays
-        error_log('Retrieved rays: ' . json_encode($rays));
     
         // Return the rays as JSON
         return json_encode($rays);
+    }
+
+
+    public function getColumns($id)
+    {
+      
+    
+        // Fetch rays based on the received site ID
+        $columns = DB::table("columns")->where("site_id", $id)->pluck("name", "id");
+    
+    
+        // Return the rays as JSON
+        return json_encode($columns);
     }
     
 }
