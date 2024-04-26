@@ -36,7 +36,15 @@ class ShelfController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Shelf::create([
+            'name' => $request->name,
+            'site_id' => $request->Site,
+            'ray_id' => $request->ray,
+            'column_id' => $request->column,
+            // 'site_id' => $request->site_id,
+        ]);
+        session()->flash('Add', 'Shelf successfully added');
+        return redirect('/shelves');
     }
 
     /**
@@ -89,9 +97,11 @@ class ShelfController extends Controller
         // Fetch columns based on the received ray ID
         $columns = DB::table("columns")->where("ray_id", $id)->pluck("name", "id");
 
-        dd($columns);
+       
     
         // Return the columns as JSON
         return json_encode($columns);
+
+         // dd($columns);
     }
 }

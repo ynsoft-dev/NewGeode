@@ -30,10 +30,11 @@
         Route::resource('rays', RayController::class);
         Route::resource('columns', ColumnController::class);
         Route::get('/site/{id}', [ColumnController::class, 'getRays']);
+       
         Route::resource('shelves', ShelfController::class);
         
         Route::get('/site/{id}', [ShelfController::class, 'getRays']);
-        Route::get('/ray-columns/{id}', [ShelfController::class, 'getColumns']);
+        Route::get('/col/{id}', [ShelfController::class, 'getColumns']);
 
 
         // Route::get('dropdown', [DropdownController::class, 'index']);

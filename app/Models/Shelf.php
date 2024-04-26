@@ -10,9 +10,9 @@ class shelf extends Model
 {
     protected $fillable = [
         'name',
-        'column',
         'site_id',
         'ray_id',
+        'column_id',
         
        
     ];
@@ -24,5 +24,9 @@ class shelf extends Model
     public function ray(): BelongsTo
     {
         return $this->belongsTo(Ray::class, 'ray_id');
+    }
+    public function column(): BelongsTo
+    {
+        return $this->belongsTo(Column::class, 'column_id');
     }
 }

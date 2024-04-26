@@ -61,7 +61,6 @@ $heads = [
 'ray',
 'site',
 
-['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
 
 @endphp

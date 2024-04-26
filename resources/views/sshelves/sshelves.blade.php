@@ -67,28 +67,6 @@ $heads = [
 
 @endphp
 
-<x-adminlte-datatable id="table1" :heads="$heads" striped hoverable with-buttons>
-  @php
-  $config['dom'] = '<"row" <"col-sm-7" B> <"col-sm-5 d-flex justify-content-end" i> >
-      <"row" <"col-12" tr> >
-        <"row" <"col-sm-12 d-flex justify-content-start" f> >';
-          $config['paging'] = false;
-          $config["lengthMenu"] = [ 10, 50, 100, 500];
-          @endphp
-          <?php $i = 0     ?>
-          @foreach($shelves as $shelf)
-          <?php $i++ ?>
-          <tr>
-            <td>{{$i}}</td>
-            <td>{{$shelf->name}}</td>
-            <td>{{$shelf->column}}</td>
-            <td>{{$shelf->ray}}</td>
-            <td>{{$shelf->site->name}}</td>
-
-
-          </tr>
-          @endforeach
-</x-adminlte-datatable>
 
 
 
@@ -132,7 +110,7 @@ $heads = [
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Ray</label>
           <select id="state-dropdown" class="form-control">
 
-          </select>>
+          </select>
 
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
           <select id="city-dropdown" class="form-control">

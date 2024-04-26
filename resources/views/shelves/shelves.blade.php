@@ -58,11 +58,10 @@
 $heads = [
 '#',
 'name',
-'ray',
 'site',
+'ray',
 'column',
 
-['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
 
 @endphp
@@ -82,10 +81,10 @@ $heads = [
           <tr>
             <td>{{$i}}</td>
             <td>{{$shelf->name}}</td>
-            <td>{{$shelf->column}}</td>
-            <td>{{$shelf->ray}}</td>
             <td>{{$shelf->site->name}}</td>
-
+            <td>{{$shelf->ray->name}}</td>
+            <td>{{$shelf->column->name}}</td>
+            
 
           </tr>
           @endforeach
@@ -97,7 +96,7 @@ $heads = [
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Column</h4>
+        <h4 class="modal-title">Add Shelf</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -107,7 +106,7 @@ $heads = [
           {{ csrf_field() }}
 
           <div class="form-group">
-            <label for="exampleInputEmail1">Name Column:</label>
+            <label for="exampleInputEmail1">Name Shelf:</label>
             <input type="text" class="form-control" id="name" name="name">
           </div>
 
@@ -148,7 +147,9 @@ $heads = [
 
     $('select[name="Site"]').on('change', function() {
       var SiteId = $(this).val();
+      console.log("site ID:", SiteId);
       if (SiteId) {
+        console.log("Déclenchement de la requête AJAX pour récupérer les rayons");
         $.ajax({
           url: "{{ URL::to('site') }}/" + SiteId,
           type: "GET",
@@ -156,10 +157,32 @@ $heads = [
           success: function(data) {
             $('select[name="ray"]').empty();
             // Values from controller
-            $.each(data, function(key, value) {
+            $.each(data, function(id, name) {
               $('select[name="ray"]').append('<option value="' +
-                value + '">' + value + '</option>');
+                id + '">' + name + '</option>');
             });
+
+            var selectedRayId = $('#ray').val();
+            console.log("Selected Ray ID:", selectedRayId);
+
+            if (selectedRayId) {
+              // Vérification si la deuxième requête AJAX est déclenchée
+              console.log("Déclenchement de la requête AJAX pour récupérer les colonnes");
+              $.ajax({
+                url: "{{ URL::to('col') }}/" + selectedRayId,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                  $('select[name="column"]').empty();
+                  $.each(data, function(id, name) {
+                    $('select[name="column"]').append('<option value="' + id + '">' + name + '</option>');
+                  });
+
+                },
+              });
+            } else {
+              console.log('AJAX load did not work');
+            }
           },
         });
       } else {
@@ -169,28 +192,9 @@ $heads = [
 
 
 
+   
 
-    $('select[name="ray"]').on('change', function() {
-    var rayId = $(this).val();
-    console.log("Ray ID:", rayId); // Ajoutez cette ligne pour vérifier la valeur de l'ID du rayon
-    if (rayId) {
-        $.ajax({
-            url: "{{ URL::to('ray-columns') }}/" + rayId,
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                $('select[name="column"]').empty();
-                // Values from controller
-                $.each(data.columns, function(key, value) {
-                    $('select[name="column"]').append('<option value="' +
-                        value.id + '">' + value.name + '</option>');
-                });
-            },
-        });
-    } else {
-        console.log('AJAX load did not work');
-    }
-});
+
 
 
 

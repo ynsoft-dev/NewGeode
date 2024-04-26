@@ -46,16 +46,6 @@ class DropdownController extends Controller
 
     }
 
-    /**
-
-     * Write code on Method
-
-     *
-
-     * @return response()
-
-     */
-
     public function fetchCity(Request $request)
 
     {
