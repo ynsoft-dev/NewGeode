@@ -10,6 +10,8 @@
     use App\Http\Controllers\ShelfController;
     use App\Http\Controllers\DropdownController;
     use App\Models\Column;
+    use App\Http\Controllers\UserController;
+    use App\Http\Controllers\RoleController;
 
     // Définir la route d'accueil pour rediriger vers la page de connexion
     Route::get('/', function () {
@@ -42,4 +44,9 @@
         // Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
 
         // Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
+    });
+    
+    Route::middleware('auth')->group(function () {
+        Route::resource('roles', RoleController::class);
+        Route::resource('users', UserController::class);
     });

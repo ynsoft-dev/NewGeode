@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Laravel\ServiceProvider;
 
 return [
 
@@ -124,6 +125,12 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        App\Providers\AppServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+    ])->toArray(),
 
+
+    
 
 ];

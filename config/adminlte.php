@@ -394,18 +394,39 @@ return [
             ],
         ],
         ['header' => 'DIRECTIONS'],
+
         [
             'text' => 'Directions',
             'url' => 'directions',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-share',
+            'submenu' => [
+                [
+                    'text' => 'Directions',
+                    'url' => 'directions',
+                ],
+                [
+                    'text' => 'Departments',
+                    'url' => 'departments',
+                ],
+            ],
         ],
-        
-        ['header' => 'DEPARTMENTS'],
+
+        ['header' => 'Users'],
         [
-            'text' => 'Departments',
-            'url' => 'departments',
+            'text' => 'Users',
             'icon' => 'fas fa-fw fa-user',
+            'submenu' => [
+                [
+                    'text' => 'Users',
+                    'url' => 'users',
+                ],
+                [
+                    'text' => 'roles',
+                    'url' => 'roles',
+                ],
+            ],
         ],
+
         // [
         //     'text' => 'important',
         //     'icon_color' => 'red',
@@ -622,6 +643,3 @@ return [
 
     'livewire' => false,
 ];
-
-
-
