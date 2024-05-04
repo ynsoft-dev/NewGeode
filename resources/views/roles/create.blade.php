@@ -69,7 +69,7 @@
                         </div>
                         <!-- /col -->
                         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                            <button type="submit" class="btn btn-main-primary">Confirm</button>
+                            <button type="submit" class="btn btn-danger">Confirm</button>
                         </div>
                     </div>
                 </div>
@@ -78,12 +78,5 @@
     </div>
     <!-- row closed -->
 </form>
-<!-- Container closed -->
-</div>
-<!-- main-content closed -->
-@endsection
 
-@section('js')
-<!-- Internal Treeview js -->
-<script src="{{ URL::asset('assets/plugins/treeview/treeview.js') }}"></script>
-@endsection
+@stop

@@ -5,29 +5,55 @@
 @section('content_header')
 <h1>Roles lists</h1>
 <div class="text-center">
+    @can('add_permission')
     <a class="btn btn-primary btn-sm" href="{{ route('roles.create') }}" style="width: 170px;">Add role</a>
+    @endcan
 </div>
 @stop
 
 
 
+
+
 @section('content')
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugin', true)
 
-
-
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+@if (session()->has('Add'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('Add') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 @endif
 
-@if(session('delete'))
-    <div class="alert alert-danger">
-        {{ session('delete') }}
-    </div>
+@if (session()->has('delete'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('delete') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+@if (session()->has('edit'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('edit') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 @endif
 
 @php
@@ -57,19 +83,22 @@ $heads = [
                         <td>{{$i}}</td>
                         <td>{{$role->name}}</td>
                         <td>
-                            <a class="btn btn-success btn-sm" href="{{ route('roles.show', $role->id) }}">Show</a>
+                            @can('show_permission')
+                            <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ route('roles.show', $role->id) }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
+                            @endcan
 
-
-
-                            <a class="btn btn-primary btn-sm" href="{{ route('roles.edit', $role->id) }}">Update</a>
-
+                            @can('edit_permission')
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ route('roles.edit', $role->id) }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                            @endcan
 
                             @if ($role->name !== 'owner')
 
                             <form method="POST" action="{{ route('roles.destroy', $role->id) }}" style="display:inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                @can('delete_permission')
+                                <button type="submit" class="btn btn-xs btn-default text-danger mx-1 shadow"><i class="fa fa-lg fa-fw fa-trash"></i></button>
+                                @endcan
                             </form>
 
 

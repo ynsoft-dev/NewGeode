@@ -61,6 +61,7 @@ $heads = [
 'site',
 'ray',
 'column',
+['label' => 'Actions', 'no-export' => true, 'width' => 30],
 
 ];
 
@@ -84,7 +85,9 @@ $heads = [
             <td>{{$shelf->site->name}}</td>
             <td>{{$shelf->ray->name}}</td>
             <td>{{$shelf->column->name}}</td>
-            
+            <td>
+            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $shelf->id }}" data-name="{{ $shelf->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+            </td>
 
           </tr>
           @endforeach
@@ -137,6 +140,32 @@ $heads = [
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
+</div>
+
+
+<!-- delete -->
+<div class="modal" id="modaldemo8">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content modal-content-demo">
+      <div class="modal-header">
+        <h6 class="modal-title">Delete Direction</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <form action="shelves/destroy" method="post">
+        {{ method_field('delete') }}
+        {{ csrf_field() }}
+        <div class="modal-body">
+          <p>Are you sure you want to delete this shelf ?</p><br>
+          <input type="hidden" name="id" id="id" value="">
+          <input class="form-control" name="name" id="name" type="text" readonly>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Confirm</button>
+        </div>
+    </div>
+    </form>
+  </div>
 </div>
 
 @endsection
@@ -200,5 +229,16 @@ $heads = [
 
 
   });
+</script>
+
+<script>
+  $('#modaldemo8').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget)
+    var id = button.data('id')
+    var name = button.data('name')
+    var modal = $(this)
+    modal.find('.modal-body #id').val(id);
+    modal.find('.modal-body #name').val(name);
+  })
 </script>
 @stop

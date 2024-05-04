@@ -7,6 +7,7 @@ use App\Models\Ray;
 use App\Models\Site;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ColumnController extends Controller
 {
@@ -14,7 +15,9 @@ class ColumnController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {    if (!Gate::allows('columns')) {
+        abort(403, 'Unauthorized action.');
+    }
         $sites=Site::all();
         $columns=Column::all();
         $rays=Ray::all();
@@ -69,28 +72,30 @@ class ColumnController extends Controller
      */
     public function update(Request $request, Column $columns)
     {
-        // $id = Ray::where('name', $request->ray_name)->first()->id;
+        // $id = Site::where('name', $request->site_name)->first()->id;
+        // $id1 = Ray::where('name', $request->ray_name)->first()->id;
 
         // $Columns = Column::findOrFail($request->id);
-    
+
         // $Columns->update([
-        // 'name' => $request->name,
-        // 'ray_id' => $id,
+        //     'name' => $request->name,
+        //     'site_id' => $id,
+        //     'ray_id' => $id1,
         // ]);
-    
-        // session()->flash('edit', 'The modifications to the column have been successfully applied');
+
+        // session()->flash('edit', 'The modifications to the ray have been successfully applied');
         // return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($request)
+    public function destroy(Request $request)
     {
-        // $Columns = Column::findOrFail($request->id);
-        // $Columns->delete();
-        // session()->flash('delete', 'The column has been successfully deleted');
-        // return back();
+        $Columns = Column::findOrFail($request->id);
+        $Columns->delete();
+        session()->flash('delete', 'The column has been successfully deleted');
+        return back();
     }
 
     public function getRays($id)

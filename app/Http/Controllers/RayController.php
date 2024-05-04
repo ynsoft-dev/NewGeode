@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Site;
 use App\Models\Ray;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RayController extends Controller
 {
@@ -13,9 +14,12 @@ class RayController extends Controller
      */
     public function index()
     {
-        $sites=Site::all();
-        $rays=Ray::all();
-        return view('rays.rays',compact('rays','sites'));
+        if (!Gate::allows('rays')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $sites = Site::all();
+        $rays = Ray::all();
+        return view('rays.rays', compact('rays', 'sites'));
     }
 
     /**
@@ -58,20 +62,20 @@ class RayController extends Controller
     /**
      * Update the specified resource in storage.
      */
-public function update(Request $request, Ray $rays)
-{
-    $id = Site::where('name', $request->site_name)->first()->id;
+    public function update(Request $request, Ray $rays)
+    {
+        $id = Site::where('name', $request->site_name)->first()->id;
 
-    $Rays = Ray::findOrFail($request->id);
+        $Rays = Ray::findOrFail($request->id);
 
-    $Rays->update([
-    'name' => $request->name,
-    'site_id' => $id,
-    ]);
+        $Rays->update([
+            'name' => $request->name,
+            'site_id' => $id,
+        ]);
 
-    session()->flash('edit', 'The modifications to the ray have been successfully applied');
-    return back();
-}
+        session()->flash('edit', 'The modifications to the ray have been successfully applied');
+        return back();
+    }
 
 
     /**

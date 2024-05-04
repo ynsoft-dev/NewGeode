@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Direction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class DirectionController extends Controller
 {
@@ -12,7 +13,9 @@ class DirectionController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    { if (!Gate::allows('directions')) {
+        abort(403, 'Unauthorized action.');
+    }
         $directions=Direction::all();
         return view('directions.directions',compact('directions'));
     }

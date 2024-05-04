@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Direction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
 {
@@ -12,7 +13,9 @@ class DepartmentController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   if (!Gate::allows('departments')) {
+        abort(403, 'Unauthorized action.');
+    }
         $directions=Direction::all();
         $departments=Department::all();
         // dd($directions);
@@ -37,7 +40,7 @@ class DepartmentController extends Controller
             'name' => $request->name,
             'directions_id' => $request->directions_id,
         ]);
-        session()->flash('Add', 'Département ajouté avec succès');
+        session()->flash('Add', 'Department added sucessfully');
         return redirect('/departments');
     }
 

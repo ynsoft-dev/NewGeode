@@ -114,7 +114,7 @@ $heads = [
             <input type="text" class="form-control" id="name" name="name">
           </div>
 
-          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
+          <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Site</label>
           <select name="site_id" id="site_id" class="form-control" required>
             <option value="" selected disabled> -- select site --</option>
             @foreach ($sites as $site)

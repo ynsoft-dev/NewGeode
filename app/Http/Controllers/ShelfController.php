@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Column;
 use App\Models\Ray;
 use App\Models\Site;
+use Illuminate\Support\Facades\Gate;
 
 class ShelfController extends Controller
 {
@@ -15,12 +16,15 @@ class ShelfController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $sites=Site::all();
-        $columns=Column::all();
-        $rays=Ray::all();
-        $shelves=Shelf::all();
-        return view('shelves.shelves',compact('sites','columns','rays','shelves'));
+    { // Vérifiez si l'utilisateur a la permission 'show_permission'
+        if (!Gate::allows('shelves')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $sites = Site::all();
+        $columns = Column::all();
+        $rays = Ray::all();
+        $shelves = Shelf::all();
+        return view('shelves.shelves', compact('sites', 'columns', 'rays', 'shelves'));
     }
 
     /**
@@ -74,34 +78,37 @@ class ShelfController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Shelf $shelves)
+    public function destroy(Request $request)
     {
-        //
+        $Shelves = Shelf::findOrFail($request->id);
+        $Shelves->delete();
+        session()->flash('delete', 'The shelf has been successfully deleted');
+        return back();
     }
 
-    
+
     public function getRays($id)
     {
-      
-    
+
+
         // Fetch rays based on the received site ID
         $rays = DB::table("rays")->where("site_id", $id)->pluck("name", "id");
-    
-    
+
+
         // Return the rays as JSON
         return json_encode($rays);
     }
-    
-    public function getColumns($id) 
+
+    public function getColumns($id)
     {
         // Fetch columns based on the received ray ID
         $columns = DB::table("columns")->where("ray_id", $id)->pluck("name", "id");
 
-       
-    
+
+
         // Return the columns as JSON
         return json_encode($columns);
 
-         // dd($columns);
+        // dd($columns);
     }
 }
