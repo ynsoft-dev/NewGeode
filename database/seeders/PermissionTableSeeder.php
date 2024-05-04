@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class PermissionTableSeeder extends Seeder
 {
@@ -13,63 +14,77 @@ class PermissionTableSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('permissions')->delete();
         $permissions = [
+
             'users',
+
+            'users_lists',
             'add_user',
             'edit_user',
             'delete_user',
 
-            'users_lists',
-
+            'admin',
+            
             'users_permissions',
             'add_permission',
             'edit_permission',
             'delete_permission',
+            'show_permission',
 
-            
+            'structure',
+
             'directions',
             'add_direction',
             'edit_direction',
             'delete_direction',
 
-            'departements',
-            'add_departement',
-            'edite_departement',
-            'delete_departement',
+            'departments',
+            'add_department',
+            'edit_department',
+            'delete_department',
+
+            'locations',
 
             'sites',
             'add_site',
-            'edite_site',
+            'edit_site',
             'delete_site',
 
             'rays',
             'add_ray',
-            'edite_ray',
+            'edit_ray',
             'delete_ray',
 
             'columns',
             'add_column',
-            'edite_column',
+            'edit_column',
             'delete_column',
 
             'shelves',
-            'add_shelve',
-            'edite_shelve',
-            'delete_shelve',
-        
+            'add_shelf',
+            'edit_shelf',
+            'delete_shelf',
 
+            'structureApplicant',
+            'archiveRequest',
+            'loanRequest',
+
+            'structureArchiviste',
             'archive_boxes',
+            'loans',
 
-            
 
-            
+
+
 
         ];
 
         foreach ($permissions as $permission) {
+
             Permission::create([
                 'name' => $permission,
-                'guard_name' => 'web', // Spécifiez le garde ici
+                'guard_name' => 'web'
             ]);
         }
     }

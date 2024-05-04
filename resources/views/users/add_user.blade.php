@@ -47,7 +47,7 @@
                         <div class="row mg-b-20">
                             <div class="parsley-input col-md-6" id="fnWrapper">
                                 <label> Username: <span class="tx-danger">*</span></label>
-                                <input class="form-control form-control-sm mg-b-20" data-parsley-class-handler="#lnWrapper" name="name" required="" type="text">
+                                <input class="form-control form-control-sm mg-b-20"  data-parsley-class-handler="#lnWrapper" name="name" required="" type="text">
                             </div>
 
                             <div class="parsley-input col-md-6 mg-t-20 mg-md-t-0" id="lnWrapper">
@@ -74,8 +74,8 @@
                         <div class="col-lg-6">
                             <label class="form-label">Status user </label>
                             <select name="Status" id="select-beast" class="form-control  nice-select  custom-select">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
+                                <option value="active">active</option>
+                                <option value="inactive">inactive</option>
                             </select>
                         </div>
                     </div>
@@ -93,11 +93,31 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                        <button class="btn btn-danger" type="submit">Confirm</button>
+                        <button class="btn btn-danger" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 @stop
+
+<!-- @section('css')
+<style>
+    .active { color: green; }
+    .inactive { color: red; }
+</style>
+@endsection
+@section('js')
+<script>
+    function changeStatusColor(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        if (selectedOption.classList.contains('active')) {
+            select.style.color = 'green';
+        } else if (selectedOption.classList.contains('inactive')) {
+            select.style.color = 'red';
+        }
+    }
+</script>
+@endsection -->

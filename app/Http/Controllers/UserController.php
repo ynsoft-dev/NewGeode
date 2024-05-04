@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -17,8 +18,22 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    // function __construct()
+    // {
+
+    //     $this->middleware('permission: users_lists', ['only' => ['index']]);
+    //     $this->middleware('permission: add_user', ['only' => ['create', 'store']]);
+    //     $this->middleware('permission: edit_user', ['only' => ['edit', 'update']]);
+    //     $this->middleware('permission: delete_user', ['only' => ['destroy']]);
+    // }
+
+
     public function index(Request $request)
     {
+        if (!Gate::allows('users_lists')) {
+            abort(403, 'Unauthorized action.');
+        }
         $data = User::orderBy('id', 'DESC')->paginate(5);
         return view('users.show_users', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
@@ -32,6 +47,10 @@ class UserController extends Controller
      */
     public function create()
     {
+
+        if (!Gate::allows('add_user')) {
+            abort(403, 'Unauthorized action.');
+        }
         $roles = Role::pluck('name', 'name')->all();
 
         return view('users.Add_user', compact('roles'));
@@ -44,6 +63,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (!Gate::allows('add_user')) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -59,7 +81,7 @@ class UserController extends Controller
         $user = User::create($input);
         $user->assignRole($request->input('roles_name'));
         return redirect()->route('users.index')
-            ->with('success', 'User added successfully');
+            ->with('Add', 'User added successfully');
     }
 
     /**
@@ -81,6 +103,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        if (!Gate::allows('edit_user')) {
+            abort(403, 'Unauthorized action.');
+        }
         $user = User::find($id);
         $roles = Role::pluck('name', 'name')->all();
         $userRole = $user->roles->pluck('name', 'name')->all();
@@ -95,6 +120,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!Gate::allows('edit_user')) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
@@ -112,7 +140,7 @@ class UserController extends Controller
         DB::table('model_has_roles')->where('model_id', $id)->delete();
         $user->assignRole($request->input('roles'));
         return redirect()->route('users.index')
-            ->with('success', 'User information updated successfully');
+            ->with('edit', 'User information updated successfully');
     }
     /**
      * Remove the specified resource from storage.
@@ -122,7 +150,10 @@ class UserController extends Controller
      */
     public function destroy(Request $request)
     {
+        if (!Gate::allows('delete_user')) {
+            abort(403, 'Unauthorized action.');
+        }
         User::find($request->user_id)->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        return redirect()->route('users.index')->with('delete', 'User deleted successfully');
     }
 }

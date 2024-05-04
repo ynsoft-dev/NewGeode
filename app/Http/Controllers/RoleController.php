@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
+
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +22,10 @@ class RoleController extends Controller
     // function __construct()
     // {
 
-    //     $this->middleware('permission:عرض صلاحية', ['only' => ['index']]);
-    //     $this->middleware('permission:اضافة صلاحية', ['only' => ['create', 'store']]);
-    //     $this->middleware('permission:تعديل صلاحية', ['only' => ['edit', 'update']]);
-    //     $this->middleware('permission:حذف صلاحية', ['only' => ['destroy']]);
+    //     $this->middleware('permission: show_permission', ['only' => ['index']]);
+    //     $this->middleware('permission: add_permission', ['only' => ['create', 'store']]);
+    //     $this->middleware('permission: edit_permission', ['only' => ['edit', 'update']]);
+    //     $this->middleware('permission: delete_permission', ['only' => ['destroy']]);
     // }
 
 
@@ -36,6 +38,11 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
+        // Vérifiez si l'utilisateur a la permission 'show_permission'
+        if (!Gate::allows('show_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $roles = Role::orderBy('id', 'DESC')->paginate(5);
         return view('roles.index', compact('roles'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
@@ -47,6 +54,9 @@ class RoleController extends Controller
      */
     public function create()
     {
+        if (!Gate::allows('add_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
         $permission = Permission::get();
         return view('roles.create', compact('permission'));
     }
@@ -58,25 +68,28 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        if (!Gate::allows('add_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
             'permission' => 'required|array',
         ]);
-    
+
         $role = Role::create(['name' => $request->input('name')]);
-    
+
         foreach ($request->input('permission') as $permissionId) {
             $permission = Permission::find($permissionId);
-            
+
             if ($permission) {
                 $role->givePermissionTo($permission);
             }
         }
-    
+
         return redirect()->route('roles.index')
             ->with('success', 'Role created successfully');
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -99,6 +112,9 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+        if (!Gate::allows('edit_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
         $role = Role::find($id);
         $permission = Permission::get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id", $id)
@@ -115,31 +131,34 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!Gate::allows('edit_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate($request, [
             'name' => 'required',
             'permission' => 'required|array',
         ]);
-    
+
         $role = Role::find($id);
         $role->name = $request->input('name');
         $role->save();
-    
+
         // Détacher toutes les permissions actuelles du rôle
         $role->permissions()->detach();
-    
+
         // Attacher les nouvelles permissions sélectionnées
         foreach ($request->input('permission') as $permissionId) {
             $permission = Permission::find($permissionId);
-            
+
             if ($permission) {
                 $role->givePermissionTo($permission);
             }
         }
-    
+
         return redirect()->route('roles.index')
             ->with('success', 'Role updated successfully');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -148,6 +167,9 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        if (!Gate::allows('delete_permission')) {
+            abort(403, 'Unauthorized action.');
+        }
         DB::table("roles")->where('id', $id)->delete();
         return redirect()->route('roles.index')
             ->with('delete', 'Role deleted successfully');

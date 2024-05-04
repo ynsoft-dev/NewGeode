@@ -6,7 +6,9 @@
 <h1>Users lists</h1>
 <div class="text-center">
     <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;"> -->
+    @can('add_user')
     <a class="btn btn-primary" style="width: 170px;" href="{{ route('users.create') }}">Add user</a>
+    @endcan('')
     <!-- </button> -->
 </div>
 @stop
@@ -58,7 +60,7 @@ $heads = [
 '#',
 'name',
 'email',
-'status',
+'Status',
 'type',
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
@@ -99,8 +101,13 @@ $heads = [
                             @endif
                         </td>
                         <td>
+                            @can('edit_user')
                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                            @endcan
+
+                            @can('delete_user')
                             <a class="btn btn-xs btn-default text-danger mx-1 shadow" data-effect="effect-scale" data-user_id="{{ $user->id }}" data-username="{{ $user->name }}" data-toggle="modal" title="Delete" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

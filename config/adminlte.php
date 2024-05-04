@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Validation\Rules\Can;
+
 return [
 
     /*
@@ -321,17 +323,7 @@ return [
             'icon' => 'far fa-fw fa-file',
             'label_color' => 'success',
         ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
+
         // [
         //     'text' => 'multilevel',
         //     'icon' => 'fas fa-fw fa-share',
@@ -370,78 +362,177 @@ return [
         //         ],
         //     ],
         // ],
-        ['header' => 'Locations'],
+        ['header' => 'ADMIN','can' => 'admin',],
+
         [
             'text' => 'Locations',
-            'icon' => 'fas fa-fw fa-share',
+            'icon' => 'fas fa-map-marked-alt',
+            'can' => 'locations',
             'submenu' => [
                 [
-                    'text' => 'Sites',
+                    'text' => 'Rooms',
                     'url' => 'sites',
+                    'icon' => 'fas fa-industry',
+                    'can' => 'sites',
+
+
                 ],
                 [
                     'text' => 'Rays',
                     'url' => 'rays',
+                    'icon' => 'fas fa-cubes',
+                    'can' => 'rays',
                 ],
                 [
                     'text' => 'Columns',
                     'url' => 'columns',
+                    'icon' => 'fas fa-columns',
+                    'can' => 'columns',
                 ],
                 [
                     'text' => 'Shelves',
                     'url' => 'shelves',
+                    'icon' => 'fas fa-layer-group',
+                    'can' => 'shelves',
                 ],
             ],
         ],
-        ['header' => 'DIRECTIONS'],
+
 
         [
             'text' => 'Directions',
             'url' => 'directions',
-            'icon' => 'fas fa-fw fa-share',
+            'icon' => 'fas fa-city',
+            'can' => 'structure',
             'submenu' => [
                 [
                     'text' => 'Directions',
                     'url' => 'directions',
+                    'icon' => 'fas fa-building',
+                    'can' => 'directions',
                 ],
                 [
                     'text' => 'Departments',
                     'url' => 'departments',
+                    'icon' => 'far fa-building',
+                    'can' => 'departments',
                 ],
             ],
         ],
 
-        ['header' => 'Users'],
+
         [
-            'text' => 'Users',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Users and Roles',
+            'icon' => 'fas fa-users',
+            'can' => 'users',
             'submenu' => [
                 [
                     'text' => 'Users',
                     'url' => 'users',
+                    'icon' => 'fas fa-user',
+                    'can' => 'users_lists',
                 ],
                 [
                     'text' => 'roles',
                     'url' => 'roles',
+                    'icon' => 'fas fa-user-friends',
+                    'can' => 'users_permissions',
                 ],
             ],
         ],
+        // ['header' => 'Archive Boxes'],
+        // [
+        //     'text' => 'Archive Boxes',
+        //     'icon_color' => 'fas fa-fw fa-share',
+        //     'can' => 'archive_boxes',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'Archive Boxes',
+        //             'url' => '',
+        //             'can' => 'archive_boxes',
+        //         ],
+        //         [
+        //             'text' => 'Late Archive Boxes',
+        //             'url' => '',
+        //             'can' => 'archive_boxes',
+        //         ],
+        //         [
+        //             'text' => 'Archive Boxes awaiting destruction',
+        //             'url' => '',
+        //             'can' => 'archive_boxes',
+        //         ],
+        //         [
+        //             'text' => 'Destroyed archive boxes',
+        //             'url' => '',
+        //             'can' => 'archive_boxes',
+        //         ],
+        //     ],
+        // ],
+        // ['header' => 'Archive boxes Request'],
+        // [
+        //     'text' => 'Archive Boxes Request',
+        //     'icon_color' => 'fas fa-fw fa-share',
+        //     'can' => 'archive_boxes',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'Loan original',
+        //             'url' => '',
+        //             'can' => '',
+        //         ],
+        //         [
+        //             'text' => 'Loan copy',
+        //             'url' => '',
+        //             'can' => '',
+        //         ],
+        //         [
+        //             'text' => 'Archive request',
+        //             'url' => '',
+        //             'can' => '',
+        //         ],
 
-        // [
-        //     'text' => 'important',
-        //     'icon_color' => 'red',
-        //     'url' => '#',
+        //     ],
         // ],
+
+        ['header' => 'APPLICANT', 'class' => 'bg-info','can' => 'structureApplicant',],
+        [
+            'text' => 'Archive request',
+            'url' => 'archiveRequest',
+            'icon' => 'fas fa-file-export',
+            'can' => 'archiveRequest',
+        ],
+        [
+            'text' => 'Loan request ',
+            'url' => '#',
+            'icon' => 'fas fa-file-export',
+            'can' => 'loanRequest',
+        ],
         // [
-        //     'text' => 'warning',
-        //     'icon_color' => 'yellow',
+        //     'text' => 'Copies',
         //     'url' => '#',
+        //     'icon' => 'fas fa-file-export',
         // ],
+
+        ['header' => 'ARCHIVISTE','can' => 'structureArchiviste'],
+        [
+            'text' => 'Boxes archived',
+            'url' => '#',
+            'icon' => 'fas fa-file-import',
+            'can' => 'archive_boxes',
+            
+        ],
         // [
-        //     'text' => 'information',
-        //     'icon_color' => 'cyan',
+        //     'text' => 'Box payments',
         //     'url' => '#',
+        //     'icon' => 'fas fa-file-import',
         // ],
+        [
+            'text' => 'Box Loaned',
+            'url' => '#',
+            'icon' => 'fas fa-file-import',
+            'can' => 'loans',
+        ],
+
+     
     ],
 
     /*
@@ -591,6 +682,26 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'TempusDominusBs4' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css',
                 ],
             ],
         ],

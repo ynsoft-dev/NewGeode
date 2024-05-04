@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Site;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SiteController extends Controller
 {
@@ -11,7 +12,9 @@ class SiteController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   if (!Gate::allows('sites')) {
+        abort(403, 'Unauthorized action.');
+    }
         $sites=Site::all();
         return view('sites.sites',compact('sites'));
     }
