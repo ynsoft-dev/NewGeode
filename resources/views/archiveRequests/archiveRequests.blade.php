@@ -3,10 +3,25 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1>Archive request</h1>
+
+<h1>Requests list</h1>
+<div class="text-center">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
+        Add request
+    </button>
+</div>
 @stop
 
 @section('content')
+
+
+
+<style>
+    .modal-dialog {
+        max-width: 70%;
+        /* max-height: 0%; */
+    }
+</style>
 
 @if ($errors->any())
 <div class="alert alert-danger">
@@ -15,6 +30,27 @@
         <li>{{ $error }}</li>
         @endforeach
     </ul>
+</div>
+@endif
+
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugin', true)
+
+@if (session()->has('Add'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('Add') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+@if (session()->has('delete'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>{{ session()->get('delete') }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 @endif
 
@@ -28,18 +64,101 @@
 @endif
 
 
+@php
+$config = ['format' => 'YYYY'];
+@endphp
 
 
-<div class="row">
+<!-- {{-- Setup data for datatables --}} -->
+@php
+$heads = [
+'#',
+'Request name',
+'Request details',
+'Direction',
+'Department',
+'Box quantity',
+'Request date',
+'Boxes name',
+'Extreme date',
 
-    <div class="col-lg-12 col-md-12">
-        <div class="card">
+
+['label' => 'Actions', 'no-export' => true, 'width' => 15],
+
+];
+
+@endphp
 
 
-            <div class="card-body">
 
 
-                <form action="{{ route('archiveRequest.store') }}" method="post" enctype="multipart/form-data" autocomplete="off">
+<!-- {{-- Minimal example / fill data using the component slot --}} -->
+<x-adminlte-datatable id="table1" :heads="$heads" striped hoverable with-buttons>
+    @php
+    $config['dom'] = '<"row" <"col-sm-7" B> <"col-sm-5 d-flex justify-content-end" i> >
+            <"row" <"col-12" tr> >
+                <"row" <"col-sm-12 d-flex justify-content-start" f> >';
+                    $config['paging'] = false;
+                    $config["lengthMenu"] = [ 10, 50, 100, 500];
+                    @endphp
+                    <?php $i = 0     ?>
+                    @foreach($requests as $request)
+                    <?php $i++ ?>
+                    <tr>
+                        <td>{{$i}}</td>
+                        <td>{{$request->name}}</td>
+                        <td>{{$request->details_request}}</td>
+                        <td>{{$request->direction->name}}</td>
+                        <td>{{$request->department->name}}</td>
+                        <td>{{$request->box_quantity}}</td>
+                        <td>{{$request->request_date}}</td>
+
+
+                        <td>
+                            @foreach($request->boxes as $box)
+                            {!! nl2br(e($box->ref)) !!}<br>
+                            @endforeach
+                        </td>
+
+                        <!-- <td>
+                            @foreach($request->boxes as $box)
+                            {!! nl2br(e($box->content)) !!}<br>
+                            @endforeach
+                        </td> -->
+                        <td>
+                            @foreach($request->boxes as $box)
+                            {{ $box->extreme_date }}<br>
+                            @endforeach
+                        </td>
+
+
+
+                        <td>
+                            
+                            <a href="{{ url('archieveRequestDetails') }}/{{$request->lastBox()->id}}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Details">
+                                <i class="fa fa-lg fa-fw fa-eye"></i>
+                            </a>
+                            
+                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $request->id }}" data-name="{{ $request->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                        </td>
+
+                    </tr>
+                    @endforeach
+</x-adminlte-datatable>
+
+
+<!-- Add -->
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add request</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm" action="{{ route('archiveRequest.store', ['check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                     {{ csrf_field() }}
                     {{-- 1 --}}
                     <div class="form-group row mb-0"> <!-- Ajoutez la classe mb-0 ici -->
@@ -51,12 +170,24 @@
                     <div class="form-group row mt-0"> <!-- Ajoutez la classe mt-0 ici -->
                         <div class="col">
                             <label for="inputName" class="control-label">Name</label>
-                            <input type="text" class="form-control" id="inputName" name="name" title="Please enter the name of the request" required>
+                            <input type="text" class="form-control" id="name" name="name" title="Please enter the name of the request" required value="{{ old('name') }}">
                         </div>
                     </div>
 
+                    <div class="form-group row mt-0"> <!-- Ajoutez la classe mt-0 ici -->
+                        <div class="col">
+                            <label for="details_request" class="control-label">Details of request</label>
+                            <input type="text" class="form-control" id="details_request" name="details_request" title="Please enter the details of the request" required value="{{ old('details_request') }}">
+                        </div>
+                    </div>
 
                     <div class="form-group row">
+                        <div class="col">
+                            <label for="box_quantity" class="control-label">Box quantity</label>
+                            <input type="text" class="form-control" id="box_quantity" name="box_quantity" title="Please enter the number of boxes in the request" required>
+                        </div>
+
+
                         <div class="col">
                             <label>Box deposit date</label>
                             <!-- <input class="form-control fc-datepicker" name="box_deposit_date" placeholder="YYYY-MM-DD" type="text" value="{{ date('Y-m-d') }}" required> -->
@@ -64,7 +195,7 @@
                             @php
                             $config = ['format' => 'L'];
                             @endphp
-                            <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required>
+                            <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required value="{{ old('request_date') }}">
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-gradient-danger">
                                         <i class="fas fa-calendar-day"></i>
@@ -73,24 +204,45 @@
                             </x-adminlte-input-date>
 
                         </div>
-
                     </div>
-
 
 
                     <div class="form-group row">
-                        <!-- <div class="col">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div> -->
-                        <div class="text-center">
-                            <button id="addBoxBtn" type="submit" class="btn btn-primary" style="width: 120px;">
-                                <i class="fas fa-plus"></i> Add box
-                            </button>
+                        <div class="col">
+                            <label for="inputDirection" class="control-label">Direction</label>
+                            <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
+                                <!--placeholder-->
+                                <option value="" selected disabled>Select direction</option>
+                                @foreach ($directions as $direction)
+                                <option value="{{ $direction->id }}" {{ old('Direction') == $direction->id ? 'selected' : '' }}> {{ $direction->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
+                        <div class="col">
+                            <label for="inputDepartment" class="control-label">Department</label>
+                            <select id="depart" name="depart" class="form-control">
+                                <!--placeholder-->
+                                <option value="" selected disabled>Select department</option>
+                                @foreach ($departments as $department)
+                                <option value="{{ $department->id }}" {{ old('depart') == $department->id ? 'selected' : '' }}> {{ $department->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
+
+                    <!-- <div class="col">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div> -->
                     <br>
+                    <div class="text-center">
+                        <button id="addBoxBtn" type="submit" class="btn btn-primary" style="width: 120px;">
+                            <i class="fas fa-plus"></i> Add box
+                        </button>
+
+                    </div>
+
 
 
 
@@ -99,7 +251,37 @@
 
                 </form>
             </div>
+
         </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- delete -->
+<div class="modal" id="modaldemo8">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-content-demo">
+            <div class="modal-header">
+                <h6 class="modal-title">Delete request</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="archiveRequest/destroy" method="post">
+                {{ method_field('delete') }}
+                {{ csrf_field() }}
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this request ?</p><br>
+                    <input type="hidden" name="id" id="id" value="">
+                    <input class="form-control" name="name" id="name" type="text" readonly>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+        </div>
+        </form>
     </div>
 </div>
 
@@ -108,29 +290,50 @@
 @section('js')
 <script>
     $(document).ready(function() {
-        // Fonction pour vérifier si les champs sont remplis
-        function checkFields() {
-            var name = $('[name="name"]').val();
-            var date = $('[name="request_date"]').val();
-
-            if (name.trim() !== '' && date.trim() !== '') {
-                // Si les champs sont remplis, activer le bouton
-                $('#addBoxBtn').removeClass('disabled');
+        $('select[name="Direction"]').on('change', function() {
+            var DirectionId = $(this).val();
+            if (DirectionId) {
+                $.ajax({
+                    url: "{{ URL::to('direction') }}/" + DirectionId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $('select[name="depart"]').empty();
+                        // Values from controller
+                        $.each(data, function(key, value) {
+                            // Append option with ray ID as value
+                            $('select[name="depart"]').append('<option value="' +
+                                key + '">' + value + '</option>');
+                        });
+                    },
+                });
             } else {
-                // Sinon, désactiver le bouton
-                $('#addBoxBtn').addClass('disabled');
+                console.log('AJAX load did not work');
             }
-        }
-
-        // Appeler la fonction lorsque les touches sont relâchées dans les champs
-        $('[name="name"], [name="request_date"]').on('input', function() {
-            checkFields();
         });
+    });
+</script>
 
-        // Appeler la fonction lors du chargement de la page pour la première fois
-        checkFields();
+<script>
+    // Sélectionnez le bouton Reset dans le formulaire avec l'ID 'myForm'
+    document.getElementById('myForm').addEventListener('reset', function() {
+        // Réinitialiser la sélection du menu déroulant "depart" en le définissant sur la valeur vide
+        document.getElementById('depart').value = '';
     });
 </script>
 
 
+
+
+<script>
+    $('#modaldemo8').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var name = button.data('name')
+        var modal = $(this)
+        modal.find('.modal-body #id').val(id);
+        modal.find('.modal-body #name').val(name);
+    })
+</script>
+</script>
 @stop

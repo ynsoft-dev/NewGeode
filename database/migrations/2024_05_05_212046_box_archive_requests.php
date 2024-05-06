@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('box_archive_requests', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            
             $table->string('content');
             $table->date('extreme_date');
             
@@ -22,8 +23,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('status', 20)->nullable();
 
-            $table->foreignId('department_id')->constrained();;
-            $table->foreignId('direction_id')->constrained();
+
             $table->foreignId('archive_request_id')->constrained();
             
             $table->timestamps();

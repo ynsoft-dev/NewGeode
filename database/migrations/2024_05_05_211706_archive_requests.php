@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('archive_requests', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('details_request');
+            $table->integer('box_quantity')->unsigned();
             $table->date('request_date');
             $table->string('status', 20)->default('active');
             
+            $table->foreignId('department_id')->constrained();;
+            $table->foreignId('direction_id')->constrained();
 
             $table->timestamps();
         });

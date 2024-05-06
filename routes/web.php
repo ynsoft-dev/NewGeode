@@ -14,6 +14,7 @@
     use App\Http\Controllers\RoleController;
     use App\Http\Controllers\ArchiveRequestController;
     use App\Http\Controllers\BoxArchiveRequestController;
+    use App\Http\Controllers\ArchieveRequestDetailsController;
 
     // Définir la route d'accueil pour rediriger vers la page de connexion
     Route::get('/', function () {
@@ -46,11 +47,15 @@
         Route::resource('users', UserController::class);
 
         Route::resource('archiveRequest', ArchiveRequestController::class);
+        Route::get('/direction/{id}', [ArchiveRequestController::class, 'getDepartments']);
 
 
 
         Route::resource('boxesArchiveRequest', BoxArchiveRequestController::class);
-        Route::get('/direction/{id}', [BoxArchiveRequestController::class, 'getDepartments']);
+        Route::resource('archieveRequestDetails', ArchieveRequestDetailsController::class);
+        
+        Route::get('/archieveRequestDetails/{id}', [ArchieveRequestDetailsController::class, 'edit']);
+
 
 
         // Route::get('dropdown', [DropdownController::class, 'index']);

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\archieveRequestDetails;
+use App\Models\ArchieveRequestDetails;
+use App\Models\ArchiveRequest;
+use App\Models\BoxArchiveRequest;
 use Illuminate\Http\Request;
 
 class ArchieveRequestDetailsController extends Controller
@@ -12,7 +14,7 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function index()
     {
-        //
+   
     }
 
     /**
@@ -34,7 +36,7 @@ class ArchieveRequestDetailsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(archieveRequestDetails $archieveRequestDetails)
+    public function show(ArchieveRequestDetails $ArchieveRequestDetails)
     {
         //
     }
@@ -42,15 +44,20 @@ class ArchieveRequestDetailsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(archieveRequestDetails $archieveRequestDetails)
+    public function edit($id)
     {
-        //
+        $invoices = ArchiveRequest::where('id',$id)->first();
+        dd($invoices);
+        $details  = ArchieveRequestDetails::where('box_archive_request_id',$id)->get();
+        
+
+        return view('archiveRequestsDetails.archiveRequestsDetails',compact('invoices','details'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, archieveRequestDetails $archieveRequestDetails)
+    public function update(Request $request, ArchieveRequestDetails $ArchieveRequestDetails)
     {
         //
     }
@@ -58,7 +65,7 @@ class ArchieveRequestDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(archieveRequestDetails $archieveRequestDetails)
+    public function destroy(ArchieveRequestDetails $ArchieveRequestDetails)
     {
         //
     }
