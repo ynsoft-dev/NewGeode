@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\LoanRequest;
 use App\Models\Direction;
 use App\Models\Department;
+use App\Models\LoanDetails;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth;
+
 class LoanRequestController extends Controller
 {
     /**
@@ -16,11 +19,10 @@ class LoanRequestController extends Controller
      */
     public function index()
     {
-        $directions=Direction::all();
-        $departments=Department::all();
-        $loans=LoanRequest::all();
-        return view('loanRequests.loanRequests',compact('directions','departments','loans'));
-
+        $directions = Direction::all();
+        $departments = Department::all();
+        $loans = LoanRequest::all();
+        return view('loanRequests.loanRequests', compact('directions', 'departments', 'loans'));
     }
 
     /**
@@ -39,8 +41,8 @@ class LoanRequestController extends Controller
         $this->validate($request, [
             'Direction' => 'required',
             'depart' => 'required',
-            'post_number' => 'required',
             'box_name' => 'required',
+            'kind' => 'required',
             'request_date' => 'required',
             'return_date' => 'required',
             'Membership' => 'required',
@@ -48,13 +50,24 @@ class LoanRequestController extends Controller
         LoanRequest::create([
             'direction_id' => $request->Direction,
             'department_id' => $request->depart,
-            'post_number' => $request->post_number,
-            'box_name'=> $request->box_name,
-            'request_date'=> $request->request_date,
-            'return_date'=> $request->return_date,
+            'box_name' => $request->box_name,
+            'kind' => $request->kind,
+            'request_date' => $request->request_date,
+            'return_date' => $request->return_date,
             'Membership' => $request->Membership,
         ]);
-        $loan_id = LoanRequest::latest()->first()->id;
+        // $loan_Id = LoanRequest::latest()->first()->id;
+        // LoanDetails::create([
+        //     'id_loan' => $loan_Id,
+        //     'direction_id' => $request->Direction,
+        //     'department_id' => $request->depart,
+        //     'post_number' => $request->post_number,
+        //     'box_name' => $request->box_name,
+        //     'request_date' => $request->request_date,
+        //     'return_date' => $request->return_date,
+        //     'Membership' => $request->Membership,
+        //     'user' => (Auth::user()->name),
+        // ]);
 
         $user = User::get();
         $loans = LoanRequest::latest()->first();
@@ -104,5 +117,16 @@ class LoanRequestController extends Controller
         $departments = DB::table("departments")->where("directions_id", $id)->pluck("name", "id");
         // Return the rays as JSON
         return json_encode($departments);
+    }
+
+    public function MarkAsRead_all(Request $request)
+    {
+
+        $userUnreadNotification = auth()->user()->unreadNotifications;
+
+        if ($userUnreadNotification) {
+            $userUnreadNotification->markAsRead();
+            return back();
+        }
     }
 }

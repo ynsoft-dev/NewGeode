@@ -47,7 +47,7 @@ class Add_loanRequest extends Notification
 
             //'data' => $this->details['body']
             'id'=> $this->loans->id,
-            'title'=>'loanRequest added succesfully:',
+            'title'=>'Loan request added by:',
             'user'=> Auth::user()->name,
 
         ];

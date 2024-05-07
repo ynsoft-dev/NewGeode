@@ -6,19 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LoanRequest extends Model
+
+class LoanDetails extends Model
 {
     protected $fillable = [
+        'id_loan',
         'direction_id',
         'department_id',
+        'post_number', 
         'box_name',
-        'kind', 
         'request_date',
         'return_date',
         'Membership',
-        'status',
+        'user',
 
     ];
+    public function loan(): BelongsTo
+    {
+        return $this->belongsTo(LoanRequest::class, 'id_loan');
+    }
     public function direction(): BelongsTo
     {
         return $this->belongsTo(Direction::class, 'direction_id');

@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('archieve_requests_details', function (Blueprint $table) {
             $table->id();
+            $table->string('content');
+            $table->date('extreme_date');
+            $table->string('ref')->nullable();
+            
+            $table->date('destruction_date')->nullable();
+            $table->string('location')->nullable();
+            $table->string('status', 20)->nullable();
+
+            
+            $table->string('statusRequest', 20);
+            $table->string('user',300);
+            $table->foreignId('box_archive_request_id')->constrained();
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-pzlxuRRNOiGKjgcvBz6jPd0dvjUHmIZ7VMnpD0RNDUtvG87I6kyUUwS4XGvpgcuo" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-pzlxuRRNOiGKjgcvBz6jPd0dvjUHmIZ7VMnpD0RNDUtvG87I6kyUUwS4XGvpgcuo" crossorigin="anonymous">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -76,10 +76,12 @@
                 </div>
               
             </div>
+            
         </nav>
 
         <main class="py-4">
             @yield('content')
+           
         </main>
     </div>
 </body>

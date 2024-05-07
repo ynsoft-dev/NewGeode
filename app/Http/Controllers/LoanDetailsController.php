@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ArchieveRequestDetails;
-use App\Models\ArchiveRequest;
-use App\Models\BoxArchiveRequest;
+use App\Models\LoanDetails;
 use Illuminate\Http\Request;
+use App\Models\LoanRequest;
 
-class ArchieveRequestDetailsController extends Controller
+class LoanDetailsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-   
+        //
     }
 
     /**
@@ -36,7 +35,7 @@ class ArchieveRequestDetailsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ArchieveRequestDetails $ArchieveRequestDetails)
+    public function show(LoanDetails $loanDetails)
     {
         //
     }
@@ -46,18 +45,15 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function edit($id)
     {
-        $invoices = ArchiveRequest::where('id',$id)->first();
-        dd($invoices);
-        $details  = ArchieveRequestDetails::where('box_archive_request_id',$id)->get();
-        
-
-        return view('archiveRequestsDetails.archiveRequestsDetails',compact('invoices','details'));
+        $loans = LoanRequest::where('id',$id)->first();
+        $details  = LoanDetails::where('id_loan',$id)->get();
+        return view('loanRequests.loanRequestsDetails',compact('loans','details'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArchieveRequestDetails $ArchieveRequestDetails)
+    public function update(Request $request, LoanDetails $loanDetails)
     {
         //
     }
@@ -65,7 +61,7 @@ class ArchieveRequestDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ArchieveRequestDetails $ArchieveRequestDetails)
+    public function destroy(LoanDetails $loanDetails)
     {
         //
     }

@@ -112,7 +112,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
@@ -136,8 +136,8 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
-    'usermenu_header_class' => 'bg-primary',
+    'usermenu_header' => true,
+    'usermenu_header_class' => 'bg-warning',
     'usermenu_image' => false,
     'usermenu_desc' => false,
     'usermenu_profile_url' => false,
@@ -238,7 +238,7 @@ return [
     |
     */
 
-    'right_sidebar' => false,
+    'right_sidebar' => true,
     'right_sidebar_icon' => 'fas fa-cogs',
     'right_sidebar_theme' => 'dark',
     'right_sidebar_slide' => true,
@@ -303,6 +303,16 @@ return [
             'topnav_right' => true,
         ],
         [
+            'type' => 'notifications',
+            'text' => 'notifications',
+            'topnav_right' => true,
+            'icon' => 'fa-duotone fa-bell',
+            'classes' => 'fa-duotone fa-bell',
+        ],
+        
+        // Navbar items:
+       
+        [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
@@ -362,7 +372,7 @@ return [
         //         ],
         //     ],
         // ],
-        ['header' => 'ADMIN','can' => 'admin',],
+        ['header' => 'ADMIN', 'can' => 'admin',],
 
         [
             'text' => 'Locations',
@@ -493,7 +503,7 @@ return [
         //     ],
         // ],
 
-        ['header' => 'APPLICANT', 'class' => 'bg-info','can' => 'structureApplicant',],
+        ['header' => 'APPLICANT', 'class' => 'bg-info', 'can' => 'structureApplicant',],
         [
             'text' => 'Archive request',
             'url' => 'archiveRequest',
@@ -502,7 +512,7 @@ return [
         ],
         [
             'text' => 'Loan request ',
-            'url' => '#',
+            'url' => 'loanRequest',
             'icon' => 'fas fa-file-export',
             'can' => 'loanRequest',
         ],
@@ -512,13 +522,13 @@ return [
         //     'icon' => 'fas fa-file-export',
         // ],
 
-        ['header' => 'ARCHIVISTE','can' => 'structureArchiviste'],
+        ['header' => 'ARCHIVISTE', 'can' => 'structureArchiviste'],
         [
             'text' => 'Boxes archived',
             'url' => '#',
             'icon' => 'fas fa-file-import',
             'can' => 'archive_boxes',
-            
+
         ],
         // [
         //     'text' => 'Box payments',
@@ -532,7 +542,7 @@ return [
             'can' => 'loans',
         ],
 
-     
+
     ],
 
     /*

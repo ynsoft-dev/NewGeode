@@ -61,8 +61,8 @@ $heads = [
 '#',
 'direction',
 'department',
-'post_number',
 'box_name',
+'kind',
 'request_date',
 'return_date',
 'Membership',
@@ -88,14 +88,15 @@ $heads = [
                         <td>{{$i}}</td>
                         <td>{{$loan->direction->name}}</td>
                         <td>{{$loan->department->name}}</td>
-                        <td>{{$loan->post_number}}</td>
                         <td>{{$loan->box_name}}</td>
+                        <td>{{$loan->kind}}</td>
                         <td>{{$loan->request_date}}</td>
                         <td>{{$loan->return_date}}</td>
                         <td>{{$loan->Membership}}</td>
 
                         <td>
                             <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                            <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
 
                         </td>
 
@@ -128,21 +129,30 @@ $heads = [
                         @endforeach
                     </select>
 
-                    
+
                     <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                     <select id="depart" name="depart" class="form-control">
                     </select>
 
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Post Number:</label>
-                        <input type="text" class="form-control" id="post_number" name="post_number">
-                    </div>
+
                     <div class="form-group">
                         <label for="exampleInputEmail1">Box name:</label>
                         <input type="text" class="form-control" id="box_name" name="box_name">
                     </div>
 
-                   
+                    <div class="form-group">
+                        <label for="Kind">Kind</label>
+                        <div>
+                            <label class="radio-inline">
+                                <input type="radio" name="kind" value="Original"> request loan Original
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="kind" value="Copy"> request loan Copy
+                            </label>
+                        </div>
+                    </div>
+
+
                     <div class="form-group row">
                         <div class="col">
                             <label>Request date</label>
@@ -186,13 +196,15 @@ $heads = [
                         <label for="membership">Membership</label>
                         <div>
                             <label class="radio-inline">
-                                <input type="radio" name="Membership" value="Belongs"> Belongs
+                                <input type="radio" name="Membership" value="Belongs"> Depends on my direction
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="Membership" value="Not"> Not
                             </label>
                         </div>
                     </div>
+
+
 
 
                     <div class="modal-footer">

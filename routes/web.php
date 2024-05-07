@@ -14,7 +14,9 @@
     use App\Http\Controllers\RoleController;
     use App\Http\Controllers\ArchiveRequestController;
     use App\Http\Controllers\BoxArchiveRequestController;
+    use App\Http\Controllers\ArchieveRequestDetailsController;
     use App\Http\Controllers\LoanRequestController;
+    use App\Http\Controllers\LoanDetailsController;
 
     // Définir la route d'accueil pour rediriger vers la page de connexion
     Route::get('/', function () {
@@ -38,7 +40,7 @@
 
         Route::resource('columns', ColumnController::class)->middleware('can:columns');
         Route::get('/site/{id}', [ColumnController::class, 'getRays'])->middleware('can:columns');
-        
+
         Route::resource('shelves', ShelfController::class)->middleware('can:shelves');
         Route::get('/site/{id}', [ShelfController::class, 'getRays'])->middleware('can:shelves');
         Route::get('/col/{id}', [ShelfController::class, 'getColumns'])->middleware('can:shelves');
@@ -47,15 +49,15 @@
         Route::resource('users', UserController::class);
 
         Route::resource('archiveRequest', ArchiveRequestController::class);
-
-
-
+        Route::get('/direction/{id}', [ArchiveRequestController::class, 'getDepartments']);
         Route::resource('boxesArchiveRequest', BoxArchiveRequestController::class);
-        Route::get('/direction/{id}', [BoxArchiveRequestController::class, 'getDepartments']);
+        Route::resource('archieveRequestDetails', ArchieveRequestDetailsController::class);
+        Route::get('/archieveRequestDetails/{id}', [ArchieveRequestDetailsController::class, 'edit']);
 
         Route::resource('loanRequest', LoanRequestController::class);
         Route::get('/direction/{id}', [LoanRequestController::class, 'getDepartments']);
+        Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
+
+
+        Route::get('MarkAsRead_all', [LoanRequestController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
     });
-    
-
-

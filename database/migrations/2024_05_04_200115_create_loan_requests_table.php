@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('loan_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('direction_id')->constrained();
-            $table->foreignId('department_id')->constrained();;
-            $table->string('post_number');
+            $table->foreignId('department_id')->constrained();
             $table->string('box_name');
+            $table->string('kind');
             $table->date('request_date');
             $table->date('return_date');
             $table->string('Membership');
+            $table->string('status', 20)->default('active');
+
             $table->timestamps();
         });
     }

@@ -1,0 +1,3 @@
+<x-adminlte-card title="Info Card" theme="info" icon="fas fa-lg fa-bell" collapsible removable maximizable>
+    An info theme card with all the tool buttons...
+</x-adminlte-card>

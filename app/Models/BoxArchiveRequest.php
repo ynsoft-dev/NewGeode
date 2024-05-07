@@ -19,23 +19,16 @@ class BoxArchiveRequest extends Model
         'location',
         'status',
         
-        'department_id',
-        'direction_id',
+
         'archive_request_id',  
 
     ];
+    
 
     public function archiveRequest(): BelongsTo
     {
         return $this->belongsTo(ArchiveRequest::class,'archive_request_id');
     }
 
-    public function direction(): BelongsTo
-    {
-        return $this->belongsTo(Direction::class, 'direction_id');
-    }
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class, 'department_id');
-    }
+
 }
