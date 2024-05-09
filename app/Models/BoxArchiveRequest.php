@@ -21,6 +21,7 @@ class BoxArchiveRequest extends Model
         
 
         'archive_request_id',  
+        'archieve_request_details_id',
 
     ];
     
@@ -28,6 +29,10 @@ class BoxArchiveRequest extends Model
     public function archiveRequest(): BelongsTo
     {
         return $this->belongsTo(ArchiveRequest::class,'archive_request_id');
+    }
+    public function boxArchiveRequest(): BelongsTo
+    {
+        return $this->belongsTo(BoxArchiveRequest::class,'archieve_request_details_id');
     }
 
 

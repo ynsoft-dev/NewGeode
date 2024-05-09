@@ -5,29 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ArchieveRequestDetails extends Model
 {
     protected $fillable = [
-      
-        
-        'ref',
-        'content',
-        'extreme_date',
-        
-        'destruction_date',
-        'location',
-        'status',
 
-        'statusRequest',
+        'name',
+        'details_request',
+        'request_date',
+        'status',
+        'department',
+        'direction',
+
         'user',
-        'box_archive_request_id',
-        
+        'archive_request_id',
+
     ];
 
 
-    public function boxArchiveRequest(): BelongsTo
+    public function archiveRequest(): BelongsTo
     {
-        return $this->belongsTo(BoxArchiveRequest::class,'box_archive_request_id');
+        return $this->belongsTo(ArchiveRequest::class, 'archive_request_id');
+    }
+
+    public function boxes(): HasMany
+    {
+        return $this->hasMany(BoxArchiveRequest::class);
     }
 }

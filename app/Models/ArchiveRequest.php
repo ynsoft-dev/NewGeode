@@ -39,6 +39,8 @@ class ArchiveRequest extends Model
         return $this->hasMany(BoxArchiveRequest::class);
     }
 
+
+    
     public function getRealBoxQuantity(): int
     {
         return $this->boxes()->count();

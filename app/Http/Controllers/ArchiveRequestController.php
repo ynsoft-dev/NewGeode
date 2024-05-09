@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\boxArchiveRequest;
 use App\Models\ArchiveRequest;
 use App\Models\User;
-use App\Notifications\AddRequest;
+use Spatie\Permission\Models\Role;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,9 @@ use App\Models\Direction;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\ArchieveRequestDetails;
+
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AddRequest;
 
 class ArchiveRequestController extends Controller
 {
@@ -29,11 +33,13 @@ class ArchiveRequestController extends Controller
 
         $directions = Direction::all();
         $departments = Department::all();
-        $requests = ArchiveRequest::all();
+        $demands = ArchiveRequest::all();
 
-        
 
-        return view('archiveRequests.archiveRequests', compact('directions', 'departments', 'requests'));
+
+
+
+        return view('archiveRequests.archiveRequests', compact('directions', 'departments', 'demands'));
     }
 
     /**
@@ -52,11 +58,11 @@ class ArchiveRequestController extends Controller
         if ($request->has('check')) {
             $validated = $request->validate([
                 'Direction' => 'required|max:255',
-                'box_quantity' => 'required|numeric',
+                // 'box_quantity' => 'required|numeric',
                 // 'depart' => 'required',
             ], [
                 'Direction.required' => 'Please enter the name of the direction',
-                'box_quantity.numeric' => 'Box quantity must be a number',
+                // 'box_quantity.numeric' => 'Box quantity must be a number',
                 // 'depart.required' => 'Please enter the name of the department',
 
             ]);
@@ -66,44 +72,59 @@ class ArchiveRequestController extends Controller
                 'request_date' => $request->request_date,
                 'department_id' => $request->depart,
                 'direction_id' => $request->Direction,
-                'box_quantity' => $request->box_quantity,
                 'details_request' => $request->details_request,
             ]);
+
+
+            $request_id = ArchiveRequest::latest()->first()->id;
+            ArchieveRequestDetails::create([
+                'archive_request_id' => $request_id,
+                'name' => $request->name,
+                'details_request' => $request->details_request,
+                'request_date' => $request->request_date,
+                // 'status' => 'Created',
+                'department' => $request->depart,
+                'direction' => $request->Direction,
+
+                'user' => (Auth::user()->name),
+            ]);
+
             return redirect('/boxesArchiveRequest');
         }
 
 
         if ($request->has('check_boxes')) {
 
-            $request = ArchiveRequest::latest()->first();
-            $specifiedBoxQuantity = $request->box_quantity;
-            $realBoxQuantity = $request->getRealBoxQuantity();
-            if ($specifiedBoxQuantity != $realBoxQuantity) {
-                return redirect()->back()->withErrors(['box_quantity' => 'The specified box quantity does not match the real box quantity.']);
+            $lastRequest = ArchiveRequest::latest()->first();
+            // $specifiedBoxQuantity = $lastRequest->box_quantity;
+            $realBoxQuantity = $lastRequest->getRealBoxQuantity();
+            // if ($specifiedBoxQuantity != $realBoxQuantity) {
+            //     return redirect()->back()->withErrors(['box_quantity' => 'The specified box quantity does not match the real box quantity.']);
+            // }
+            if ($realBoxQuantity === 0) {
+                return redirect()->back()->withErrors(['check_boxes' => 'Please insert at least one box.']);
             }
+
             return redirect('/archiveRequest')->with('Add', 'Request added successfully');
-
-
-            $request_id = BoxArchiveRequest::latest()->first()->id;
-            ArchieveRequestDetails::create([
-                'box_archive_request_id' => $request_id,
-
-                'ref' => $request->invoice_number,
-                'content' => $request->product,
-                'extreme_date' => $request->Section,
-                'statusRequest' => 'غير مدفوعة',
-                'user' => (Auth::user()->name),
-            ]);
-
-
-
-
         }
 
-
-
-
-        
+        $request_id = ArchiveRequest::latest()->first()->id;
+        if ($request->has('sendEmailButton')) {
+            
+            $archivistRole = Role::where('name', 'Archiviste')->first();
+            if ($archivistRole) {
+                $archivists = $archivistRole->users;
+                foreach ($archivists as $archivist) {
+                    $archivist->notify(new AddRequest($request_id));
+                }
+            }
+    
+            
+            ArchiveRequest::where('id', $request_id)->update(['status' => 'Sent']);
+            ArchieveRequestDetails::where('archive_request_id', $request_id)->update(['status' => 'Sent']);
+    
+            return redirect('/archiveRequest')->with('Add', 'Request sent successfully');
+        }
     }
 
     /**

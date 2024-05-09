@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\boxArchiveRequest;
 use App\Models\ArchiveRequest;
+use App\Models\ArchieveRequestDetails;
 use Illuminate\Http\Request;
 
 
@@ -18,7 +19,8 @@ class BoxArchiveRequestController extends Controller
     {
 
         // $boxes=BoxArchiveRequest::all();
-        $requests=ArchiveRequest::all();
+        $demands=ArchiveRequest::all();
+        $demandsDetail=ArchieveRequestDetails::all();
         $lastRequest = ArchiveRequest::latest()->first();
         
         $lastRequest1 = ArchiveRequest::latest()->first()->id;
@@ -29,7 +31,7 @@ class BoxArchiveRequestController extends Controller
 
         
         
-        return view('boxesArchiveRequest.boxesArchiveRequest',compact('requests','lastRequest','boxes'));
+        return view('boxesArchiveRequest.boxesArchiveRequest',compact('demands','lastRequest','boxes','demandsDetail'));
     }
 
     /**
@@ -53,6 +55,7 @@ class BoxArchiveRequestController extends Controller
             'extreme_date'=> $request->extreme_date,
             // 'destruction_date'=> $request->destruction_date,
             'archive_request_id'=> $request->archive_requests_id,
+            'archieve_request_details_id' =>$request->archieve_request_detail_id,
             
             
             // 'site_id' => $request->site_id,

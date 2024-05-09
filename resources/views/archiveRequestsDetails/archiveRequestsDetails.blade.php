@@ -3,16 +3,19 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
+<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible>
     <!-- An info theme card with all the tool buttons... -->
 
-    <p name="name_request"><b>Name of the request : </b> {{ $lastRequest->name }}</p>
-    <p name="date_request"><b>Request date : </b> {{ $lastRequest->request_date }}</p>
-    <p name="Direction"><b>Direction : </b> {{ $lastRequest->direction->name }}</p>
-    <p name="depart"><b>Department : </b> {{ $lastRequest->department->name}}</p>
-    <p name="details"><b>Details : </b> {{ $lastRequest->details_request}}</p>
-    <p name="box_quantity"><b>Box quantity : </b> {{ $lastRequest->box_quantity}}</p>
-    <!-- <p><b>Status : </b> {{ $lastRequest->status }}</p> -->
+    <p name="name_request"><b>Name of the request : </b> {{ $demands->name }}</p>
+    <p name="name_user"><b>User : </b>
+        @foreach($details as $detail)
+        {{ $detail->user}}
+        @endforeach
+    </p>
+    <p name="details_request"><b>Details of the request : </b> {{ $demands->details_request }}</p>
+    <p name="date_request"><b>Request date : </b> {{ $demands->request_date }}</p>
+    <p name="Direction"><b>Direction : </b> {{ $demands->direction->name }}</p>
+    <p name="depart"><b>Department : </b> {{ $demands->department->name}}</p>
 
 </x-adminlte-card>
 
@@ -21,7 +24,6 @@
 @stop
 
 @section('content')
-
 
 
 
@@ -35,16 +37,12 @@ $heads = [
 'content',
 'Extreme date',
 
-['label' => 'Actions', 'no-export' => true, 'width' => 30],
 
 ];
 
 @endphp
 
 
-@foreach ($requests as $request)
-<input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $request->id }}">
-@endforeach
 
 <!-- {{-- Minimal example / fill data using the component slot --}} -->
 <x-adminlte-datatable id="table1" :heads="$heads" striped hoverable with-buttons>
@@ -54,26 +52,23 @@ $heads = [
                 <"row" <"col-sm-12 d-flex justify-content-start" f> >';
                     $config['paging'] = false;
                     $config["lengthMenu"] = [ 10, 50, 100, 500];
+                    $counter = 0;
                     @endphp
-                    <?php $i = 0     ?>
-                    @foreach($boxes as $box)
-                    <?php $i++ ?>
+
+                    @foreach($details as $detail)
+                    @foreach($detail->boxes as $box)
+                    @php $counter++ @endphp
                     <tr>
-                        <td>{{$i}}</td>
-                        <td>{{$box->ref}}</td>
-                        <td>{{$box->archiveRequest->direction->name}}</td>
-                        <td>{{$box->archiveRequest->department->name}}</td>
+                        <td>{{$counter}}</td>
+                        <td>{!! nl2br(e($box->ref)) !!}</td>
+                        <td>{{$detail->archiveRequest->direction->name}}</td>
+                        <td>{{$detail->archiveRequest->department->name}}</td>
                         <td>{!! nl2br(e($box->content)) !!}</td>
-                        <td>{{$box->extreme_date}}</td>
-
-
-
+                        <td>{!! nl2br(e($box->extreme_date)) !!}</td>
                     </tr>
                     @endforeach
+                    @endforeach
 </x-adminlte-datatable>
-
-
-
 
 
 @endsection

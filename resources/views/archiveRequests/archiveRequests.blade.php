@@ -21,6 +21,8 @@
         max-width: 70%;
         /* max-height: 0%; */
     }
+
+
 </style>
 
 @if ($errors->any())
@@ -77,13 +79,13 @@ $heads = [
 'Request details',
 'Direction',
 'Department',
-'Box quantity',
 'Request date',
+'Status',
 'Boxes name',
 'Extreme date',
 
 
-['label' => 'Actions', 'no-export' => true, 'width' => 15],
+['label' => 'Actions', 'no-export' => true, 'width' => 50],
 
 ];
 
@@ -101,46 +103,59 @@ $heads = [
                     $config['paging'] = false;
                     $config["lengthMenu"] = [ 10, 50, 100, 500];
                     @endphp
-                    <?php $i = 0     ?>
-                    @foreach($requests as $request)
+                    <?php $i = 0 ?>
+
+                    @foreach($demands->sortByDesc('request_date') as $demand)
                     <?php $i++ ?>
                     <tr>
                         <td>{{$i}}</td>
-                        <td>{{$request->name}}</td>
-                        <td>{{$request->details_request}}</td>
-                        <td>{{$request->direction->name}}</td>
-                        <td>{{$request->department->name}}</td>
-                        <td>{{$request->box_quantity}}</td>
-                        <td>{{$request->request_date}}</td>
+                        <td>{{$demand->name}}</td>
+                        <td>{{$demand->details_request}}</td>
+                        <td>{{$demand->direction->name}}</td>
+                        <td>{{$demand->department->name}}</td>
+                        <td>{{$demand->request_date}}</td>
+                        <td>
+                            @if(strtolower($demand->status) === 'created')
+                            <span class="badge badge-success">{{ ucfirst($demand->status) }}</span>
+                            @else
+                            {{ ucfirst($demand->status) }}
+                            @endif
+                        </td>
 
 
                         <td>
-                            @foreach($request->boxes as $box)
+                            @foreach($demand->boxes as $box)
                             {!! nl2br(e($box->ref)) !!}<br>
                             @endforeach
                         </td>
 
                         <!-- <td>
-                            @foreach($request->boxes as $box)
+                            @foreach($demand->boxes as $box)
                             {!! nl2br(e($box->content)) !!}<br>
                             @endforeach
                         </td> -->
                         <td>
-                            @foreach($request->boxes as $box)
+                            @foreach($demand->boxes as $box)
                             {{ $box->extreme_date }}<br>
                             @endforeach
                         </td>
 
 
-
                         <td>
-                            
-                            <a href="{{ url('archieveRequestDetails') }}/{{$request->lastBox()->id}}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Details">
+
+                            <a href="{{ url('archieveRequestDetails') }}/{{$demand->id}}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Details">
                                 <i class="fa fa-lg fa-fw fa-eye"></i>
                             </a>
-                            
-                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $request->id }}" data-name="{{ $request->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
-                        </td>
+
+                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $demand->id }}" data-name="{{ $demand->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+
+                            <form id="sendEmailForm" action="{{ route('archiveRequest.store') }}" method="POST">
+                                @csrf
+                                <button type="submit" name="sendEmailButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d" title="Envoyer un e-mail" data-effect="effect-scale">
+                                    <i class="fas fa-envelope" style="color: #28a745"></i> Send
+                                </button>
+                            </form>
+
 
                     </tr>
                     @endforeach
@@ -167,44 +182,42 @@ $heads = [
                         </div>
                     </div>
 
-                    <div class="form-group row mt-0"> <!-- Ajoutez la classe mt-0 ici -->
+
+
+                    <div class="form-group row mb-0"> <!-- Utilisez la classe mb-0 pour supprimer la marge en bas -->
                         <div class="col">
                             <label for="inputName" class="control-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" title="Please enter the name of the request" required value="{{ old('name') }}">
                         </div>
-                    </div>
-
-                    <div class="form-group row mt-0"> <!-- Ajoutez la classe mt-0 ici -->
                         <div class="col">
-                            <label for="details_request" class="control-label">Details of request</label>
-                            <input type="text" class="form-control" id="details_request" name="details_request" title="Please enter the details of the request" required value="{{ old('details_request') }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col">
-                            <label for="box_quantity" class="control-label">Box quantity</label>
-                            <input type="text" class="form-control" id="box_quantity" name="box_quantity" title="Please enter the number of boxes in the request" required>
-                        </div>
-
-
-                        <div class="col">
+                            <!-- disabled -->
                             <label>Box deposit date</label>
-                            <!-- <input class="form-control fc-datepicker" name="box_deposit_date" placeholder="YYYY-MM-DD" type="text" value="{{ date('Y-m-d') }}" required> -->
-
+                            <!-- <input class="form-control fc-datepicker" name="box_deposit_date" placeholder="YYYY-MM-DD" type="text" value="{{ now()->format('Y-m-d') }}" required> -->
                             @php
                             $config = ['format' => 'L'];
                             @endphp
-                            <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required value="{{ old('request_date') }}">
+                            <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required value="{{ now()->format('Y-m-d') }}">
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-gradient-danger">
                                         <i class="fas fa-calendar-day"></i>
                                     </div>
                                 </x-slot>
                             </x-adminlte-input-date>
-
                         </div>
                     </div>
+
+                    <div class="form-group row"> <!-- Ajoutez la classe mt-0 ici -->
+                        <div class="col">
+                            <label for="details_request" class="control-label">Details of request</label>
+                            <textarea class="form-control" id="details_request" name="details_request" title="Please enter the details of the request" required value="{{ old('details_request') }}"></textarea>
+                        </div>
+                    </div>
+
+
+
+
+
+
 
 
                     <div class="form-group row">

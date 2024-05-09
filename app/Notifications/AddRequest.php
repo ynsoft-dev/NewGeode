@@ -10,13 +10,15 @@ use Illuminate\Notifications\Notification;
 class AddRequest extends Notification
 {
     use Queueable;
+    private $request_id;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($request_id)
     {
-        //
+        $this->request_id = $request_id;
+        
     }
 
     /**
@@ -34,10 +36,15 @@ class AddRequest extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+    
+        $url = url('/archieveRequestDetails/'.$this->request_id);
+    
+        // $url = 'http://127.0.0.1:8000/archieveRequestDetails/' . $this->request_id;
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject('Add new archive request')
+            ->line('Add new archive request')
+            ->action('Show request', $url)
+            ->line('Thank you for using NewGeode !');
     }
 
     /**

@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('status', 20)->nullable();
 
 
-            $table->foreignId('archive_request_id')->constrained();
+            $table->foreignId('archive_request_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('archieve_request_details_id')->constrained()->cascadeOnDelete();
             
             $table->timestamps();
         });

@@ -11,7 +11,7 @@
     <p name="Direction"><b>Direction : </b> {{ $lastRequest->direction->name }}</p>
     <p name="depart"><b>Department : </b> {{ $lastRequest->department->name}}</p>
     <p name="details"><b>Details : </b> {{ $lastRequest->details_request}}</p>
-    <p name="box_quantity"><b>Box quantity : </b> {{ $lastRequest->box_quantity}}</p>
+    
     <!-- <p><b>Status : </b> {{ $lastRequest->status }}</p> -->
 
 </x-adminlte-card>
@@ -99,8 +99,8 @@ $heads = [
 @endphp
 
 
-@foreach ($requests as $request)
-<input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $request->id }}">
+@foreach ($demands as $demand)
+<input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demand->id }}">
 @endforeach
 
 <!-- {{-- Minimal example / fill data using the component slot --}} -->
@@ -140,8 +140,8 @@ $heads = [
 <br><br>
 <form action="{{ route('archiveRequest.store') }}" method="POST">
     @csrf
-    <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Send Request</button>
-    <input type="hidden" name="check_boxes" value="1">
+    <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
+    <input type="hidden" name="check_boxes" value="1">  
 </form>
 
 
@@ -162,10 +162,12 @@ $heads = [
                 <form action="{{ route('boxesArchiveRequest.store') }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
-                    @foreach ($requests as $request)
-                    <input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $request->id }}">
-                    <!-- <input type="hidden" name="Direction" value="{{ $request->direction }}">
-                    <input type="hidden" name="depart" value="{{ $request->department }}"> -->
+                    @foreach ($demands as $demand)
+                    <input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demand->id }}">
+                    @endforeach
+
+                    @foreach ($demandsDetail as $demandDetail)
+                    <input type="hidden" name="archieve_request_detail_id" id="archieve_request_detail_id" value="{{ $demandDetail->id }}">
                     @endforeach
 
 
@@ -180,7 +182,7 @@ $heads = [
 
 
                     <label>Extreme date</label>
-                    <!-- <input class="form-control fc-datepicker" name="extreme_date" placeholder="YYYY-MM-DD" type="text" required> -->
+                    
 
                     <x-adminlte-input-date name="extreme_date" :config="$config" placeholder="Choose a year..." required>
                         <x-slot name="appendSlot">

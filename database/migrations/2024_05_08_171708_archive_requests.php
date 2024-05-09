@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('details_request');
-            $table->integer('box_quantity')->unsigned();
             $table->date('request_date');
-            $table->string('status', 20)->default('active');
+            $table->string('status', 20)->default('created');
             
-            $table->foreignId('department_id')->constrained();;
+            $table->foreignId('department_id')->constrained();
             $table->foreignId('direction_id')->constrained();
 
             $table->timestamps();

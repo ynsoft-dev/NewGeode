@@ -52,16 +52,12 @@
 
 
         Route::resource('boxesArchiveRequest', BoxArchiveRequestController::class);
-        Route::resource('archieveRequestDetails', ArchieveRequestDetailsController::class);
+       
         
         Route::get('/archieveRequestDetails/{id}', [ArchieveRequestDetailsController::class, 'edit']);
 
 
 
-        // Route::get('dropdown', [DropdownController::class, 'index']);
 
-        // Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
-
-        // Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
     });
     
