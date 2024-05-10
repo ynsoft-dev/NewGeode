@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('box_archive_requests', function (Blueprint $table) {
+        Schema::create('boxes', function (Blueprint $table) {
             $table->bigIncrements('id');
             
             $table->string('content');
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('box_archive_requests');
+        Schema::dropIfExists('boxes');
     }
 };

@@ -13,7 +13,8 @@ class shelf extends Model
         'site_id',
         'ray_id',
         'column_id',
-        
+        'capacity',
+
        
     ];
 

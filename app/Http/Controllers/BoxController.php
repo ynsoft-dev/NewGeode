@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\boxArchiveRequest;
+use App\Models\Box;
 use App\Models\ArchiveRequest;
 use App\Models\ArchieveRequestDetails;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 
 
-class BoxArchiveRequestController extends Controller
+class BoxController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,12 +26,12 @@ class BoxArchiveRequestController extends Controller
         $lastRequest1 = ArchiveRequest::latest()->first()->id;
 
 
-        $boxes = BoxArchiveRequest::where('archive_request_id', $lastRequest1)->get();
+        $boxes = Box::where('archive_request_id', $lastRequest1)->get();
         $numberOfBoxes = $boxes->count();
 
         
         
-        return view('boxesArchiveRequest.boxesArchiveRequest',compact('demands','lastRequest','boxes','demandsDetail'));
+        return view('boxes.boxes',compact('demands','lastRequest','boxes','demandsDetail'));
     }
 
     /**
@@ -47,7 +47,7 @@ class BoxArchiveRequestController extends Controller
      */
     public function store(Request $request)
     {
-        BoxArchiveRequest::create([
+        Box::create([
             'content' => $request->content,
             'ref' => $request->ref,
             // 'direction'=> $request->Direction,
@@ -61,7 +61,7 @@ class BoxArchiveRequestController extends Controller
             // 'site_id' => $request->site_id,
         ]);
         session()->flash('Add', 'Box successfully added');
-        return redirect('/boxesArchiveRequest');
+        return redirect('/boxes');
     }
 
 
@@ -69,7 +69,7 @@ class BoxArchiveRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(boxArchiveRequest $boxArchiveRequest)
+    public function show(Box $boxArchiveRequest)
     {
         //
     }
@@ -77,7 +77,7 @@ class BoxArchiveRequestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(boxArchiveRequest $boxArchiveRequest)
+    public function edit(Box $boxArchiveRequest)
     {
         //
     }
@@ -85,9 +85,19 @@ class BoxArchiveRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, boxArchiveRequest $boxArchiveRequest)
+    public function update(Request $request, Box $boxArchiveRequest)
     {
-        //
+        $id = $request->id;
+
+        $boxes = Box::find($id);
+        $boxes->update([
+            'ref' => $request->ref,
+            'content' => $request->content,
+            'extreme_date' => $request->date,
+        ]);
+
+        session()->flash('edit','Change made successfully');
+        return redirect('/boxes');
     }
 
     /**
@@ -95,7 +105,7 @@ class BoxArchiveRequestController extends Controller
      */
     public function destroy(Request $request)
     {
-        $boxes = BoxArchiveRequest::findOrFail($request->id);
+        $boxes = Box::findOrFail($request->id);
         $boxes->delete();
         session()->flash('delete', 'The box has been successfully deleted');
         return back();

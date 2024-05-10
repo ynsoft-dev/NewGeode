@@ -31,6 +31,6 @@ class ArchieveRequestDetails extends Model
 
     public function boxes(): HasMany
     {
-        return $this->hasMany(BoxArchiveRequest::class);
+        return $this->hasMany(Box::class);
     }
 }

@@ -41,8 +41,8 @@ class AddRequest extends Notification
     
         // $url = 'http://127.0.0.1:8000/archieveRequestDetails/' . $this->request_id;
         return (new MailMessage)
-            ->subject('Add new archive request')
-            ->line('Add new archive request')
+            ->subject('New archive request added')
+            ->line('New archive request added')
             ->action('Show request', $url)
             ->line('Thank you for using NewGeode !');
     }

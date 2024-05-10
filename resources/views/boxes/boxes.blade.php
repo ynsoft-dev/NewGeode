@@ -11,7 +11,7 @@
     <p name="Direction"><b>Direction : </b> {{ $lastRequest->direction->name }}</p>
     <p name="depart"><b>Department : </b> {{ $lastRequest->department->name}}</p>
     <p name="details"><b>Details : </b> {{ $lastRequest->details_request}}</p>
-    
+
     <!-- <p><b>Status : </b> {{ $lastRequest->status }}</p> -->
 
 </x-adminlte-card>
@@ -126,8 +126,8 @@ $heads = [
 
 
                         <td>
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-content="{{$box->content}}" data-date="{{$box->extreme_date}}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                             <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
-
                         </td>
 
                     </tr>
@@ -141,7 +141,7 @@ $heads = [
 <form action="{{ route('archiveRequest.store') }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
-    <input type="hidden" name="check_boxes" value="1">  
+    <input type="hidden" name="check_boxes" value="1">
 </form>
 
 
@@ -159,7 +159,7 @@ $heads = [
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('boxesArchiveRequest.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('boxes.store') }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
                     @foreach ($demands as $demand)
@@ -177,12 +177,12 @@ $heads = [
 
                     <label for="exampleInputEmail1">Content</label>
                     <textarea class="form-control" id="inputDscrpt" name="content" title="Please enter the content" style="height: 100px;" required></textarea>
-                    
-                
+
+
 
 
                     <label>Extreme date</label>
-                    
+
 
                     <x-adminlte-input-date name="extreme_date" :config="$config" placeholder="Choose a year..." required>
                         <x-slot name="appendSlot">
@@ -207,6 +207,55 @@ $heads = [
 </div>
 
 
+<!-- Edit -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Box</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form action="boxes/update" method="post" autocomplete="off">
+                    {{ method_field('patch') }}
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <input type="hidden" name="id" id="id">
+                        <label for="recipient-name" class="col-form-label">Name box:</label>
+                        <input class="form-control" name="ref" id="ref" type="text">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Content:</label>
+                        <textarea type="text" class="form-control" id="content" name="content"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Extreme date:</label>
+                        <x-adminlte-input-date :config="$config" class="form-control" id="date" name="date">
+                            <x-slot name="appendSlot">
+                                <div class="input-group-text bg-gradient-danger">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input-date>
+                    </div>
+
+            </div>
+            
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- delete -->
 <div class="modal" id="modaldemo8">
@@ -215,7 +264,7 @@ $heads = [
             <div class="modal-header">
                 <h6 class="modal-title">Delete Box</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
             </div>
-            <form action="boxesArchiveRequest/destroy" method="post">
+            <form action="boxes/destroy" method="post">
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">
@@ -238,6 +287,21 @@ $heads = [
 @section('js')
 
 <script>
+    $('#exampleModal2').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var ref = button.data('ref')
+        var content = button.data('content')
+        var date = button.data('date')
+        var modal = $(this)
+        modal.find('.modal-body #id').val(id);
+        modal.find('.modal-body #ref').val(ref);
+        modal.find('.modal-body #content').val(content);
+        modal.find('.modal-body #date').val(date);
+    })
+</script>
+
+<script>
     $('#modaldemo8').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
@@ -247,5 +311,5 @@ $heads = [
         modal.find('.modal-body #ref').val(ref);
     })
 </script>
-</script>
+
 @stop

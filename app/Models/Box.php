@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class BoxArchiveRequest extends Model
+class Box extends Model
 {
     protected $fillable = [
       
@@ -15,6 +15,7 @@ class BoxArchiveRequest extends Model
         
         'content',
         'extreme_date',
+        
         'destruction_date',
         'location',
         'status',
@@ -32,7 +33,7 @@ class BoxArchiveRequest extends Model
     }
     public function boxArchiveRequest(): BelongsTo
     {
-        return $this->belongsTo(BoxArchiveRequest::class,'archieve_request_details_id');
+        return $this->belongsTo(Box::class,'archieve_request_details_id');
     }
 
 

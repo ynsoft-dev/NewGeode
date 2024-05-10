@@ -36,7 +36,7 @@ class ArchiveRequest extends Model
 
     public function boxes(): HasMany
     {
-        return $this->hasMany(BoxArchiveRequest::class);
+        return $this->hasMany(Box::class);
     }
 
 
@@ -46,7 +46,7 @@ class ArchiveRequest extends Model
         return $this->boxes()->count();
     }
 
-    public function lastBox(): ?BoxArchiveRequest
+    public function lastBox(): ?Box
 {
     return $this->boxes()->latest()->first();
 }

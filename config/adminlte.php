@@ -324,44 +324,7 @@ return [
             'label_color' => 'success',
         ],
 
-        // [
-        //     'text' => 'multilevel',
-        //     'icon' => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                 ],
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //     ],
-        // ],
+
         ['header' => 'ADMIN','can' => 'admin',],
 
         [
@@ -438,62 +401,12 @@ return [
                     'icon' => 'fas fa-user-friends',
                     'can' => 'users_permissions',
                 ],
+                
             ],
         ],
-        // ['header' => 'Archive Boxes'],
-        // [
-        //     'text' => 'Archive Boxes',
-        //     'icon_color' => 'fas fa-fw fa-share',
-        //     'can' => 'archive_boxes',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'Archive Boxes',
-        //             'url' => '',
-        //             'can' => 'archive_boxes',
-        //         ],
-        //         [
-        //             'text' => 'Late Archive Boxes',
-        //             'url' => '',
-        //             'can' => 'archive_boxes',
-        //         ],
-        //         [
-        //             'text' => 'Archive Boxes awaiting destruction',
-        //             'url' => '',
-        //             'can' => 'archive_boxes',
-        //         ],
-        //         [
-        //             'text' => 'Destroyed archive boxes',
-        //             'url' => '',
-        //             'can' => 'archive_boxes',
-        //         ],
-        //     ],
-        // ],
-        // ['header' => 'Archive boxes Request'],
-        // [
-        //     'text' => 'Archive Boxes Request',
-        //     'icon_color' => 'fas fa-fw fa-share',
-        //     'can' => 'archive_boxes',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'Loan original',
-        //             'url' => '',
-        //             'can' => '',
-        //         ],
-        //         [
-        //             'text' => 'Loan copy',
-        //             'url' => '',
-        //             'can' => '',
-        //         ],
-        //         [
-        //             'text' => 'Archive request',
-        //             'url' => '',
-        //             'can' => '',
-        //         ],
-
-        //     ],
-        // ],
-
-        ['header' => 'APPLICANT', 'class' => 'bg-info','can' => 'structureApplicant',],
+   
+        // ,'can' => 'structureApplicant',
+        ['header' => 'APPLICANT', 'class' => 'bg-info' ,'can' => 'structureApplicant',],
         [
             'text' => 'Archive request',
             'url' => 'archiveRequest',
@@ -502,7 +415,7 @@ return [
         ],
         [
             'text' => 'Loan request ',
-            'url' => '#',
+            'url' => 'loanRequest',
             'icon' => 'fas fa-file-export',
             'can' => 'loanRequest',
         ],
