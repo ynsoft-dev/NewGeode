@@ -50,14 +50,18 @@
 
         Route::resource('archiveRequest', ArchiveRequestController::class);
         Route::get('/direction/{id}', [ArchiveRequestController::class, 'getDepartments']);
+
+
+
         Route::resource('boxesArchiveRequest', BoxArchiveRequestController::class);
-        Route::resource('archieveRequestDetails', ArchieveRequestDetailsController::class);
+
+
         Route::get('/archieveRequestDetails/{id}', [ArchieveRequestDetailsController::class, 'edit']);
 
         Route::resource('loanRequest', LoanRequestController::class);
         Route::get('/direction/{id}', [LoanRequestController::class, 'getDepartments']);
         Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
-
+        Route::get('/edit_loan/{id}', [LoanRequestController::class, 'edit']);
 
         Route::get('MarkAsRead_all', [LoanRequestController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
     });

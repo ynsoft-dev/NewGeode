@@ -111,6 +111,21 @@
                                                         <td>{{ $loans->Direction->name }}</td>
                                                         <th scope="row">Departement</th>
                                                         <td>{{ $loans->department->name }}</td>
+                                                        <th scope="row">Status</th>
+
+                                                            @if ($loans->Value_Status == 1)
+                                                                <td><span
+                                                                        class="badge badge-pill badge-success">{{ $loans->Status }}</span>
+                                                                </td>
+                                                            @elseif($loans->Value_Status ==2)
+                                                                <td><span
+                                                                        class="badge badge-pill badge-danger">{{ $loans->Status }}</span>
+                                                                </td>
+                                                            @else
+                                                                <td><span
+                                                                        class="badge badge-pill badge-warning">{{ $loans->Status }}</span>
+                                                                </td>
+                                                            @endif
 
                                                     </tr>
 

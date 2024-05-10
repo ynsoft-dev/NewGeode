@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('archive_requests', function (Blueprint $table) {
+        Schema::create('archieve_request_details', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('details_request');
             $table->date('request_date');
             $table->string('status', 20)->default('created');
 
-            $table->foreignId('department_id')->constrained();
-            $table->foreignId('direction_id')->constrained();
+            $table->string('department');
+            $table->string('direction');
+
+            $table->string('user', 300);
+            $table->foreignId('archive_request_id')->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('archive_requests');
+        Schema::dropIfExists('archieve_request_details');
     }
 };

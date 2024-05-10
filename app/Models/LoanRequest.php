@@ -11,14 +11,17 @@ class LoanRequest extends Model
     protected $fillable = [
         'direction_id',
         'department_id',
+        'details_request',
         'box_name',
         'kind', 
         'request_date',
         'return_date',
         'Membership',
-        'status',
+        'Status',
+        'Value_Status',
 
     ];
+    
     public function direction(): BelongsTo
     {
         return $this->belongsTo(Direction::class, 'direction_id');

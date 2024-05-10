@@ -14,7 +14,6 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function index()
     {
-   
     }
 
     /**
@@ -38,7 +37,6 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function show(ArchieveRequestDetails $ArchieveRequestDetails)
     {
-        //
     }
 
     /**
@@ -46,12 +44,13 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function edit($id)
     {
-        $invoices = ArchiveRequest::where('id',$id)->first();
-        dd($invoices);
-        $details  = ArchieveRequestDetails::where('box_archive_request_id',$id)->get();
-        
+        $demands = ArchiveRequest::where('id', $id)->first();
+        $details  = ArchieveRequestDetails::where('archive_request_id', $id)->get();
 
-        return view('archiveRequestsDetails.archiveRequestsDetails',compact('invoices','details'));
+
+
+
+        return view('archiveRequestsDetails.archiveRequestsDetails', compact('demands', 'details'));
     }
 
     /**

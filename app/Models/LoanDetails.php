@@ -10,20 +10,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LoanDetails extends Model
 {
     protected $fillable = [
-        'id_loan',
+        'loan_request_id',
         'direction_id',
         'department_id',
-        'post_number', 
+        'kind',
         'box_name',
         'request_date',
         'return_date',
         'Membership',
+        'Status',
+        'Value_Status',
         'user',
 
     ];
     public function loan(): BelongsTo
     {
-        return $this->belongsTo(LoanRequest::class, 'id_loan');
+        return $this->belongsTo(LoanRequest::class, 'loan_request_id');
     }
     public function direction(): BelongsTo
     {

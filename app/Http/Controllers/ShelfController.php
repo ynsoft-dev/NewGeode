@@ -40,12 +40,20 @@ class ShelfController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required|string|max:20',
+            'Site' => 'required',
+            'ray' => 'required',
+            'column' => 'required',
+            'capacity' => 'required|in:10,20', // La capacité doit être soit 10 soit 20
+        ]);
         Shelf::create([
             'name' => $request->name,
             'site_id' => $request->Site,
             'ray_id' => $request->ray,
             'column_id' => $request->column,
-            // 'site_id' => $request->site_id,
+            'capacity' => $request->capacity,
+
         ]);
         session()->flash('Add', 'Shelf successfully added');
         return redirect('/shelves');

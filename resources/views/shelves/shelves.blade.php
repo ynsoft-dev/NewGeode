@@ -61,6 +61,7 @@ $heads = [
 'site',
 'ray',
 'column',
+'capacity',
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 
 ];
@@ -85,8 +86,9 @@ $heads = [
             <td>{{$shelf->site->name}}</td>
             <td>{{$shelf->ray->name}}</td>
             <td>{{$shelf->column->name}}</td>
+            <td>{{$shelf->capacity}}</td>
             <td>
-            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $shelf->id }}" data-name="{{ $shelf->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+              <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $shelf->id }}" data-name="{{ $shelf->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
             </td>
 
           </tr>
@@ -128,6 +130,14 @@ $heads = [
           <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
           <select name="column" id="column" class="form-control" required>
           </select>
+          
+          <div class="form-group">
+            <label for="capacity">Capacity:</label>
+            <select name="capacity" class="form-control" required>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
 
           <div class="modal-footer">
             <button type="submit" class="btn btn-success">Confirm</button>
@@ -221,7 +231,7 @@ $heads = [
 
 
 
-   
+
 
 
 

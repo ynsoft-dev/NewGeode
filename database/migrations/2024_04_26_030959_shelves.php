@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('shelves', function (Blueprint $table) {
             $table->id();
             $table->string('name', 20);
-            // $table->integer('capacity');
             // $table->unsignedBigInteger('ray_id');
             // $table->foreign('ray_id')->references('id')->on('rays')->onDelete('cascade');
             // $table->unsignedBigInteger('site_id');
@@ -23,6 +22,8 @@ return new class extends Migration
             $table->foreignId('site_id')->constrained();
             $table->foreignId('ray_id')->constrained();
             $table->foreignId('column_id')->constrained();
+            $table->integer('capacity');
+
            
             $table->timestamps();
         });

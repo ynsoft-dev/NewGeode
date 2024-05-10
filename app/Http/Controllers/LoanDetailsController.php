@@ -46,7 +46,7 @@ class LoanDetailsController extends Controller
     public function edit($id)
     {
         $loans = LoanRequest::where('id',$id)->first();
-        $details  = LoanDetails::where('id_loan',$id)->get();
+        $details  = LoanDetails::where('loan_request_id',$id)->get();
         return view('loanRequests.loanRequestsDetails',compact('loans','details'));
     }
 

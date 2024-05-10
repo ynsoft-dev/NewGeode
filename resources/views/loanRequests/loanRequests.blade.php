@@ -59,13 +59,15 @@
 @php
 $heads = [
 '#',
-'direction',
-'department',
-'box_name',
-'kind',
-'request_date',
-'return_date',
+'Direction',
+'Department',
+'Box name',
+'Kind',
+'Request date',
+'Return date',
 'Membership',
+'Status',
+
 
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 ];
@@ -86,17 +88,34 @@ $heads = [
                     <?php $i++ ?>
                     <tr>
                         <td>{{$i}}</td>
-                        <td>{{$loan->direction->name}}</td>
+                        <td>{{ $loan->Direction->name }}</td>
                         <td>{{$loan->department->name}}</td>
                         <td>{{$loan->box_name}}</td>
                         <td>{{$loan->kind}}</td>
                         <td>{{$loan->request_date}}</td>
                         <td>{{$loan->return_date}}</td>
                         <td>{{$loan->Membership}}</td>
+                        <td>
+                            @if ($loan->Value_Status == 1)
+                            <span class="text-success">{{ $loan->Status }}</span>
+                            @elseif($loan->Value_Status == 2)
+                            <span class="text-danger">{{ $loan->Status }}</span>
+                            @else
+                            <span class="text-warning">{{ $loan->Status }}</span>
+                            @endif
+
+                        </td>
 
                         <td>
                             <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                             <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ url('edit_loan') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                            <form id="sendNotificationForm" action="{{ route('loanRequest.store') }}" method="POST">
+                                @csrf
+                                <button type="submit" name="sendNotificationButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d" title="Envoyer une notfication" data-effect="effect-scale">
+                                    <i class="fas fa-envelope" style="color: #28a745"></i> Send
+                                </button>
+                            </form>
 
                         </td>
 
@@ -133,6 +152,7 @@ $heads = [
                     <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                     <select id="depart" name="depart" class="form-control">
                     </select>
+
 
 
                     <div class="form-group">
@@ -220,6 +240,8 @@ $heads = [
     <!-- /.modal-dialog -->
 </div>
 
+
+
 <!-- delete -->
 <div class="modal" id="modaldemo8">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -244,6 +266,8 @@ $heads = [
         </form>
     </div>
 </div>
+
+
 @endsection
 
 @section('js')
@@ -282,6 +306,7 @@ $heads = [
         modal.find('.modal-body #name').val(name);
     })
 </script>
+
 <script>
     $(document).ready(function() {
         // Fonction pour vérifier si les champs sont remplis

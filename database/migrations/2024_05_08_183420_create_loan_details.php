@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loan_requests', function (Blueprint $table) {
+        Schema::create('loan_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('loan_request_id')->constrained();
             $table->foreignId('direction_id')->constrained();
             $table->foreignId('department_id')->constrained();
-            $table->string('box_name');
             $table->string('kind');
+            $table->string('box_name');
             $table->date('request_date');
             $table->date('return_date');
             $table->string('Membership');
-            $table->string('status', 20)->default('active');
-
+            $table->string('Status', 50);
+            $table->integer('Value_Status');
+            $table->string('user', 300);
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loan_requests');
+        Schema::dropIfExists('loan_details');
     }
 };
