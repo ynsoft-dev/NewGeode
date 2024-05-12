@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchieveRequestDetails;
 use App\Models\ArchiveRequest;
-use App\Models\BoxArchiveRequest;
+
 use Illuminate\Http\Request;
 
 class ArchieveRequestDetailsController extends Controller
@@ -14,6 +14,7 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function index()
     {
+   
     }
 
     /**
@@ -37,6 +38,7 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function show(ArchieveRequestDetails $ArchieveRequestDetails)
     {
+        
     }
 
     /**
@@ -44,13 +46,13 @@ class ArchieveRequestDetailsController extends Controller
      */
     public function edit($id)
     {
-        $demands = ArchiveRequest::where('id', $id)->first();
-        $details  = ArchieveRequestDetails::where('archive_request_id', $id)->get();
+        $demands = ArchiveRequest::where('id',$id)->first();
+        $details  = ArchieveRequestDetails::where('archive_request_id',$id)->get();
+        
+        
 
 
-
-
-        return view('archiveRequestsDetails.archiveRequestsDetails', compact('demands', 'details'));
+        return view('archiveRequestsDetails.archiveRequestsDetails',compact('demands','details'));
     }
 
     /**

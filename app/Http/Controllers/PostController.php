@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $posts=Post::all();
+        return view('posts.posts',compact('posts'));
+        // $posts = Post::find(7);
+        // $mediaUrls = [];
+        
+        // foreach ($posts->getMedia('images') as $media) {
+        //     $mediaUrls[] = $media->getUrl();
+        // }
+        
+        // dd($mediaUrls);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|unique:posts|max:255',
+        ],[
+            'name.required' => 'Please enter the name of the post',
+            'name.unique' => 'This post name already exists',
+        ]);
+                
+            $posts=Post::create([
+                'name' => $request->name,
+            ]);
+            $posts->addMediaFromRequest('image')->toMediaCollection('images');
+
+            session()->flash('Add', 'posts added successfully');
+            return redirect('/posts');
+        
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Post $post)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Post $post)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Post $post)
+    {
+        $id = $request->id;
+
+        $this->validate($request, [
+
+            'name' => 'required|max:255|unique:posts,name,'.$id,
+        ],[
+
+            'name.required' =>'Please enter the name of the post',
+            'name.unique' =>'This post name already exists',
+
+        ]);
+
+        $posts = Post::find($id);
+        $posts->update([
+            'name' => $request->name,
+        ]);
+
+        session()->flash('edit','Change made successfully');
+        return redirect('/posts');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
+    {
+        $id = $request->id;
+        Post::find($id)->delete();
+        session()->flash('delete','post has been successfully removed');
+        return redirect('/posts');
+    }
+}

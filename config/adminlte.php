@@ -516,11 +516,12 @@ return [
             'icon' => 'fas fa-file-export',
             'can' => 'loanRequest',
         ],
-        // [
-        //     'text' => 'Copies',
-        //     'url' => '#',
-        //     'icon' => 'fas fa-file-export',
-        // ],
+       
+        [
+            'text' => 'Copies',
+            'url' => '#',
+            'icon' => 'fas fa-file-export',
+        ],
 
         ['header' => 'ARCHIVISTE', 'can' => 'structureArchiviste'],
         [
@@ -530,11 +531,11 @@ return [
             'can' => 'archive_boxes',
 
         ],
-        // [
-        //     'text' => 'Box payments',
-        //     'url' => '#',
-        //     'icon' => 'fas fa-file-import',
-        // ],
+        [
+            'text' => 'Box payments',
+            'url' => '#',
+            'icon' => 'fas fa-file-import',
+        ],
         [
             'text' => 'Box Loaned',
             'url' => '#',

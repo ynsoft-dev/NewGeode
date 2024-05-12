@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LoanRequest;
 use App\Models\Direction;
 use App\Models\Department;
+use App\Models\LoanAttachment;
 use App\Models\LoanDetails;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,43 +40,66 @@ class LoanRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'Direction' => 'required',
-            'depart' => 'required',
-            'box_name' => 'required',
-            'kind' => 'required',
-            'request_date' => 'required',
-            'return_date' => 'required',
-            'Membership' => 'required',
-        ]);
-        LoanRequest::create([
-            'direction_id' => $request->Direction,
-            'department_id' => $request->depart,
-            'box_name' => $request->box_name,
-            'kind' => $request->kind,
-            'request_date' => $request->request_date,
-            'return_date' => $request->return_date,
-            'Membership' => $request->Membership,
-            'Status' => 'created',
-            'Value_Status' => 1,
+        if ($request->has('check')) {
+            $this->validate($request, [
+                'Direction' => 'required',
+                'depart' => 'required',
+                'box_name' => 'required',
+                'kind' => 'required',
+                'request_date' => 'required',
+                'return_date' => 'required',
+                'Membership' => 'required',
+            ]);
 
-        ]);
-        $loan_Id = LoanRequest::latest()->first()->id;
-        LoanDetails::create([
-            'loan_request_id' => $loan_Id,
-            'direction_id' => $request->Direction,
-            'department_id' => $request->depart,
-            'box_name' => $request->box_name,
-            'kind' => $request->kind,
-            'request_date' => $request->request_date,
-            'return_date' => $request->return_date,
-            'Membership' => $request->Membership,
-            'Status' => 'created',
-            'Value_Status' => 1,
-            'user' => (Auth::user()->name),
-        ]);
+            LoanRequest::create([
+                'direction_id' => $request->Direction,
+                'department_id' => $request->depart,
+                'box_name' => $request->box_name,
+                'kind' => $request->kind,
+                'request_date' => $request->request_date,
+                'return_date' => $request->return_date,
+                'Membership' => $request->Membership,
+                'Status' => 'created',
+                'Value_Status' => 1,
 
-        
+            ]);
+            $loan_Id = LoanRequest::latest()->first()->id;
+            LoanDetails::create([
+                'loan_request_id' => $loan_Id,
+                'direction_id' => $request->Direction,
+                'department_id' => $request->depart,
+                'box_name' => $request->box_name,
+                'kind' => $request->kind,
+                'request_date' => $request->request_date,
+                'return_date' => $request->return_date,
+                'Membership' => $request->Membership,
+                'Status' => 'created',
+                'Value_Status' => 1,
+                'user' => (Auth::user()->name),
+            ]);
+            // if ($request->hasFile('pic')) {
+
+            //     $loan_Id = LoanRequest::latest()->first()->id;
+            //     $image = $request->file('pic');
+            //     $file_name = $image->getClientOriginalName();
+            //     $box_name = $request->box_name;
+    
+            //     $attachments = new LoanAttachment();
+            //     $attachments->file_name = $file_name;
+            //     $attachments->box_name = $box_name;
+            //     $attachments->Created_by = Auth::user()->name;
+            //     $attachments->loan_Id = $loan_Id;
+            //     $attachments->save();
+    
+            //     // move pic
+            //     $imageName = $request->pic->getClientOriginalName();
+            //     $request->pic->move(public_path('Attachments/' . $box_name), $imageName);
+            // }
+           
+        }
+
+
+
         if ($request->has('sendNotificationButton')) {
             $loan_Id = LoanRequest::latest()->first()->id;
             $loans = LoanRequest::latest()->first();
@@ -90,26 +114,6 @@ class LoanRequestController extends Controller
             LoanDetails::where('loan_request_id', $loan_Id)->update(['Status' => 'Sent']);
             return redirect('/loanRequest')->with('Add', 'Request sent successfully');
         }
-
-
-        // if ($request->has('sendNotificationButton')) {
-
-        //     $archivistRole = Role::where('name', 'Archiviste')->first();
-        //     if ($archivistRole) {
-        //         $archivists = $archivistRole->users;
-        //         foreach ($archivists as $archivist) {
-        //             $archivist->Notification::send(new \App\Notifications\Add_loanRequest($loans));
-
-        //         }
-        //     }
-
-
-        //     LoanRequest::where('id', $loan_Id)->update(['status' => 'Sent']);
-        //     LoanDetails::where('loan_request_id', $loan_Id)->update(['status' => 'Sent']);
-
-        //     return redirect('/loanRequest')->with('Add', 'Request sent successfully');
-        // }
-
 
         session()->flash('Add', 'Request loan successfully added');
         return redirect('/loanRequest');
@@ -130,14 +134,14 @@ class LoanRequestController extends Controller
     {
         $loans = LoanRequest::where('id', $id)->first();
         $directions = Direction::all();
-        $departments = Department::all();
+        $departments = Department::where('directions_id', $loans->direction_id)->get();
         return view('loanRequests.edit_loan', compact('directions', 'departments', 'loans'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, LoanRequest $loans)
     {
         $loans = LoanRequest::findOrFail($request->loan_Id);
         $loans->update([
@@ -151,7 +155,7 @@ class LoanRequestController extends Controller
         ]);
 
         session()->flash('edit', 'Request loan successfully edited');
-        return back();
+        return redirect('/loanRequest');
     }
 
     /**
@@ -159,9 +163,9 @@ class LoanRequestController extends Controller
      */
     public function destroy(Request $request)
     {
-        $loans = LoanRequest::findOrFail($request->id);
-        $loans->delete();
-        session()->flash('delete', 'The request loan has been successfully deleted');
+        $requests = LoanRequest::findOrFail($request->id);
+        $requests->delete();
+        session()->flash('delete', 'The request has been successfully deleted');
         return back();
     }
     public function getDepartments($id)

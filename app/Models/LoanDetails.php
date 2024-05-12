@@ -27,12 +27,5 @@ class LoanDetails extends Model
     {
         return $this->belongsTo(LoanRequest::class, 'loan_request_id');
     }
-    public function direction(): BelongsTo
-    {
-        return $this->belongsTo(Direction::class, 'direction_id');
-    }
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class, 'department_id');
-    }
+ 
 }

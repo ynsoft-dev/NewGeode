@@ -128,6 +128,7 @@ return [
     'providers' => ServiceProvider::defaultProviders()->merge([
         App\Providers\AppServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Orangehill\Iseed\IseedServiceProvider::class,
     ])->toArray(),
 
 

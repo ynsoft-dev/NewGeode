@@ -107,8 +107,9 @@ $heads = [
                         </td>
 
                         <td>
-                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                             <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
+                            @if ($loan->Status !== 'Sent')
+                            <a class="btn btn-xs btn-default text-danger mx-1 shadow btn-delete" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                             <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ url('edit_loan') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                             <form id="sendNotificationForm" action="{{ route('loanRequest.store') }}" method="POST">
                                 @csrf
@@ -116,7 +117,7 @@ $heads = [
                                     <i class="fas fa-envelope" style="color: #28a745"></i> Send
                                 </button>
                             </form>
-
+                            @endif
                         </td>
 
                     </tr>
@@ -135,7 +136,7 @@ $heads = [
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('loanRequest.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('loanRequest.store', ['check' => true]) }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
 
@@ -144,15 +145,24 @@ $heads = [
                         <!--placeholder-->
                         <option value="" selected disabled>Select direction</option>
                         @foreach ($directions as $direction)
-                        <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
+                        <option value="{{ $direction->id }}" {{ old('Direction') == $direction->id ? 'selected' : '' }}> {{ $direction->name }}</option>
                         @endforeach
                     </select>
 
-
+                    <!-- 
                     <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                     <select id="depart" name="depart" class="form-control">
-                    </select>
+                    </select> -->
 
+
+                    <label for="inputDepartment" class="control-label">Department</label>
+                    <select id="depart" name="depart" class="form-control">
+                        <!--placeholder-->
+                        <option value="" selected disabled>Select department</option>
+                        @foreach ($departments as $department)
+                        <option value="{{ $department->id }}" {{ old('depart') == $department->id ? 'selected' : '' }}> {{ $department->name }}</option>
+                        @endforeach
+                    </select>
 
 
                     <div class="form-group">
@@ -224,6 +234,17 @@ $heads = [
                         </div>
                     </div>
 
+
+                    <!-- <p class="text-danger">* Type document pdf, jpeg ,.jpg , png </p>
+                    <h5 class="card-title">Documents</h5>
+
+                    <div class="col-sm-12 col-md-12">
+                        <input type="file" name="pic" class="dropify" accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
+                    </div><br>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary"> sauvgarder</button>
+                    </div> -->
 
 
 

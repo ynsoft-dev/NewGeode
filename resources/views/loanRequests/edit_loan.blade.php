@@ -89,7 +89,9 @@
 
                     <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                     <select id="depart" name="depart" class="form-control">
-                        <option value="{{ $loans->depart }}">{{ $loans->department->name }} </option>
+                        @foreach ($departments as $department)
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
                     </select>
 
 

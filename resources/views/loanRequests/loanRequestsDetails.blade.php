@@ -77,6 +77,10 @@
                                     <ul class="nav panel-tabs main-nav-line">
                                         <li><a href="#tab4" class="nav-link active" data-toggle="tab">
                                                 Loan Request Details</a></li>
+                                        <li><a href="#tab5" class="nav-link active" data-toggle="tab">
+                                                Loan Request Response</a></li>
+                                        <li><a href="#tab5" class="nav-link active" data-toggle="tab">
+                                                Loan attachment</a></li>
 
                                     </ul>
                                 </div>
