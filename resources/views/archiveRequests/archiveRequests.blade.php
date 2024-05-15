@@ -6,9 +6,12 @@
 
 <h1>Requests list</h1>
 <div class="text-center">
+    
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
         Add request
     </button>
+
+    
 </div>
 @stop
 
@@ -27,10 +30,9 @@
         color: white;
     }
 
-    .dataTable .actions-column {
+    /* .dataTable .actions-column {
         width: 200px;
-        /* Ajustez la largeur selon vos besoins */
-    }
+    } */
 </style>
 
 <body class="{{ session()->has('Add') ? 'sent-successfully' : '' }}">
@@ -91,11 +93,9 @@
     'Department',
     'Request date',
     'Status',
-    'Boxes name',
-    'Extreme date',
+    'Number of boxes',
 
-
-    ['label' => 'Actions', 'no-export' => true, 'width' => 200],
+    ['label' => 'Actions', 'no-export' => true, 'width' => 0],
 
     ];
 
@@ -114,7 +114,6 @@
                         $config["lengthMenu"] = [ 10, 50, 100, 500];
                         @endphp
                         <?php $i = 0 ?>
-
                         @foreach($demands->sortByDesc('request_date') as $demand)
                         <?php $i++ ?>
                         <tr>
@@ -131,13 +130,15 @@
                                 <span class="badge badge-orange">{{ ucfirst($demand->status) }}</span>
                                 @endif
                             </td>
+                            
+                            <td>{{$demand->getRealBoxQuantity()}}</td>
+                            
 
-
-                            <td>
+                            <!-- <td>
                                 @foreach($demand->boxes as $box)
                                 {!! nl2br(e($box->ref)) !!}<br>
                                 @endforeach
-                            </td>
+                            </td> -->
 
                             <!-- <td>
                             @foreach($demand->boxes as $box)
@@ -145,11 +146,11 @@
                             @endforeach
                             </td> -->
 
-                            <td>
+                            <!-- <td>
                                 @foreach($demand->boxes as $box)
                                 {{ $box->extreme_date }}<br>
                                 @endforeach
-                            </td>
+                            </td> -->
 
 
                             <td class="actions-column">
@@ -160,13 +161,13 @@
 
                                     @if ($demand->status !== 'Sent')
 
-                                    <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-id="{{ $demand->id }}" data-name="{{ $demand->name }}" data-details="{{$demand->details_request}}" data-direct="{{$demand->direction->name}}" data-direction="{{$demand->direction->name}}" data-depart="{{$demand->department->name}}" data-date="{{$demand->request_date}}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                                    <a  href="{{ url('edit_archive') }}/{{ $demand->id }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update"><i class="fa fa-lg fa-fw fa-pen"></i></a>
 
                                     <a class="btn btn-xs btn-default text-danger mx-1 shadow btn-delete" title="Delete" data-effect="effect-scale" data-id="{{ $demand->id }}" data-name="{{ $demand->name }}" data-toggle="modal" href="#modaldemo8">
                                         <i class="fa fa-lg fa-fw fa-trash"></i>
                                     </a>
 
-                                    <form id="sendEmailForm" action="{{ route('archiveRequest.store') }}" method="POST">
+                                    <form id="sendEmailForm" action="{{ route('archiveRequest.store', ['id' => $demand->id]) }}" method="POST">
                                         @csrf
                                         <button type="submit" name="sendEmailButton" class="btn btn-xs btn-default mx-1 shadow btn-send" style="border-color: #28a745; color: #6c757d; width: auto;">
                                             <i class="fas fa-envelope" style="color: #28a745">Send</i>
@@ -178,6 +179,7 @@
                             </td>
                         </tr>
                         @endforeach
+                      
     </x-adminlte-datatable>
 
 
@@ -192,7 +194,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="myForm" action="{{ route('archiveRequest.store', ['check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
+                    <form id="myForm" action="{{ route('archiveRequest.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
                         <div class="form-group row mb-0"> <!-- Ajoutez la classe mb-0 ici -->
@@ -200,7 +202,6 @@
                                 <x-adminlte-button class="btn-sm float-right mr-2" type="reset" label="Reset" theme="outline-danger" icon="fas fa-trash" width="100px" />
                             </div>
                         </div>
-
 
 
                         <div class="form-group row mb-0"> <!-- Utilisez la classe mb-0 pour supprimer la marge en bas -->
@@ -278,86 +279,6 @@
 
     </div>
 
-    <!-- Edit -->
-    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Update Request</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <form action="archiveRequest/update" method="post" autocomplete="off">
-                        {{ method_field('patch') }}
-                        {{ csrf_field() }}
-
-                        <div class="form-group row mb-0">
-                            <div class="col">
-                                <input type="hidden" name="id" id="id">
-                                <label for="recipient-name" class="col-form-label">Name box:</label>
-                                <input class="form-control" name="name" id="name" type="text">
-                            </div>
-
-                            <div class="col">
-                                <label for="message-text" class="col-form-label">Request date:</label>
-                                <x-adminlte-input-date :config="$config" class="form-control" id="date" name="date">
-                                    <x-slot name="appendSlot">
-                                        <div class="input-group-text bg-gradient-danger">
-                                            <i class="fas fa-calendar-alt"></i>
-                                        </div>
-                                    </x-slot>
-                                </x-adminlte-input-date>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Request details:</label>
-                            <textarea type="text" class="form-control" id="details" name="details"></textarea>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col">
-                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
-                                <select name="direction" id="direction" class="custom-select " required>
-                                    
-                                    @foreach ($directions as $direction)
-                                    <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-                                <select name="depart" id="depart" class="form-control" required>
-                                </select>
-                            </div>
-                        </div>
-
-                        <br>
-
-                        <div class="text-center">
-                            <button name="updateBoxButton" type="submit" class="btn btn-primary" style="width: 130px;">
-                                <i class="fa fa-md fa-fw fa-pen"></i> Update box
-                            </button>
-                        </div>
-
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-
-                </form>
-
-            </div>
-        </div>
-    </div>
-
 
 
     <!-- delete -->
@@ -420,26 +341,6 @@
             // Réinitialiser la sélection du menu déroulant "depart" en le définissant sur la valeur vide
             document.getElementById('depart').value = '';
         });
-    </script>
-
-
-    <script>
-        $('#exampleModal2').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget)
-            var id = button.data('id')
-            var name = button.data('name')
-            var details = button.data('details')
-            var direction = button.data('direction')
-            var depart = button.data('depart')
-            var date = button.data('date')
-            var modal = $(this)
-            modal.find('.modal-body #id').val(id);
-            modal.find('.modal-body #name').val(name);
-            modal.find('.modal-body #details').val(details);
-            modal.find('.modal-body #direction').val(direction);
-            modal.find('.modal-body #depart').val(depart);
-            modal.find('.modal-body #date').val(date);
-        })
     </script>
 
     <script>

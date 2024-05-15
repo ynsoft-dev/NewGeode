@@ -33,4 +33,9 @@ class ArchieveRequestDetails extends Model
     {
         return $this->hasMany(Box::class);
     }
+
+    public function getRealBoxQuantity(): int
+    {
+        return $this->boxes()->count();
+    }
 }

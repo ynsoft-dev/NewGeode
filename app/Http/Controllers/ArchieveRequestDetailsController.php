@@ -49,7 +49,6 @@ class ArchieveRequestDetailsController extends Controller
         $demands = ArchiveRequest::where('id',$id)->first();
         $details  = ArchieveRequestDetails::where('archive_request_id',$id)->get();
         
-        
 
 
         return view('archiveRequestsDetails.archiveRequestsDetails',compact('demands','details'));

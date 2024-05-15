@@ -138,7 +138,7 @@ $heads = [
 
 
 <br><br>
-<form action="{{ route('archiveRequest.store') }}" method="POST">
+<form action="{{ route('archiveRequest.store', ['id' => $lastRequest->id]) }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
     <input type="hidden" name="check_boxes" value="1">
@@ -159,7 +159,7 @@ $heads = [
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('boxes.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('boxes.store', ['id' => $lastRequest->id]) }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
                     @foreach ($demands as $demand)
@@ -220,8 +220,10 @@ $heads = [
             <div class="modal-body">
 
                 <form action="boxes/update" method="post" autocomplete="off">
+                    
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
+                    <input type="hidden" name="editBoxes" value="true">
                     <div class="form-group">
                         <input type="hidden" name="id" id="id">
                         <label for="recipient-name" class="col-form-label">Name box:</label>

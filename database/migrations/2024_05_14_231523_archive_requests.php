@@ -20,6 +20,7 @@ return new class extends Migration
             
             $table->foreignId('department_id')->constrained();
             $table->foreignId('direction_id')->constrained();
+            $table->foreignId('user_id')->constrained();
 
             $table->timestamps();
         });

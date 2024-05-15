@@ -49,4 +49,9 @@ class User extends Authenticatable
             'roles_name' => 'array',
         ];
     }
+
+    public function archiveRequests()
+    {
+        return $this->hasMany(ArchiveRequest::class);
+    }
 }

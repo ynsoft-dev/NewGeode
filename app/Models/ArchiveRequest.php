@@ -18,6 +18,7 @@ class ArchiveRequest extends Model
 
         'department_id',
         'direction_id',
+        'user_id',
 
     ];
     public function direction(): BelongsTo
@@ -29,16 +30,15 @@ class ArchiveRequest extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    // public function boxes()
-    // {
-    //     return $this->hasMany(BoxArchiveRequest::class);
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 
     public function boxes(): HasMany
     {
         return $this->hasMany(Box::class);
     }
-
 
     
     public function getRealBoxQuantity(): int
@@ -46,10 +46,10 @@ class ArchiveRequest extends Model
         return $this->boxes()->count();
     }
 
-    public function lastBox(): ?Box
-{
-    return $this->boxes()->latest()->first();
-}
+//     public function lastBox(): ?Box
+// {
+//     return $this->boxes()->latest()->first();
+// }
 
     
 }

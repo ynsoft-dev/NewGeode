@@ -32,11 +32,14 @@ class ArchiveRequestController extends Controller
 
         $directions = Direction::all();
         $departments = Department::all();
-        $demands = ArchiveRequest::all();
+        // $demands = ArchiveRequest::all();
 
 
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
 
-
+        // Récupérer les demandes associées à l'utilisateur connecté
+        $demands = $user->archiveRequests;
 
         return view('archiveRequests.archiveRequests', compact('directions', 'departments', 'demands'));
     }
@@ -52,7 +55,7 @@ class ArchiveRequestController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
 
 
@@ -74,6 +77,8 @@ class ArchiveRequestController extends Controller
                 'department_id' => $request->depart,
                 'direction_id' => $request->direction,
                 'details_request' => $request->details_request,
+                'user_id' => (Auth::user()->id),
+
             ]);
 
 
@@ -91,7 +96,6 @@ class ArchiveRequestController extends Controller
             ]);
 
             return redirect('/boxes');
-
         }
 
 
@@ -110,22 +114,39 @@ class ArchiveRequestController extends Controller
             return redirect('/archiveRequest')->with('Add', 'Request added successfully');
         }
 
+        if ($request->has('check_boxes_edit')) {
+
+            $demand = ArchiveRequest::where('id', $id)->first();
+            // $specifiedBoxQuantity = $lastRequest->box_quantity;
+            $realBoxQuantity = $demand->getRealBoxQuantity();
+            // if ($specifiedBoxQuantity != $realBoxQuantity) {
+            //     return redirect()->back()->withErrors(['box_quantity' => 'The specified box quantity does not match the real box quantity.']);
+            // }
+            if ($realBoxQuantity === 0) {
+                return redirect()->back()->withErrors(['check_boxes_edit' => 'Please insert at least one box.']);
+            }
+
+            return redirect('/archiveRequest')->with('edit', 'Request updated successfully');
+        }
 
 
-        $request_id = ArchiveRequest::latest()->first()->id;
+        // $request_id = ArchiveRequest::latest()->first()->id;
+        // $request_id = ArchiveRequest::where('id', $id)->first();
+        // dd( $request_id);
+
         if ($request->has('sendEmailButton')) {
 
             $archivistRole = Role::where('name', 'Archiviste')->first();
             if ($archivistRole) {
                 $archivists = $archivistRole->users;
                 foreach ($archivists as $archivist) {
-                    $archivist->notify(new AddRequest($request_id));
+                    $archivist->notify(new AddRequest($id));
                 }
             }
 
 
-            ArchiveRequest::where('id', $request_id)->update(['status' => 'Sent']);
-            ArchieveRequestDetails::where('archive_request_id', $request_id)->update(['status' => 'Sent']);
+            ArchiveRequest::where('id', $id)->update(['status' => 'Sent']);
+            ArchieveRequestDetails::where('archive_request_id', $id)->update(['status' => 'Sent']);
 
             return redirect('/archiveRequest')->with('Add', 'Request sent successfully');
         }
@@ -141,16 +162,19 @@ class ArchiveRequestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ArchiveRequest $archiveRequest)
+    public function edit($id)
     {
+        $demands = ArchiveRequest::where('id', $id)->first();
+        $directions = Direction::all();
+        $departments = Department::all();
+        return view('archiveRequests.edit_archive', compact('directions', 'departments', 'demands'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArchiveRequest $demands)
+    public function update(Request $request, ArchiveRequest $demands,$id)
     {
-        $id = $request->id;
 
         $demands = ArchiveRequest::find($id);
         $demands->update([
@@ -159,10 +183,13 @@ class ArchiveRequestController extends Controller
             'department_id' => $request->depart,
             'direction_id' => $request->direction,
             'request_date' => $request->date,
+            'user_id' => (Auth::user()->id),
+
         ]);
 
+        
         if ($request->has('updateBoxButton')) {
-            return redirect('/boxes');
+            return redirect('/edit_box/' . $id);
         }
 
         session()->flash('edit', 'Change made successfully');

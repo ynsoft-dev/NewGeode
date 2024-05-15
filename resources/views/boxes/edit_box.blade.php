@@ -3,45 +3,37 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible>
+<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
     <!-- An info theme card with all the tool buttons... -->
 
     <p name="name_request"><b>Name of the request : </b> {{ $demands->name }}</p>
-    <p name="name_user"><b>User : </b>
-        @foreach($details as $detail)
-        {{ $detail->user}}
-        @endforeach
-    </p>
-    <p name="details_request"><b>Details of the request : </b> {{ $demands->details_request }}</p>
     <p name="date_request"><b>Request date : </b> {{ $demands->request_date }}</p>
     <p name="Direction"><b>Direction : </b> {{ $demands->direction->name }}</p>
     <p name="depart"><b>Department : </b> {{ $demands->department->name}}</p>
+    <p name="details"><b>Details : </b> {{ $demands->details_request}}</p>
+
 
 </x-adminlte-card>
-@if ($demands->status !== 'Sent')
-<div class="text-left">
-    <a href="/archiveRequest" class="btn btn-secondary" style="width: 110px;">
-        <i class="fas fa-arrow-left"></i>
-        <span class="ml-1">Back</span>
-    </a>
-</div>
-<br>
-@endif
+
 <h1>List of boxes in the request</h1>
-@if ($demands->status !== 'Sent')
 <div class="text-center">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
         <i class="fas fa-plus"> </i>
         <span class="ml-1">Add box</span>
     </button>
 </div>
-@endif
 @stop
 
-
-
-
 @section('content')
+
+
+
+<style>
+    .modal-dialog {
+        max-width: 70%;
+        /* max-height: 0%; */
+    }
+</style>
 
 @if ($errors->any())
 <div class="alert alert-danger">
@@ -53,14 +45,8 @@
 </div>
 @endif
 
-@php
-$config = ['format' => 'YYYY'];
-@endphp
-
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugin', true)
-
-
 
 @if (session()->has('Add'))
 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -90,12 +76,10 @@ $config = ['format' => 'YYYY'];
 @endif
 
 
-<style>
-    .modal-dialog {
-        max-width: 50%;
-        /* max-height: 0%; */
-    }
-</style>
+@php
+$config = ['format' => 'YYYY'];
+@endphp
+
 
 <!-- {{-- Setup data for datatables --}} -->
 @php
@@ -107,14 +91,15 @@ $heads = [
 'content',
 'Extreme date',
 
+['label' => 'Actions', 'no-export' => true, 'width' => 30],
 
 ];
 
-if ($demands->status !== 'Sent') {
-    $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 30];
-}
 @endphp
 
+
+
+<input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demands->id }}">
 
 
 <!-- {{-- Minimal example / fill data using the component slot --}} -->
@@ -125,41 +110,42 @@ if ($demands->status !== 'Sent') {
                 <"row" <"col-sm-12 d-flex justify-content-start" f> >';
                     $config['paging'] = false;
                     $config["lengthMenu"] = [ 10, 50, 100, 500];
-                    $counter = 0;
                     @endphp
-
-                    @foreach($details as $detail)
-                    @foreach($detail->boxes as $box)
-                    @php $counter++ @endphp
+                    <?php $i = 0     ?>
+                    @foreach($boxes as $box)
+                    <?php $i++ ?>
                     <tr>
-                        <td>{{$counter}}</td>
-                        <td>{!! nl2br(e($box->ref)) !!}</td>
-                        <td>{{$detail->archiveRequest->direction->name}}</td>
-                        <td>{{$detail->archiveRequest->department->name}}</td>
+                        <td>{{$i}}</td>
+                        <td>{{$box->ref}}</td>
+                        <td>{{$box->archiveRequest->direction->name}}</td>
+                        <td>{{$box->archiveRequest->department->name}}</td>
                         <td>{!! nl2br(e($box->content)) !!}</td>
-                        <td>{!! nl2br(e($box->extreme_date)) !!}</td>
-                        @if ($demands->status !== 'Sent')
+                        <td>{{$box->extreme_date}}</td>
+
+
+
                         <td>
-                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-content="{{ $box->content }}" data-date="{{ $box->extreme_date }}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-content="{{$box->content}}" data-date="{{$box->extreme_date}}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                             <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                         </td>
-                        @endif
-                    </tr>
 
-                    @endforeach
+                    </tr>
                     @endforeach
 </x-adminlte-datatable>
 
-@if ($demands->status !== 'Sent')
-<br>
-<form action="{{ route('archiveRequest.store', ['id' => $demands->id]) }}" method="POST">
+
+
+
+<br><br>
+<form action="{{ route('archiveRequest.store') }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
-    <input type="hidden" name="check_boxes_edit" value="2">
+    <input type="hidden" name="check_boxes" value="2">
 </form>
-<br>
-<br>
-@endif
+
+
+<br><br><br>
+
 
 
 <!-- Add -->
@@ -173,15 +159,15 @@ if ($demands->status !== 'Sent') {
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('boxes.store', ['id' => $demands->id]) }}" method="post" autocomplete="off">
+                <form action="{{ route('boxes.store') }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
+                    @foreach ($demandss as $demand)
+                    <input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demand->id }}">
+                    @endforeach
 
-                    <input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demands->id }}">
-
-
-                    @foreach($details as $detail)
-                    <input type="hidden" name="archieve_request_detail_id" id="archieve_request_detail_id" value="{{ $detail->id }}">
+                    @foreach ($demandsDetail as $demandDetail)
+                    <input type="hidden" name="archieve_request_detail_id" id="archieve_request_detail_id" value="{{ $demandDetail->id }}">
                     @endforeach
 
 
@@ -220,6 +206,7 @@ if ($demands->status !== 'Sent') {
 
 </div>
 
+
 <!-- Edit -->
 <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -231,13 +218,11 @@ if ($demands->status !== 'Sent') {
                 </button>
             </div>
             <div class="modal-body">
-                @if(isset($box))
-                <form action="{{ route('boxes.update', ['box' => $box->id ]) }}" method="post" autocomplete="off">
+
+                <form action="{{ route('boxes.update', ['box' => $demands->id]) }}" method="post" autocomplete="off">
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
-                    <input type="hidden" name="editBoxesD" value="true">
                     <div class="form-group">
-
                         <input type="hidden" name="id" id="id">
                         <label for="recipient-name" class="col-form-label">Name box:</label>
                         <input class="form-control" name="ref" id="ref" type="text">
@@ -260,16 +245,17 @@ if ($demands->status !== 'Sent') {
                     </div>
 
             </div>
-
+            
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Confirm</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
             </form>
-            @endif
         </div>
     </div>
 </div>
+
+
 
 <!-- delete -->
 <div class="modal" id="modaldemo8">
@@ -278,8 +264,7 @@ if ($demands->status !== 'Sent') {
             <div class="modal-header">
                 <h6 class="modal-title">Delete Box</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
             </div>
-            @if(isset($box))
-            <form action="{{ route('boxes.destroy', ['box' => $box->id]) }}" method="post">
+            <form action="{{ route('boxes.destroy', ['box' => $demands->id]) }}" method="post">
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">
@@ -294,7 +279,6 @@ if ($demands->status !== 'Sent') {
                 </div>
         </div>
         </form>
-        @endif
     </div>
 </div>
 
@@ -327,4 +311,5 @@ if ($demands->status !== 'Sent') {
         modal.find('.modal-body #ref').val(ref);
     })
 </script>
+
 @stop
