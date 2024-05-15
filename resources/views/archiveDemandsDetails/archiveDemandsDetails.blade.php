@@ -3,17 +3,17 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible>
+<x-adminlte-card title="Info Demand" theme="info" icon="fas fa-lg fa-bell" collapsible>
     <!-- An info theme card with all the tool buttons... -->
 
-    <p name="name_request"><b>Name of the request : </b> {{ $demands->name }}</p>
+    <p name="name_request"><b>Name of the demand : </b> {{ $demands->name }}</p>
     <p name="name_user"><b>User : </b>
         @foreach($details as $detail)
         {{ $detail->user}}
         @endforeach
     </p>
-    <p name="details_request"><b>Details of the request : </b> {{ $demands->details_request }}</p>
-    <p name="date_request"><b>Request date : </b> {{ $demands->request_date }}</p>
+    <p name="details_request"><b>Details of the demand : </b> {{ $demands->details_request }}</p>
+    <p name="date_request"><b>demand date : </b> {{ $demands->request_date }}</p>
     <p name="Direction"><b>Direction : </b> {{ $demands->direction->name }}</p>
     <p name="depart"><b>Department : </b> {{ $demands->department->name}}</p>
 
@@ -27,7 +27,7 @@
 </div>
 <br>
 @endif
-<h1>List of boxes in the request</h1>
+<h1>List of boxes in the demand</h1>
 @if ($demands->status !== 'Sent')
 <div class="text-center">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
@@ -152,7 +152,7 @@ if ($demands->status !== 'Sent') {
 
 @if ($demands->status !== 'Sent')
 <br>
-<form action="{{ route('archiveRequest.store', ['id' => $demands->id]) }}" method="POST">
+<form action="{{ route('archiveDemand.store', ['id' => $demands->id]) }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
     <input type="hidden" name="check_boxes_edit" value="2">

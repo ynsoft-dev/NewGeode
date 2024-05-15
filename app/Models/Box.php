@@ -21,19 +21,19 @@ class Box extends Model
         'status',
         
 
-        'archive_request_id',  
-        'archieve_request_details_id',
+        'archive_demand_id',  
+        'archive_demand_details_id',
 
     ];
     
 
     public function archiveRequest(): BelongsTo
     {
-        return $this->belongsTo(ArchiveRequest::class,'archive_request_id');
+        return $this->belongsTo(ArchiveDemand::class,'archive_demand_id');
     }
     public function boxArchiveRequest(): BelongsTo
     {
-        return $this->belongsTo(Box::class,'archieve_request_details_id');
+        return $this->belongsTo(Box::class,'archive_demand_details_id');
     }
 
 

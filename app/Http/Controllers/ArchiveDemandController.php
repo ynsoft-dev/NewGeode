@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ArchiveRequest;
+use App\Models\ArchiveDemand;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
@@ -13,12 +13,12 @@ use App\Models\Department;
 use App\Models\Direction;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\ArchieveRequestDetails;
+use App\Models\ArchiveDemandDetails;
 
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\AddRequest;
+use App\Notifications\AddDemand;
 
-class ArchiveRequestController extends Controller
+class ArchiveDemandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,7 +41,7 @@ class ArchiveRequestController extends Controller
         // Récupérer les demandes associées à l'utilisateur connecté
         $demands = $user->archiveRequests;
 
-        return view('archiveRequests.archiveRequests', compact('directions', 'departments', 'demands'));
+        return view('archiveDemands.archiveDemands', compact('directions', 'departments', 'demands'));
     }
 
     /**
@@ -71,7 +71,7 @@ class ArchiveRequestController extends Controller
 
             ]);
 
-            ArchiveRequest::create([
+            ArchiveDemand::create([
                 'name' => $request->name,
                 'request_date' => $request->request_date,
                 'department_id' => $request->depart,
@@ -82,9 +82,9 @@ class ArchiveRequestController extends Controller
             ]);
 
 
-            $request_id = ArchiveRequest::latest()->first()->id;
-            ArchieveRequestDetails::create([
-                'archive_request_id' => $request_id,
+            $request_id = ArchiveDemand::latest()->first()->id;
+            ArchiveDemandDetails::create([
+                'archive_demand_id' => $request_id,
                 'name' => $request->name,
                 'details_request' => $request->details_request,
                 'request_date' => $request->request_date,
@@ -101,7 +101,7 @@ class ArchiveRequestController extends Controller
 
         if ($request->has('check_boxes')) {
 
-            $lastRequest = ArchiveRequest::latest()->first();
+            $lastRequest = ArchiveDemand::latest()->first();
             // $specifiedBoxQuantity = $lastRequest->box_quantity;
             $realBoxQuantity = $lastRequest->getRealBoxQuantity();
             // if ($specifiedBoxQuantity != $realBoxQuantity) {
@@ -111,12 +111,12 @@ class ArchiveRequestController extends Controller
                 return redirect()->back()->withErrors(['check_boxes' => 'Please insert at least one box.']);
             }
 
-            return redirect('/archiveRequest')->with('Add', 'Request added successfully');
+            return redirect('/archiveDemand')->with('Add', 'Demand added successfully');
         }
 
         if ($request->has('check_boxes_edit')) {
 
-            $demand = ArchiveRequest::where('id', $id)->first();
+            $demand = ArchiveDemand::where('id', $id)->first();
             // $specifiedBoxQuantity = $lastRequest->box_quantity;
             $realBoxQuantity = $demand->getRealBoxQuantity();
             // if ($specifiedBoxQuantity != $realBoxQuantity) {
@@ -126,7 +126,7 @@ class ArchiveRequestController extends Controller
                 return redirect()->back()->withErrors(['check_boxes_edit' => 'Please insert at least one box.']);
             }
 
-            return redirect('/archiveRequest')->with('edit', 'Request updated successfully');
+            return redirect('/archiveDemand')->with('edit', 'Demand updated successfully');
         }
 
 
@@ -140,22 +140,22 @@ class ArchiveRequestController extends Controller
             if ($archivistRole) {
                 $archivists = $archivistRole->users;
                 foreach ($archivists as $archivist) {
-                    $archivist->notify(new AddRequest($id));
+                    $archivist->notify(new AddDemand($id));
                 }
             }
 
 
-            ArchiveRequest::where('id', $id)->update(['status' => 'Sent']);
-            ArchieveRequestDetails::where('archive_request_id', $id)->update(['status' => 'Sent']);
+            ArchiveDemand::where('id', $id)->update(['status' => 'Sent']);
+            ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Sent']);
 
-            return redirect('/archiveRequest')->with('Add', 'Request sent successfully');
+            return redirect('/archiveDemand')->with('Add', 'Demand sent successfully');
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ArchiveRequest $archiveRequest)
+    public function show(ArchiveDemand $archiveDemand)
     {
     }
 
@@ -164,19 +164,19 @@ class ArchiveRequestController extends Controller
      */
     public function edit($id)
     {
-        $demands = ArchiveRequest::where('id', $id)->first();
+        $demands = ArchiveDemand::where('id', $id)->first();
         $directions = Direction::all();
         $departments = Department::all();
-        return view('archiveRequests.edit_archive', compact('directions', 'departments', 'demands'));
+        return view('archiveDemands.edit_archive', compact('directions', 'departments', 'demands'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArchiveRequest $demands,$id)
+    public function update(Request $request, ArchiveDemand $demands,$id)
     {
 
-        $demands = ArchiveRequest::find($id);
+        $demands = ArchiveDemand::find($id);
         $demands->update([
             'name' => $request->name,
             'details_request' => $request->details,
@@ -192,8 +192,8 @@ class ArchiveRequestController extends Controller
             return redirect('/edit_box/' . $id);
         }
 
-        session()->flash('edit', 'Change made successfully');
-        return redirect('/archiveRequest');
+        session()->flash('edit', 'Demand successfully updated');
+        return redirect('/archiveDemand');
     }
 
     /**
@@ -201,9 +201,9 @@ class ArchiveRequestController extends Controller
      */
     public function destroy(Request $request)
     {
-        $requests = ArchiveRequest::findOrFail($request->id);
-        $requests->delete();
-        session()->flash('delete', 'The request has been successfully deleted');
+        $demands = ArchiveDemand::findOrFail($request->id);
+        $demands->delete();
+        session()->flash('delete', 'The demand has been successfully deleted');
         return back();
     }
 

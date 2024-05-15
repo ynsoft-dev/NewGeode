@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Box;
-use App\Models\ArchiveRequest;
-use App\Models\ArchieveRequestDetails;
+use App\Models\ArchiveDemand;
+use App\Models\ArchiveDemandDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,19 +20,19 @@ class BoxController extends Controller
     {
 
         // $boxes=BoxArchiveRequest::all();
-        $demands = ArchiveRequest::all();
-        $demandsDetail = ArchieveRequestDetails::all();
+        $demands = ArchiveDemand::all();
+        $demandsDetail = ArchiveDemandDetails::all();
 
-        $lastRequest = ArchiveRequest::latest()->first();
+        $lastDemand = ArchiveDemand::latest()->first();
 
-        $lastRequest1 = ArchiveRequest::latest()->first()->id;
-        $boxes = Box::where('archive_request_id', $lastRequest1)->get();
+        $lastDemand1 = ArchiveDemand::latest()->first()->id;
+        $boxes = Box::where('archive_demand_id', $lastDemand1)->get();
 
         $numberOfBoxes = $boxes->count();
 
 
 
-        return view('boxes.boxes', compact('demands', 'lastRequest', 'boxes', 'demandsDetail'));
+        return view('boxes.boxes', compact('demands', 'lastDemand', 'boxes', 'demandsDetail'));
     }
 
     /**
@@ -55,8 +55,8 @@ class BoxController extends Controller
             // 'department'=> $request->depart,
             'extreme_date' => $request->extreme_date,
             // 'destruction_date'=> $request->destruction_date,
-            'archive_request_id' => $request->archive_requests_id,
-            'archieve_request_details_id' => $request->archieve_request_detail_id,
+            'archive_demand_id' => $request->archive_requests_id,
+            'archive_demand_details_id' => $request->archieve_request_detail_id,
 
 
             // 'site_id' => $request->site_id,
@@ -83,14 +83,14 @@ class BoxController extends Controller
      */
     public function edit($id)
     {
-        $demands = ArchiveRequest::where('id', $id)->first();
+        $demands = ArchiveDemand::where('id', $id)->first();
 
 
-        $demandsId = ArchiveRequest::where('id', $id)->first()->id;
-        $boxes = Box::where('archive_request_id', $demandsId)->get();
+        $demandsId = ArchiveDemand::where('id', $id)->first()->id;
+        $boxes = Box::where('archive_demand_id', $demandsId)->get();
 
-        $demandss = ArchiveRequest::all();
-        $demandsDetail = ArchieveRequestDetails::all();
+        $demandss = ArchiveDemand::all();
+        $demandsDetail = ArchiveDemandDetails::all();
 
         return view('boxes.edit_box', compact('boxes', 'demands', 'demandsDetail', 'demandss'));
     }

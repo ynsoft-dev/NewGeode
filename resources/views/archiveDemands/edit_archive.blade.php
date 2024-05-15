@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1>Update archive request</h1>
+<h1>Update archive demand</h1>
 @stop
 
 @if ($errors->any())
@@ -25,7 +25,7 @@ $config = ['format' => 'YYYY'];
     <div class="col-lg-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('archiveRequest.update', ['id' => $demands->id]) }}" method="post" autocomplete="off">
+                <form action="{{ route('archiveDemand.update', ['id' => $demands->id]) }}" method="post" autocomplete="off">
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
 
@@ -37,7 +37,7 @@ $config = ['format' => 'YYYY'];
                         </div>
 
                         <div class="col">
-                            <label for="message-text" class="col-form-label">Request date:</label>
+                            <label for="message-text" class="col-form-label">Demand date:</label>
                             @php
                             $config = ['format' => 'L'];
                             @endphp
@@ -52,7 +52,7 @@ $config = ['format' => 'YYYY'];
                     </div>
 
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">Request details:</label>
+                        <label for="message-text" class="col-form-label">Demand details:</label>
                         <textarea type="text" class="form-control" id="details" name="details" required>{{$demands->details_request}}</textarea>
                     </div>
 

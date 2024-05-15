@@ -3,16 +3,16 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
+<x-adminlte-card title="Info Demand" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
     <!-- An info theme card with all the tool buttons... -->
 
-    <p name="name_request"><b>Name of the request : </b> {{ $lastRequest->name }}</p>
-    <p name="date_request"><b>Request date : </b> {{ $lastRequest->request_date }}</p>
-    <p name="Direction"><b>Direction : </b> {{ $lastRequest->direction->name }}</p>
-    <p name="depart"><b>Department : </b> {{ $lastRequest->department->name}}</p>
-    <p name="details"><b>Details : </b> {{ $lastRequest->details_request}}</p>
+    <p name="name_request"><b>Name of the request : </b> {{ $lastDemand->name }}</p>
+    <p name="date_request"><b>Request date : </b> {{ $lastDemand->request_date }}</p>
+    <p name="Direction"><b>Direction : </b> {{ $lastDemand->direction->name }}</p>
+    <p name="depart"><b>Department : </b> {{ $lastDemand->department->name}}</p>
+    <p name="details"><b>Details : </b> {{ $lastDemand->details_request}}</p>
 
-    <!-- <p><b>Status : </b> {{ $lastRequest->status }}</p> -->
+    <!-- <p><b>Status : </b> {{ $lastDemand->status }}</p> -->
 
 </x-adminlte-card>
 
@@ -138,7 +138,7 @@ $heads = [
 
 
 <br><br>
-<form action="{{ route('archiveRequest.store', ['id' => $lastRequest->id]) }}" method="POST">
+<form action="{{ route('archiveDemand.store', ['id' => $lastDemand->id]) }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
     <input type="hidden" name="check_boxes" value="1">
@@ -159,7 +159,7 @@ $heads = [
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('boxes.store', ['id' => $lastRequest->id]) }}" method="post" autocomplete="off">
+                <form action="{{ route('boxes.store', ['id' => $lastDemand->id]) }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
                     @foreach ($demands as $demand)

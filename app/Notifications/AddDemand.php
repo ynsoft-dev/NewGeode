@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AddRequest extends Notification
+class AddDemand extends Notification
 {
     use Queueable;
     private $request_id;
@@ -37,13 +37,13 @@ class AddRequest extends Notification
     public function toMail(object $notifiable): MailMessage
     {
     
-        $url = url('/archieveRequestDetails/'.$this->request_id);
+        $url = url('/archiveDemandDetails/'.$this->request_id);
     
-        // $url = 'http://127.0.0.1:8000/archieveRequestDetails/' . $this->request_id;
+        // $url = 'http://127.0.0.1:8000/archieveDemandDetails/' . $this->request_id;
         return (new MailMessage)
-            ->subject('New archive request added')
-            ->line('New archive request added')
-            ->action('Show request', $url)
+            ->subject('New archive demand added')
+            ->line('New archive demand added')
+            ->action('Show demand', $url)
             ->line('Thank you for using NewGeode !');
     }
 

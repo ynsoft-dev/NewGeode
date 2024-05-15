@@ -4,14 +4,14 @@
 
 @section('content_header')
 
-<h1>Requests list</h1>
+<h1>Demands list</h1>
 <div class="text-center">
-    
+
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        Add request
+        Add demand
     </button>
 
-    
+
 </div>
 @stop
 
@@ -87,11 +87,11 @@
     @php
     $heads = [
     '#',
-    'Request name',
-    'Request details',
+    'Demand name',
+    'Demand details',
     'Direction',
     'Department',
-    'Request date',
+    'Demand date',
     'Status',
     'Number of boxes',
 
@@ -130,9 +130,9 @@
                                 <span class="badge badge-orange">{{ ucfirst($demand->status) }}</span>
                                 @endif
                             </td>
-                            
+
                             <td>{{$demand->getRealBoxQuantity()}}</td>
-                            
+
 
                             <!-- <td>
                                 @foreach($demand->boxes as $box)
@@ -155,19 +155,19 @@
 
                             <td class="actions-column">
                                 <div class="d-flex align-items-center">
-                                    <a href="{{ url('archieveRequestDetails') }}/{{$demand->id}}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Details">
+                                    <a href="{{ url('archiveDemandDetails') }}/{{$demand->id}}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Details">
                                         <i class="fa fa-lg fa-fw fa-eye"></i>
                                     </a>
 
                                     @if ($demand->status !== 'Sent')
 
-                                    <a  href="{{ url('edit_archive') }}/{{ $demand->id }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                                    <a href="{{ url('edit_archive') }}/{{ $demand->id }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update"><i class="fa fa-lg fa-fw fa-pen"></i></a>
 
                                     <a class="btn btn-xs btn-default text-danger mx-1 shadow btn-delete" title="Delete" data-effect="effect-scale" data-id="{{ $demand->id }}" data-name="{{ $demand->name }}" data-toggle="modal" href="#modaldemo8">
                                         <i class="fa fa-lg fa-fw fa-trash"></i>
                                     </a>
 
-                                    <form id="sendEmailForm" action="{{ route('archiveRequest.store', ['id' => $demand->id]) }}" method="POST">
+                                    <form id="sendEmailForm" action="{{ route('archiveDemand.store', ['id' => $demand->id]) }}" method="POST">
                                         @csrf
                                         <button type="submit" name="sendEmailButton" class="btn btn-xs btn-default mx-1 shadow btn-send" style="border-color: #28a745; color: #6c757d; width: auto;">
                                             <i class="fas fa-envelope" style="color: #28a745">Send</i>
@@ -179,11 +179,12 @@
                             </td>
                         </tr>
                         @endforeach
-                      
+
     </x-adminlte-datatable>
 
-
+   
     <!-- Add -->
+    
     <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -194,7 +195,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="myForm" action="{{ route('archiveRequest.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
+                  
+                    <form id="myForm" action="{{ route('archiveDemand.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
                         <div class="form-group row mb-0"> <!-- Ajoutez la classe mb-0 ici -->
@@ -202,6 +204,7 @@
                                 <x-adminlte-button class="btn-sm float-right mr-2" type="reset" label="Reset" theme="outline-danger" icon="fas fa-trash" width="100px" />
                             </div>
                         </div>
+
 
 
                         <div class="form-group row mb-0"> <!-- Utilisez la classe mb-0 pour supprimer la marge en bas -->
@@ -271,6 +274,7 @@
                         </div>
 
                     </form>
+                 
                 </div>
 
             </div>
@@ -278,6 +282,7 @@
         </div>
 
     </div>
+  
 
 
 
@@ -286,13 +291,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Delete request</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                    <h6 class="modal-title">Delete demand</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <form action="archiveRequest/destroy" method="post">
+                <form action="archiveDemand/destroy" method="post">
                     {{ method_field('delete') }}
                     {{ csrf_field() }}
                     <div class="modal-body">
-                        <p>Are you sure you want to delete this request ?</p><br>
+                        <p>Are you sure you want to delete this demand ?</p><br>
                         <input type="hidden" name="id" id="id" value="">
                         <input class="form-control" name="name" id="name" type="text" readonly>
                     </div>

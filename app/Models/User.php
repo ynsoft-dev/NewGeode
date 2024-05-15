@@ -52,6 +52,6 @@ class User extends Authenticatable
 
     public function archiveRequests()
     {
-        return $this->hasMany(ArchiveRequest::class);
+        return $this->hasMany(ArchiveDemand::class);
     }
 }

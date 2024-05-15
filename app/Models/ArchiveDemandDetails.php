@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ArchieveRequestDetails extends Model
+class ArchiveDemandDetails extends Model
 {
     protected $fillable = [
 
@@ -19,14 +19,14 @@ class ArchieveRequestDetails extends Model
         'direction',
 
         'user',
-        'archive_request_id',
+        'archive_demand_id',
 
     ];
 
 
     public function archiveRequest(): BelongsTo
     {
-        return $this->belongsTo(ArchiveRequest::class, 'archive_request_id');
+        return $this->belongsTo(ArchiveDemand::class, 'archive_demand_id');
     }
 
     public function boxes(): HasMany

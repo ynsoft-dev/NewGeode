@@ -408,8 +408,8 @@ return [
         // ,'can' => 'structureApplicant',
         ['header' => 'APPLICANT', 'class' => 'bg-info' ,'can' => 'structureApplicant',],
         [
-            'text' => 'Archive request',
-            'url' => 'archiveRequest',
+            'text' => 'Archive demand',
+            'url' => 'archiveDemand',
             'icon' => 'fas fa-file-export',
             'can' => 'archiveRequest',
         ],

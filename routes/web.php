@@ -12,9 +12,9 @@ use App\Http\Controllers\DropdownController;
 use App\Models\Column;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ArchiveRequestController;
+use App\Http\Controllers\ArchiveDemandController;
 use App\Http\Controllers\BoxController;
-use App\Http\Controllers\ArchieveRequestDetailsController;
+use App\Http\Controllers\ArchiveDemandDetailsController;
 use App\Http\Controllers\LoanRequestController;
 use App\Http\Controllers\LoanDetailsController;
 
@@ -48,18 +48,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
 
-    Route::resource('archiveRequest', ArchiveRequestController::class);
-    Route::get('/direction/{id}', [ArchiveRequestController::class, 'getDepartments']);
+    Route::resource('archiveDemand', ArchiveDemandController::class);
+    Route::get('/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
 
-    Route::get('/edit_archive/{id}', [ArchiveRequestController::class, 'edit']);
-    Route::patch('/archiveRequest/{id}', [ArchiveRequestController::class,'update'])->name('archiveRequest.update');
-    Route::post('/archiveRequest/{id}', [ArchiveRequestController::class, 'store'])->name('archiveRequest.store');
+    Route::get('/edit_archive/{id}', [ArchiveDemandController::class, 'edit']);
+    Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class,'update'])->name('archiveDemand.update');
+    Route::post('/archiveDemand/{id}', [ArchiveDemandController::class, 'store'])->name('archiveDemand.store');
 
 
     Route::resource('boxes', BoxController::class);
     Route::get('/edit_box/{id}', [BoxController::class, 'edit']);
    
-    Route::get('/archieveRequestDetails/{id}', [ArchieveRequestDetailsController::class, 'edit']);
+    Route::get('/archiveDemandDetails/{id}', [ArchiveDemandDetailsController::class, 'edit']);
 
     Route::resource('loanRequest', LoanRequestController::class);
     Route::get('/direction/{id}', [LoanRequestController::class, 'getDepartments']);
