@@ -49,4 +49,12 @@ class User extends Authenticatable
             'roles_name' => 'array',
         ];
     }
+    public function archiveRequests()
+    {
+        return $this->hasMany(ArchiveDemand::class);
+    }
+    public function loanDemands()
+    {
+        return $this->hasMany(LoanDemand::class);
+    }
 }

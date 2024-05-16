@@ -6,16 +6,16 @@
 @can('notifications')
 <x-adminlte-card title="Notifications" theme="info" icon="fas fa-lg fa-bell" collapsible removable maximizable>
 
-    <div class="menu-header-content bg-primary text-right">
-        <div class="d-flex">
-            <span class="badge badge-pill badge-warning mr-auto my-auto float-left"><a href="\MarkAsRead_all">Read All </a></span>
+    <div class="menu-header-content" style="padding: 10px; border-radius: 5px;">
+        <div class="d-flex align-items-center justify-content-between">
+            <button class="btn btn-primary">
+                <a href="\MarkAsRead_all" class="text-white">Read All</a>
+            </button>
+            <p class="mb-0 dropdown-title-text subtext text-blue op-6 tx-12" style="color: blue;">
+                <span class="font-weight-bold" id="notifications_count">
+                Number of unread Notifications: {{ auth()->user()->unreadNotifications->count() }} </span>
+            </p>
         </div>
-        <p class="dropdown-title-text subtext mb-0 text-white op-6 pb-0 tx-12 ">
-        <h6 style="color: yellow" id="notifications_count">
-            <!-- pour afficher nbr de notification non lue  -->
-            nombre de notification non lue: {{ auth()->user()->unreadNotifications->count() }}
-        </h6>
-        </p>
     </div>
     <div id="unreadNotifications">
         @foreach (auth()->user()->unreadNotifications as $notification)
@@ -24,11 +24,26 @@
                 <div class="notifyimg bg-pink">
                     <i class="la la-file-alt text-white"></i>
                 </div>
-                <div class="mr-3">
-                    <h5 class="notification-label mb-1">{{ $notification->data['title'] }}
-                        {{ $notification->data['user'] }}
-                    </h5>
-                    <div class="notification-subtext">{{ $notification->created_at }}</div>
+                <div class="container-fluid">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-md-6">
+                            <div class="mr-3">
+                                <h5 class="notification-label mb-1">
+                                    {{ $notification->data['borrow'] }}
+                                </h5>
+                                <div class="notification-subtext">{{ $notification->created_at }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-right mb-3">
+                                <div class="mr-3">
+                                    <h5 class="notification-label mb-1">
+                                        {{ $notification->data['user'] }}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </a>
         </div>
@@ -56,11 +71,10 @@
     console.log("Hi, I'm using the Laravel-AdminLTE package!");
 </script>
 
-<!-- <script>
+<script>
     setInterval(function() {
         $("#notifications_count").load(window.location.href + " #notifications_count");
         $("#unreadNotifications").load(window.location.href + " #unreadNotifications");
     }, 5000);
-
-</script> -->
+</script>
 @stop

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoanDemand;
 use App\Models\LoanDetails;
 use Illuminate\Http\Request;
 use App\Models\LoanRequest;
+use App\Models\Post;
 
 class LoanDetailsController extends Controller
 {
@@ -45,9 +47,10 @@ class LoanDetailsController extends Controller
      */
     public function edit($id)
     {
-        $loans = LoanRequest::where('id',$id)->first();
-        $details  = LoanDetails::where('loan_request_id',$id)->get();
-        return view('loanRequests.loanRequestsDetails',compact('loans','details'));
+        $loans = LoanDemand::where('id', $id)->first();
+        $details  = LoanDetails::where('loan_demand_id', $id)->get();
+        $posts = Post::all();
+        return view('loanDemands.loanDemandsDetails', compact('loans', 'details', 'posts'));
     }
 
     /**
@@ -65,4 +68,23 @@ class LoanDetailsController extends Controller
     {
         //
     }
+    public function processLoan(Request $request)
+{    $loan_Id = LoanDemand::latest()->first()->id;
+
+    // Récupérer l'ID du prêt de la session
+    // $loan_Id = $request->session()->get('loan_id');
+    
+    // Afficher le contenu de $loanId pour le débogage
+    // dd($loan_Id);
+
+    if ($request->action == 'accept') {
+        // Stocker l'ID du prêt dans une variable de session pour indiquer qu'il a été accepté
+        $request->session()->put('accepted_loan', $loan_Id);
+        // Rediriger l'utilisateur vers l'onglet "Loan Demand Response" (tab2)
+        return redirect()->route('loanDetails.edit', ['id' => $loan_Id, 'activeTab' => 'tab2']);
+    } elseif ($request->action == 'reject') {
+        // Afficher un formulaire pour saisir le motif de refus dans l'onglet "Loan Demand Response" (tab2)
+        return redirect()->route('loanDetails.edit', ['id' => $loan_Id, 'activeTab' => 'tab2'])->with('loan_id', $loan_Id);
+    }
+}
 }

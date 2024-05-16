@@ -12,15 +12,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts=Post::all();
-        return view('posts.posts',compact('posts'));
+     
         // $posts = Post::find(7);
         // $mediaUrls = [];
-        
+
         // foreach ($posts->getMedia('images') as $media) {
         //     $mediaUrls[] = $media->getUrl();
         // }
-        
+
         // dd($mediaUrls);
     }
 
@@ -39,19 +38,26 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|unique:posts|max:255',
-        ],[
+            'image' => 'required|mimes:jpeg,pdf',
+
+        ], [
             'name.required' => 'Please enter the name of the post',
             'name.unique' => 'This post name already exists',
+            'image.required' => 'Please upload an image or a PDF file',
+            'image.mimes' => 'Only JPEG images and PDF files are allowed',
         ]);
-                
-            $posts=Post::create([
-                'name' => $request->name,
-            ]);
-            $posts->addMediaFromRequest('image')->toMediaCollection('images');
 
-            session()->flash('Add', 'posts added successfully');
-            return redirect('/posts');
-        
+        $posts = Post::create([
+            'name' => $request->name,
+        ]);
+        // $posts->addMediaFromRequest('image')->toMediaCollection('images');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $mediaCollection = $file->getMimeType() === 'application/pdf' ? 'files' : 'images';
+            $posts->addMediaFromRequest('image')->toMediaCollection($mediaCollection);
+        }
+        session()->flash('Add', 'posts added successfully');
+        return redirect()->route('loanDetails.edit', ['id' => $request->loan_id])->with('activeTab', 'tab3');
     }
 
     /**
@@ -79,11 +85,11 @@ class PostController extends Controller
 
         $this->validate($request, [
 
-            'name' => 'required|max:255|unique:posts,name,'.$id,
-        ],[
+            'name' => 'required|max:255|unique:posts,name,' . $id,
+        ], [
 
-            'name.required' =>'Please enter the name of the post',
-            'name.unique' =>'This post name already exists',
+            'name.required' => 'Please enter the name of the post',
+            'name.unique' => 'This post name already exists',
 
         ]);
 
@@ -92,7 +98,7 @@ class PostController extends Controller
             'name' => $request->name,
         ]);
 
-        session()->flash('edit','Change made successfully');
+        session()->flash('edit', 'Change made successfully');
         return redirect('/posts');
     }
 
@@ -103,7 +109,7 @@ class PostController extends Controller
     {
         $id = $request->id;
         Post::find($id)->delete();
-        session()->flash('delete','post has been successfully removed');
+        session()->flash('delete', 'post has been successfully removed');
         return redirect('/posts');
     }
 }

@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LoanDetails extends Model
 {
     protected $fillable = [
-        'loan_request_id',
+        'loan_demand_id',
+        'borrow_id',
         'direction_id',
         'department_id',
-        'kind',
+        'type',
         'box_name',
         'request_date',
         'return_date',
-        'Membership',
         'Status',
         'Value_Status',
         'user',
@@ -25,7 +25,7 @@ class LoanDetails extends Model
     ];
     public function loan(): BelongsTo
     {
-        return $this->belongsTo(LoanRequest::class, 'loan_request_id');
+        return $this->belongsTo(LoanDemand::class, 'loan_demand_id');
     }
  
 }

@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('loan_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('loan_request_id')->constrained()->onDelete('cascade');
+            $table->foreignId('loan_demand_id')->constrained()->onDelete('cascade');
+            $table->String('borrow_id');
             $table->string('department_id');
             $table->string('direction_id');
-            $table->string('kind');
+            $table->string('type');
             $table->string('box_name');
             $table->date('request_date');
             $table->date('return_date');
-            $table->string('Membership');
             $table->string('Status', 50);
             $table->integer('Value_Status');
             $table->string('user', 300);

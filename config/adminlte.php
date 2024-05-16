@@ -506,22 +506,22 @@ return [
         ['header' => 'APPLICANT', 'class' => 'bg-info', 'can' => 'structureApplicant',],
         [
             'text' => 'Archive request',
-            'url' => 'archiveRequest',
+            'url' => 'archiveDemand',
             'icon' => 'fas fa-file-export',
             'can' => 'archiveRequest',
         ],
         [
             'text' => 'Loan request ',
-            'url' => 'loanRequest',
+            'url' => 'loanDemand',
             'icon' => 'fas fa-file-export',
             'can' => 'loanRequest',
         ],
        
-        [
-            'text' => 'Copies',
-            'url' => '#',
-            'icon' => 'fas fa-file-export',
-        ],
+        // [
+        //     'text' => 'Copies',
+        //     'url' => '#',
+        //     'icon' => 'fas fa-file-export',
+        // ],
 
         ['header' => 'ARCHIVISTE', 'can' => 'structureArchiviste'],
         [
