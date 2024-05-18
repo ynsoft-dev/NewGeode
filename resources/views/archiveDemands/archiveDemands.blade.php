@@ -86,7 +86,7 @@
     <!-- {{-- Setup data for datatables --}} -->
     @php
     $heads = [
-    '#',
+    ['label' => '#', 'width' => 15],
     'Demand name',
     'Demand details',
     'Direction',
@@ -94,12 +94,10 @@
     'Demand date',
     'Status',
     'Number of boxes',
-
     ['label' => 'Actions', 'no-export' => true, 'width' => 0],
-
     ];
-
     @endphp
+
 
 
 
@@ -117,7 +115,7 @@
                         @foreach($demands->sortByDesc('request_date') as $demand)
                         <?php $i++ ?>
                         <tr>
-                            <td>{{$i}}</td>
+                            <td><b>{{$demand->demand_archive_id}}</b></td>
                             <td>{{$demand->name}}</td>
                             <td>{{$demand->details_request}}</td>
                             <td>{{$demand->direction->name}}</td>
@@ -182,9 +180,9 @@
 
     </x-adminlte-datatable>
 
-   
+
     <!-- Add -->
-    
+
     <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -195,7 +193,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                  
+
                     <form id="myForm" action="{{ route('archiveDemand.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
@@ -219,7 +217,7 @@
                                 @php
                                 $config = ['format' => 'L'];
                                 @endphp
-                                <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required value="{{ now()->format('Y-m-d') }}">
+                                <x-adminlte-input-date name="request_date" :config="$config" placeholder="Choose a date..." required value="{{ now()->format('m/d/Y') }}">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-gradient-danger">
                                             <i class="fas fa-calendar-day"></i>
@@ -274,7 +272,7 @@
                         </div>
 
                     </form>
-                 
+
                 </div>
 
             </div>
@@ -282,7 +280,7 @@
         </div>
 
     </div>
-  
+
 
 
 

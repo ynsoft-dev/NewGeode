@@ -17,6 +17,8 @@ use App\Models\ArchiveDemandDetails;
 
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\AddDemand;
+use App\Helpers\Helper;
+use Carbon\Carbon;
 
 class ArchiveDemandController extends Controller
 {
@@ -71,15 +73,19 @@ class ArchiveDemandController extends Controller
 
             ]);
 
-            ArchiveDemand::create([
-                'name' => $request->name,
-                'request_date' => $request->request_date,
-                'department_id' => $request->depart,
-                'direction_id' => $request->direction,
-                'details_request' => $request->details_request,
-                'user_id' => (Auth::user()->id),
+            $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(),'demand_archive_id',6,'DMDarchive');
 
-            ]);
+            $dmd = new ArchiveDemand();
+            $dmd->demand_archive_id = $demand_archive_id;
+            $dmd->name = $request->name;
+            // $dmd->request_date = $request->request_date;
+            $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
+            $dmd->department_id = $request->depart;
+            $dmd->direction_id = $request->direction;
+            $dmd->details_request = $request->details_request;
+            $dmd->user_id = Auth::user()->id;
+            
+            $dmd->save();
 
 
             $request_id = ArchiveDemand::latest()->first()->id;

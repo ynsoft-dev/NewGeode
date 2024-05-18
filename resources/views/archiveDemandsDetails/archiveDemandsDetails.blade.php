@@ -40,7 +40,6 @@
 
 
 
-
 @section('content')
 
 @if ($errors->any())
@@ -97,6 +96,20 @@ $config = ['format' => 'YYYY'];
     }
 </style>
 
+<div class=" tab-menu-heading">
+    <div class="tabs-menu1">
+        <!-- Tabs -->
+        <ul class="nav panel-tabs main-nav-line">
+            <li><a href="#tab4" class="nav-link active" data-toggle="table1">Demand's informations</a></li>
+            <li><a href="#tab5" class="nav-link" data-toggle="tab">Treat demand</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+
 <!-- {{-- Setup data for datatables --}} -->
 @php
 $heads = [
@@ -111,7 +124,7 @@ $heads = [
 ];
 
 if ($demands->status !== 'Sent') {
-    $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 30];
+$heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 30];
 }
 @endphp
 

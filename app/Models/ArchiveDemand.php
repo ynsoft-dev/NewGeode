@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ArchiveDemand extends Model
 {
     protected $fillable = [
+        'demand_archive_id',
         'name',
         'details_request',
         'box_quantity',

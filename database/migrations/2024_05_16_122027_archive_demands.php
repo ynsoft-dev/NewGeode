@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('archive_demands', function (Blueprint $table) {
             $table->id();
+            $table->text('demand_archive_id');
             $table->string('name');
             $table->string('details_request');
             $table->date('request_date');
