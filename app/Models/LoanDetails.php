@@ -21,6 +21,8 @@ class LoanDetails extends Model
         'Status',
         'Value_Status',
         'user',
+        'accept_reason',
+        'rejection_reason',
 
     ];
     public function loan(): BelongsTo

@@ -62,10 +62,11 @@
         Route::get('/direction/{id}', [LoanDemandController::class, 'getDepartments']);
         Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
         Route::get('/edit_loan/{id}', [LoanDemandController::class, 'edit']);
+        Route::get('/loanDetails/{id}/edit', [LoanDetailsController::class, 'edit'])->name('loanDetails.edit');
         Route::get('MarkAsRead_all', [LoanDemandController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
         Route::get('unreadNotifications_count', [LoanDemandController::class, 'unreadNotifications_count'])->name('unreadNotifications_count');
         Route::get('unreadNotifications', [LoanDemandController::class, 'unreadNotifications'])->name('unreadNotifications');
         Route::resource('posts', PostController::class);
-        Route::get('/loanDetails/{id}/edit', [LoanDetailsController::class, 'edit'])->name('loanDetails.edit');
-        Route::post('/process_loan', [LoanDetailsController::class, 'processLoan'])->name('process_loan');
+        // Ajoute une route PUT pour la mise à jour du statut dans LoanDetailsController
+        Route::put('/loanDetails/{id}', [LoanDetailsController::class, 'update'])->name('loanDetails.update');
     });

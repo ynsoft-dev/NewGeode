@@ -75,6 +75,7 @@ class PermissionTableSeeder extends Seeder
             'loans',
 
             'notifications',
+            'process_loan',
 
 
 

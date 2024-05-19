@@ -68,21 +68,14 @@
                                     <!-- Tabs -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link {{ request()->get('activeTab') === 'tab1' ? 'active' : '' }}" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Loan Demand's Details</a>
+                                            <a class="nav-link active" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Loan Demand's Details</a>
                                         </li>
-                                        @can('process_loan')
                                         <li class="nav-item">
-                                            <a class="nav-link {{ request()->get('activeTab') === 'tab2' ? 'active' : '' }}" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Loan Demand Response</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Loan Demand Response</a>
                                         </li>
-
-
-
-                                        @if($loanDetails->type !== 'Original')
                                         <li class="nav-item">
-                                            <a class="nav-link {{ request()->get('activeTab') === 'tab3' ? 'active' : '' }}" data-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Loan Attachment</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Loan Attachment</a>
                                         </li>
-                                        @endif
-                                        @endcan
                                     </ul>
 
 
@@ -90,7 +83,7 @@
                             </div>
                             <div class="panel-body tabs-menu-body main-content-body-right border">
                                 <div class="tab-content">
-                                    <div class="tab-pane {{ request()->get('activeTab') === 'tab1' ? 'active' : '' }}" id="tab1">
+                                    <div class="tab-pane active" id="tab1">
                                         <div class="table-responsive mt-15">
 
                                             <table class="table table-striped" style="text-align:center">
@@ -144,24 +137,15 @@
                                             </table>
 
                                         </div>
-                                        @if ($loanDetails->Status === 'Accepted' || $loanDetails->Status === 'Rejected') <form id="sendNotificationForm" action="" method="POST">
-                                            @csrf
-                                            <button type="submit" name="sendNotificationButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d; width: 170px; height: 50px; float: right;" title="Send notfication" data-effect="effect-scale">
-                                                <i class="fas fa-envelope" style="color: #28a745">Send Response</i>
-                                            </button>
-                                        </form>
-                                        @endif
                                     </div>
-                                    <div class="tab-pane {{ request()->get('activeTab') === 'tab2' ? 'active' : '' }}" id="tab2">
+                                    <div class="tab-pane" id="tab2">
                                         <div class="text-center" style="margin-top: 30px;margin-bottom: 50px; ">
-                                            @can('process_loan')
                                             <button type="button" class="btn btn-primary" style="width: 170px; margin-right: 50px;" title="Accept demande" data-toggle="modal" data-target="#acceptModal">
                                                 <i class="fas fa-check"></i> Accept Demand
                                             </button>
                                             <button type="button" class="btn btn-danger" style="width: 170px;" title="Refuse demande" data-toggle="modal" data-target="#rejectModal">
                                                 <i class="fas fa-times"></i> Refuse Demand
                                             </button>
-                                            @endcan
                                         </div>
                                         <!-- Modal pour l'acceptation -->
                                         <div class="modal fade" id="acceptModal">
@@ -169,7 +153,7 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">
-                                                            Acceptance</h4>
+                                                            Reason for acceptance</h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -180,12 +164,12 @@
                                                             @method('PUT')
                                                             @if($loanDetails->type !== 'Copy')
                                                             <div class="form-group mt-3">
-                                                                <label for="accept_reason">Reason for acceptance :</label>
+                                                                <label for="accept_reason">Motif d'acceptation :</label>
                                                                 <input type="text" class="form-control" id="accept_reason" name="accept_reason" placeholder="Motif d'acceptation">
                                                             </div>
                                                             @endif
                                                             <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-success" name="acceptButton" id="confirmButton">Confirmer</button>
+                                                                <button type="submit" class="btn btn-success" name="acceptButton">Confirmer</button>
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                                             </div>
                                                         </form>
@@ -199,7 +183,6 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">Reason for refusal</h4>
-
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -209,7 +192,7 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="form-group mt-3">
-                                                                <label for="rejection_reason">Reason for refusal:</label>
+                                                                <label for="rejection_reason">Motif d'acceptation :</label>
                                                                 <input type="text" class="form-control" id="rejection_reason" name="rejection_reason" placeholder="Motif de refus">
                                                             </div>
                                                             <div class="modal-footer">
@@ -223,7 +206,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane {{ request()->get('activeTab') === 'tab3' ? 'active' : '' }}" id="tab3">
+
+
+
+
+
+
+                                    <div class="tab-pane" id="tab3">
                                         <div class="text-center">
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 150px; margin-top: 30px;">
                                                 Add Attachment
@@ -368,7 +357,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -405,7 +393,17 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loanType = "{{ $loanDetails->type }}";
+        const acceptModal = document.getElementById('acceptModal');
+        const acceptForm = document.getElementById('acceptForm');
 
-
+        if (loanType === 'Copy') {
+            // Soumet automatiquement le formulaire d'acceptation sans afficher la modale
+            acceptForm.submit();
+        }
+    });
+</script>
 
 @stop

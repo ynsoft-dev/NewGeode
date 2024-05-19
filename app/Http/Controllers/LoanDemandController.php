@@ -87,6 +87,8 @@ class LoanDemandController extends Controller
                 'Status' => 'created',
                 'Value_Status' => 1,
                 'user' => (Auth::user()->name),
+                'accept_reason' => '',
+                'rejection_reason' => '',
             ]);
             
 

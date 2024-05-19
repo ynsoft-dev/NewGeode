@@ -7,6 +7,8 @@ use App\Models\LoanDetails;
 use Illuminate\Http\Request;
 use App\Models\LoanRequest;
 use App\Models\Post;
+use Illuminate\Support\Facades\Gate;
+
 
 class LoanDetailsController extends Controller
 {
@@ -31,7 +33,6 @@ class LoanDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -50,15 +51,58 @@ class LoanDetailsController extends Controller
         $loans = LoanDemand::where('id', $id)->first();
         $details  = LoanDetails::where('loan_demand_id', $id)->get();
         $posts = Post::all();
-        return view('loanDemands.loanDemandsDetails', compact('loans', 'details', 'posts'));
+        $loanDetails = $details->first();
+        // dd($loans, $details, $posts);
+        return view('loanDemands.loanDemandsDetails', compact('loans', 'details', 'posts', 'loanDetails'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LoanDetails $loanDetails)
-    {
-        //
+     
+    
+    public function update(Request $request, $id)
+    {if (!Gate::allows('process_loan')) {
+        abort(403, 'Unauthorized action.');}
+        $loanDetails = LoanDetails::findOrFail($id);
+
+        if ($request->has('acceptButton')) {
+            if ($loanDetails->type === 'Copy') {
+                // Mettre à jour le statut directement
+                $loanDetails->Status = 'Accepted';
+                $loanDetails->Value_Status = 3;
+                $loanDetails->save();
+
+                // Redirection vers l'onglet "Loan Attachment" (tab3)
+                return redirect()->route('loanDetails.edit', ['id' => $loanDetails->loan_demand_id, 'activeTab' => 'tab3'])
+                    ->with('edit', 'Statut mis à jour avec succès');
+            } elseif ($request->filled('accept_reason')) {
+                // Mettre à jour le statut avec le motif d'acceptation
+                $loanDetails->accept_reason = $request->input('accept_reason');
+                $loanDetails->Status = 'Accepted';
+                $loanDetails->Value_Status = 3;
+                $loanDetails->save();
+
+                // Redirection vers l'onglet "Loan Demand Response" (tab2)
+                return redirect()->route('loanDetails.edit', ['id' => $loanDetails->loan_demand_id, 'activeTab' => 'tab2'])
+                    ->with('edit', 'Statut mis à jour avec succès');
+            } else {
+                return back()->withErrors(['accept_reason' => 'Le motif d\'acceptation est requis.']);
+            }
+        } elseif ($request->has('rejectButton')) {
+            if ($request->filled('rejection_reason')) {
+                $loanDetails->rejection_reason = $request->input('rejection_reason');
+                $loanDetails->Status = 'Rejected';
+                $loanDetails->Value_Status = 4;
+                $loanDetails->save();
+
+                // Redirection vers l'onglet "Loan Demand Response" (tab2) après le rejet
+                return redirect()->route('loanDetails.edit', ['id' => $loanDetails->loan_demand_id, 'activeTab' => 'tab2'])
+                    ->with('edit', 'Statut mis à jour avec succès');
+            } else {
+                return back()->withErrors(['rejection_reason' => 'Le motif de refus est requis.']);
+            }
+        }
     }
 
     /**
@@ -68,23 +112,4 @@ class LoanDetailsController extends Controller
     {
         //
     }
-    public function processLoan(Request $request)
-{    $loan_Id = LoanDemand::latest()->first()->id;
-
-    // Récupérer l'ID du prêt de la session
-    // $loan_Id = $request->session()->get('loan_id');
-    
-    // Afficher le contenu de $loanId pour le débogage
-    // dd($loan_Id);
-
-    if ($request->action == 'accept') {
-        // Stocker l'ID du prêt dans une variable de session pour indiquer qu'il a été accepté
-        $request->session()->put('accepted_loan', $loan_Id);
-        // Rediriger l'utilisateur vers l'onglet "Loan Demand Response" (tab2)
-        return redirect()->route('loanDetails.edit', ['id' => $loan_Id, 'activeTab' => 'tab2']);
-    } elseif ($request->action == 'reject') {
-        // Afficher un formulaire pour saisir le motif de refus dans l'onglet "Loan Demand Response" (tab2)
-        return redirect()->route('loanDetails.edit', ['id' => $loan_Id, 'activeTab' => 'tab2'])->with('loan_id', $loan_Id);
-    }
-}
 }
