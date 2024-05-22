@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ArchiveDemandDetails;
-use App\Models\ArchiveDemand;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\AddDemand;
-use Spatie\Permission\Models\Role;
-
 use Illuminate\Http\Request;
+use App\Models\Box;
+use App\Models\ArchiveDemand;
 
-class ArchiveDemandDetailsController extends Controller
+class BoxArchivedController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+           $acceptedDemands = ArchiveDemand::accepted()->pluck('id');
+
+           $boxes = Box::whereIn('archive_demand_id', $acceptedDemands)->get();
+   
+          
+           return view('boxes.boxes_archived', compact('boxes'));
     }
 
     /**
@@ -32,30 +34,29 @@ class ArchiveDemandDetailsController extends Controller
      */
     public function store(Request $request)
     {
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ArchiveDemandDetails $ArchiveDemandDetails)
+    public function show(string $id)
     {
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(string $id)
     {
-        $demands = ArchiveDemand::where('id', $id)->first();
-        $details  = ArchiveDemandDetails::where('archive_demand_id', $id)->get();
-
-        return view('archiveDemandsDetails.archiveDemandsDetails', compact('demands', 'details'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArchiveDemandDetails $ArchiveDemandDetails)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -63,7 +64,7 @@ class ArchiveDemandDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ArchiveDemandDetails $ArchiveDemandDetails)
+    public function destroy(string $id)
     {
         //
     }

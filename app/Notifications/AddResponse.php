@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\ArchiveDemand;
 
-class AddDemand extends Notification
+class AddResponse extends Notification
 {
     use Queueable;
     private $request_id;
@@ -44,9 +44,9 @@ class AddDemand extends Notification
     
         // $url = 'http://127.0.0.1:8000/archieveDemandDetails/' . $this->request_id;
         return (new MailMessage)
-            ->subject('New archive demand added '. $demandArchiveId)
-            ->line('New archive demand added')
-            ->action('Show demand', $url)
+            ->subject('Archive demand RESPONSE added '.$demandArchiveId)
+            ->line('Achive demand RESPONSE added')
+            ->action('Show RESPONSE', $url)
             ->line('Thank you for using NewGeode !');
     }
 

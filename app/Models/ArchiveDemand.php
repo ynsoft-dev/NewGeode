@@ -47,10 +47,15 @@ class ArchiveDemand extends Model
         return $this->boxes()->count();
     }
 
-//     public function lastBox(): ?Box
-// {
-//     return $this->boxes()->latest()->first();
-// }
+    public function scopeAccepted($query)
+    {
+        return $query->where('status', 'Accepted');
+    }
+
+    public function getDemandArchiveId(): string
+{
+    return $this->demand_archive_id;
+}
 
     
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('ref')->nullable();
             $table->date('destruction_date')->nullable();
             $table->string('location')->nullable();
-            $table->string('status', 20)->nullable();
+            $table->string('status', 20)->default('Available');
 
 
             $table->foreignId('archive_demand_id')->constrained()->cascadeOnDelete();

@@ -8,7 +8,8 @@
 <div class="text-center">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        Add demand
+        <i class="fas fa-plus"></i>
+        <span class="ml-1"> Add demand</span>
     </button>
 
 
@@ -122,33 +123,19 @@
                             <td>{{$demand->department->name}}</td>
                             <td>{{$demand->request_date}}</td>
                             <td>
-                                @if(strtolower($demand->status) === 'created')
+                                @if($demand->status === 'Accepted')
                                 <span class="badge badge-success">{{ ucfirst($demand->status) }}</span>
-                                @elseif(strtolower($demand->status) === 'sent')
+                                @elseif($demand->status === 'Sent')
                                 <span class="badge badge-orange">{{ ucfirst($demand->status) }}</span>
+                                @elseif($demand->status === 'created')
+                                <span class="badge badge-secondary">{{ ucfirst($demand->status) }}</span>
+                                @elseif($demand->status === 'Refused')
+                                <span class="badge badge-danger">{{ ucfirst($demand->status) }}</span>
                                 @endif
                             </td>
 
                             <td>{{$demand->getRealBoxQuantity()}}</td>
 
-
-                            <!-- <td>
-                                @foreach($demand->boxes as $box)
-                                {!! nl2br(e($box->ref)) !!}<br>
-                                @endforeach
-                            </td> -->
-
-                            <!-- <td>
-                            @foreach($demand->boxes as $box)
-                            {!! nl2br(e($box->content)) !!}<br>
-                            @endforeach
-                            </td> -->
-
-                            <!-- <td>
-                                @foreach($demand->boxes as $box)
-                                {{ $box->extreme_date }}<br>
-                                @endforeach
-                            </td> -->
 
 
                             <td class="actions-column">
@@ -157,7 +144,7 @@
                                         <i class="fa fa-lg fa-fw fa-eye"></i>
                                     </a>
 
-                                    @if ($demand->status !== 'Sent')
+                                    @if ($demand->status !== 'Sent' && $demand->status !== 'Accepted')
 
                                     <a href="{{ url('edit_archive') }}/{{ $demand->id }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update"><i class="fa fa-lg fa-fw fa-pen"></i></a>
 

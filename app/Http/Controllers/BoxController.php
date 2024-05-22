@@ -31,6 +31,9 @@ class BoxController extends Controller
         $numberOfBoxes = $boxes->count();
 
 
+     
+
+
 
         return view('boxes.boxes', compact('demands', 'lastDemand', 'boxes', 'demandsDetail'));
     }
@@ -83,16 +86,7 @@ class BoxController extends Controller
      */
     public function edit($id)
     {
-        $demands = ArchiveDemand::where('id', $id)->first();
-
-
-        $demandsId = ArchiveDemand::where('id', $id)->first()->id;
-        $boxes = Box::where('archive_demand_id', $demandsId)->get();
-
-        $demandss = ArchiveDemand::all();
-        $demandsDetail = ArchiveDemandDetails::all();
-
-        return view('boxes.edit_box', compact('boxes', 'demands', 'demandsDetail', 'demandss'));
+      
     }
 
     /**

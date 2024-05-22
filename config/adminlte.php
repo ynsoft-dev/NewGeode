@@ -217,7 +217,7 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => false,
+    'sidebar_collapse' => true,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
@@ -297,6 +297,8 @@ return [
 
     'menu' => [
         // Navbar items:
+
+
         [
             'type' => 'navbar-search',
             'text' => 'search',
@@ -306,6 +308,36 @@ return [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
+
+        [
+            'type' => 'navbar-notification',
+            'id' => 'my-notification',                // An ID attribute (required).
+            'icon' => 'fas fa-bell',                  // A font awesome icon (required).
+            'icon_color' => 'warning',                // The initial icon color (optional).
+            'label' => 0,                             // The initial label for the badge (optional).
+            'label_color' => 'danger',                // The initial badge color (optional).
+            'url' => 'notifications/show',            // The url to access all notifications/elements (required).
+            'topnav_right' => true,                   // Or "topnav => true" to place on the left (required).
+            'dropdown_mode' => true,                  // Enables the dropdown mode (optional).
+            'dropdown_flabel' => 'All notifications', // The label for the dropdown footer link (optional).
+            'update_cfg' => [
+                'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
+                'period' => 30,                       // The update period for get new data (in seconds, optional).
+            ],
+        ],
+        // [
+        //     'type' => 'navbar-notification',
+        //     'id' => 'my-notification',
+        //     'icon' => 'fas fa-bell',
+        //     'url' => 'notifications/show',
+        //     'topnav_right' => true,
+        //     'dropdown_mode' => true,
+        //     'dropdown_flabel' => 'All notifications',
+        //     'update_cfg' => [
+        //         'url' => 'notifications/get',
+        //         'period' => 30,
+        //     ],
+        // ],
 
         // Sidebar items:
         [
@@ -317,6 +349,9 @@ return [
             'url' => 'admin/blog',
             'can' => 'manage-blog',
         ],
+
+
+
         [
             'text' => 'Home',
             'url' => '/home',
@@ -325,7 +360,7 @@ return [
         ],
 
 
-        ['header' => 'ADMIN','can' => 'admin',],
+        ['header' => 'ADMIN', 'can' => 'admin',],
 
         [
             'text' => 'Locations',
@@ -401,12 +436,12 @@ return [
                     'icon' => 'fas fa-user-friends',
                     'can' => 'users_permissions',
                 ],
-                
+
             ],
         ],
-   
+
         // ,'can' => 'structureApplicant',
-        ['header' => 'APPLICANT', 'class' => 'bg-info' ,'can' => 'structureApplicant',],
+        ['header' => 'APPLICANT', 'class' => 'bg-info', 'can' => 'structureApplicant',],
         [
             'text' => 'Archive demand',
             'url' => 'archiveDemand',
@@ -425,13 +460,13 @@ return [
         //     'icon' => 'fas fa-file-export',
         // ],
 
-        ['header' => 'ARCHIVISTE','can' => 'structureArchiviste'],
+        ['header' => 'ARCHIVISTE', 'can' => 'structureArchiviste'],
         [
-            'text' => 'Boxes archived',
-            'url' => '#',
+            'text' => 'Boxes Archived',
+            'url' => 'boxArchived',
             'icon' => 'fas fa-file-import',
             'can' => 'archive_boxes',
-            
+
         ],
         // [
         //     'text' => 'Box payments',
@@ -445,7 +480,7 @@ return [
             'can' => 'loans',
         ],
 
-     
+
     ],
 
     /*
@@ -483,6 +518,41 @@ return [
     */
 
     'plugins' => [
+        'toastr' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/toastr/toastr.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/toastr/toastr.min.js',
+                ],
+            ],
+        ],
+        'Sweetalert2' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/sweetalert2/sweetalert2.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '//unpkg.com/sweetalert/dist/sweetalert.min.js',
+                ],
+            ],
+        ],
         'Datatables' => [
             'active' => true,
             'files' => [

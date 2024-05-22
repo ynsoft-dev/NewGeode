@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\ArchiveDemand;
 
 class User extends Authenticatable
 {
@@ -52,6 +53,6 @@ class User extends Authenticatable
 
     public function archiveRequests()
     {
-        return $this->hasMany(ArchiveDemand::class);
+        return $this->hasMany(ArchiveDemand::class,'user_id');
     }
 }

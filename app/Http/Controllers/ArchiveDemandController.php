@@ -17,8 +17,10 @@ use App\Models\ArchiveDemandDetails;
 
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\AddDemand;
+use App\Notifications\AddResponse;
 use App\Helpers\Helper;
 use Carbon\Carbon;
+
 
 class ArchiveDemandController extends Controller
 {
@@ -42,6 +44,11 @@ class ArchiveDemandController extends Controller
 
         // Récupérer les demandes associées à l'utilisateur connecté
         $demands = $user->archiveRequests;
+        // $demands = $user->archiveRequests()->orderBy('request_date', 'desc')->get();
+
+        
+        
+        
 
         return view('archiveDemands.archiveDemands', compact('directions', 'departments', 'demands'));
     }
@@ -73,13 +80,13 @@ class ArchiveDemandController extends Controller
 
             ]);
 
-            $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(),'demand_archive_id',6,'DMDarchive');
+            $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(),'demand_archive_id',6,'DA');
 
             $dmd = new ArchiveDemand();
             $dmd->demand_archive_id = $demand_archive_id;
             $dmd->name = $request->name;
-            // $dmd->request_date = $request->request_date;
-            $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
+            $dmd->request_date = $request->request_date;
+            // $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
             $dmd->department_id = $request->depart;
             $dmd->direction_id = $request->direction;
             $dmd->details_request = $request->details_request;
@@ -132,7 +139,7 @@ class ArchiveDemandController extends Controller
                 return redirect()->back()->withErrors(['check_boxes_edit' => 'Please insert at least one box.']);
             }
 
-            return redirect('/archiveDemand')->with('edit', 'Demand updated successfully');
+            return redirect('/archiveDemand');
         }
 
 
@@ -149,13 +156,44 @@ class ArchiveDemandController extends Controller
                     $archivist->notify(new AddDemand($id));
                 }
             }
-
-
             ArchiveDemand::where('id', $id)->update(['status' => 'Sent']);
             ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Sent']);
 
             return redirect('/archiveDemand')->with('Add', 'Demand sent successfully');
         }
+
+        if ($request->has("sendResponseAEmail")) {
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+            // dd($userId);
+            if ($user) {
+                $user->notify(new AddResponse($id)); // 
+            }
+
+            ArchiveDemand::where('id', $id)->update(['status' => 'Accepted']);
+            ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Accepted']);
+
+            return back()->with('Add', 'Response sent successfully');
+        }
+
+        if ($request->has("sendResponseREmail")) {
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+
+            ArchiveDemand::where('id', $id)->update(['reason' => $request->reason]);
+
+            if ($user) {
+                $user->notify(new AddResponse($id)); // 
+            }
+
+            ArchiveDemand::where('id', $id)->update(['status' => 'Refused']);
+            ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Refused']);
+
+            return back()->with('Add', 'Response sent successfully');
+        }
+  
     }
 
     /**

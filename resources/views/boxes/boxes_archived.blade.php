@@ -3,25 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Request" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
-    <!-- An info theme card with all the tool buttons... -->
 
-    <p name="name_request"><b>Name of the request : </b> {{ $demands->name }}</p>
-    <p name="date_request"><b>Request date : </b> {{ $demands->request_date }}</p>
-    <p name="Direction"><b>Direction : </b> {{ $demands->direction->name }}</p>
-    <p name="depart"><b>Department : </b> {{ $demands->department->name}}</p>
-    <p name="details"><b>Details : </b> {{ $demands->details_request}}</p>
+<h1>List of boxes</h1>
 
-
-</x-adminlte-card>
-
-<h1>List of boxes in the request</h1>
-<div class="text-center">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        <i class="fas fa-plus"> </i>
-        <span class="ml-1">Add box</span>
-    </button>
-</div>
 @stop
 
 @section('content')
@@ -29,10 +13,12 @@
 
 
 <style>
-    .modal-dialog {
+    /* .modal-dialog {
         max-width: 70%;
-        /* max-height: 0%; */
-    }
+    } */
+    .fa-custom-size {
+    font-size: 17px; 
+}
 </style>
 
 @if ($errors->any())
@@ -90,16 +76,13 @@ $heads = [
 'Department',
 'content',
 'Extreme date',
+'Status',
 
-['label' => 'Actions', 'no-export' => true, 'width' => 30],
+['label' => 'Location', 'no-export' => true, 'width' => 15],
 
 ];
 
 @endphp
-
-
-
-<input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demands->id }}">
 
 
 <!-- {{-- Minimal example / fill data using the component slot --}} -->
@@ -121,12 +104,22 @@ $heads = [
                         <td>{{$box->archiveRequest->department->name}}</td>
                         <td>{!! nl2br(e($box->content)) !!}</td>
                         <td>{{$box->extreme_date}}</td>
+                        <td>
+                            @if($box->status === 'Available')
+                            <span class="badge badge-success">{{ ucfirst($box->status) }}</span>
+                            @elseif($box->status === 'Non available')
+                            <span class="badge badge-danger">{{ ucfirst($box->status) }}</span>
+                            @endif
+                        </td>
 
 
 
                         <td>
-                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-content="{{$box->content}}" data-date="{{$box->extreme_date}}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
-                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Add location" data-id="{{ $box->id }}"  data-toggle="modal" href="#exampleModal2">
+                                <i class="fas fa-map-marked-alt fa-custom-size"></i> 
+                            </a>
+
+                            <!-- <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a> -->
                         </td>
 
                     </tr>
@@ -136,75 +129,6 @@ $heads = [
 
 
 
-<br><br>
-<form action="{{ route('archiveRequest.store') }}" method="POST">
-    @csrf
-    <button type="submit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
-    <input type="hidden" name="check_boxes" value="2">
-</form>
-
-
-<br><br><br>
-
-
-
-<!-- Add -->
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Box</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('boxes.store') }}" method="post" autocomplete="off">
-                    {{ csrf_field() }}
-
-                    @foreach ($demandss as $demand)
-                    <input type="hidden" name="archive_requests_id" id="archive_requests_id" value="{{ $demand->id }}">
-                    @endforeach
-
-                    @foreach ($demandsDetail as $demandDetail)
-                    <input type="hidden" name="archieve_request_detail_id" id="archieve_request_detail_id" value="{{ $demandDetail->id }}">
-                    @endforeach
-
-
-                    <label for="exampleInputEmail1">Box name</label>
-                    <input class="form-control" id="inputDscrpt" name="ref" title="Please enter the box name" required></input>
-
-
-                    <label for="exampleInputEmail1">Content</label>
-                    <textarea class="form-control" id="inputDscrpt" name="content" title="Please enter the content" style="height: 100px;" required></textarea>
-
-
-
-
-                    <label>Extreme date</label>
-
-
-                    <x-adminlte-input-date name="extreme_date" :config="$config" placeholder="Choose a year..." required>
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text bg-gradient-danger">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-input-date>
-
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Confirm</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 
 <!-- Edit -->
@@ -212,40 +136,44 @@ $heads = [
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Update Box</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add location</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
 
-                <form action="{{ route('boxes.update', ['box' => $demands->id]) }}" method="post" autocomplete="off">
+                <!-- <form action="boxes/update" method="post" autocomplete="off"> -->
+                <form action="" method="post" autocomplete="off">
+
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
+                    <input type="hidden" name="editBoxes" value="true">
                     <div class="form-group">
                         <input type="hidden" name="id" id="id">
-                        <label for="recipient-name" class="col-form-label">Name box:</label>
+                        <label for="recipient-name" class="col-form-label">Site:</label>
                         <input class="form-control" name="ref" id="ref" type="text">
                     </div>
 
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">Content:</label>
-                        <textarea type="text" class="form-control" id="content" name="content"></textarea>
+                        <label for="message-text" class="col-form-label">Ray:</label>
+                        <input type="text" class="form-control" id="content" name="content"></input>
                     </div>
 
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">Extreme date:</label>
-                        <x-adminlte-input-date :config="$config" class="form-control" id="date" name="date">
-                            <x-slot name="appendSlot">
-                                <div class="input-group-text bg-gradient-danger">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                            </x-slot>
-                        </x-adminlte-input-date>
+                        <label for="message-text" class="col-form-label">Column:</label>
+                        <input type="text" class="form-control" id="content" name="content"></input>
                     </div>
 
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Shelf:</label>
+                        <input type="text" class="form-control" id="content" name="content"></input>
+                    </div>
+
+               
+
             </div>
-            
+
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Confirm</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -264,7 +192,7 @@ $heads = [
             <div class="modal-header">
                 <h6 class="modal-title">Delete Box</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
             </div>
-            <form action="{{ route('boxes.destroy', ['box' => $demands->id]) }}" method="post">
+            <form action="boxes/destroy" method="post">
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">

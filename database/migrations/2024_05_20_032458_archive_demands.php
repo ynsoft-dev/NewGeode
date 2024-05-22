@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('details_request');
             $table->date('request_date');
             $table->string('status', 20)->default('created');
+            $table->string('reason')->nullable();
             
             $table->foreignId('department_id')->constrained();
             $table->foreignId('direction_id')->constrained();

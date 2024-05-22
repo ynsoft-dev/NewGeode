@@ -8,13 +8,13 @@ use App\Http\Controllers\RayController;
 use App\Http\Controllers\ColumnController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\ShelfController;
-use App\Http\Controllers\DropdownController;
 use App\Models\Column;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ArchiveDemandController;
 use App\Http\Controllers\BoxController;
 use App\Http\Controllers\ArchiveDemandDetailsController;
+use App\Http\Controllers\BoxArchivedController;
 use App\Http\Controllers\LoanRequestController;
 use App\Http\Controllers\LoanDetailsController;
 
@@ -55,19 +55,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class,'update'])->name('archiveDemand.update');
     Route::post('/archiveDemand/{id}', [ArchiveDemandController::class, 'store'])->name('archiveDemand.store');
 
-
     Route::resource('boxes', BoxController::class);
-    Route::get('/edit_box/{id}', [BoxController::class, 'edit']);
+    // Route::get('/edit_box/{id}', [BoxController::class, 'edit']);
    
     Route::get('/archiveDemandDetails/{id}', [ArchiveDemandDetailsController::class, 'edit']);
 
     Route::resource('loanRequest', LoanRequestController::class);
     Route::get('/direction/{id}', [LoanRequestController::class, 'getDepartments']);
     Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
-    
     Route::get('/edit_loan/{id}', [LoanRequestController::class, 'edit']);
-
     Route::get('MarkAsRead_all', [LoanRequestController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
+
+    Route::resource('boxArchived', BoxArchivedController::class);
 
 
 
