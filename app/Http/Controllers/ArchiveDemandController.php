@@ -17,6 +17,9 @@ use App\Models\ArchiveDemandDetails;
 
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\AddDemand;
+use App\Notifications\AddResponse;
+use App\Helpers\Helper;
+use Carbon\Carbon;
 
 class ArchiveDemandController extends Controller
 {
@@ -71,15 +74,19 @@ class ArchiveDemandController extends Controller
 
             ]);
 
-            ArchiveDemand::create([
-                'name' => $request->name,
-                'request_date' => $request->request_date,
-                'department_id' => $request->depart,
-                'direction_id' => $request->direction,
-                'details_request' => $request->details_request,
-                'user_id' => (Auth::user()->id),
+            $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(),'demand_archive_id',6,'DMDarchive');
 
-            ]);
+            $dmd = new ArchiveDemand();
+            $dmd->demand_archive_id = $demand_archive_id;
+            $dmd->name = $request->name;
+            // $dmd->request_date = $request->request_date;
+            $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
+            $dmd->department_id = $request->depart;
+            $dmd->direction_id = $request->direction;
+            $dmd->details_request = $request->details_request;
+            $dmd->user_id = Auth::user()->id;
+            
+            $dmd->save();
 
 
             $request_id = ArchiveDemand::latest()->first()->id;
@@ -143,13 +150,44 @@ class ArchiveDemandController extends Controller
                     $archivist->notify(new AddDemand($id));
                 }
             }
-
-
             ArchiveDemand::where('id', $id)->update(['status' => 'Sent']);
             ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Sent']);
 
             return redirect('/archiveDemand')->with('Add', 'Demand sent successfully');
         }
+
+        if ($request->has("sendResponseAEmail")) {
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+            // dd($userId);
+            if ($user) {
+                $user->notify(new AddResponse($id)); // 
+            }
+
+            ArchiveDemand::where('id', $id)->update(['status' => 'Accepted']);
+            ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Accepted']);
+
+            return back()->with('Add', 'Response sent successfully');
+        }
+
+        if ($request->has("sendResponseREmail")) {
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+
+            ArchiveDemand::where('id', $id)->update(['reason' => $request->reason]);
+
+            if ($user) {
+                $user->notify(new AddResponse($id)); // 
+            }
+
+            ArchiveDemand::where('id', $id)->update(['status' => 'Refused']);
+            ArchiveDemandDetails::where('archive_demand_id', $id)->update(['status' => 'Refused']);
+
+            return back()->with('Add', 'Response sent successfully');
+        }
+  
     }
 
     /**

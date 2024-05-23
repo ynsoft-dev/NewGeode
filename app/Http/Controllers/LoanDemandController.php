@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\LoanAttachment;
 use App\Models\LoanDetails;
 use App\Models\User;
+use App\Notifications;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class LoanDemandController extends Controller
         $directions = Direction::all();
         $departments = Department::all();
         // $loans = LoanDemand::all();
-        
+
         // Récupérer l'utilisateur connecté
         $user = Auth::user();
 
@@ -46,7 +47,7 @@ class LoanDemandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         if ($request->has('check')) {
             $this->validate($request, [
@@ -60,7 +61,7 @@ class LoanDemandController extends Controller
 
             $loanRequest = LoanDemand::create([
                 /** Generate id */
-                'borrow_id' =>  Helper::IDGenerator(new LoanDemand, 'borrow_id', 4, 'LOAN'),
+                'borrow_id' =>  Helper::IDGenerator(new LoanDemand, 'borrow_id', 4, 'DP'),
                 'direction_id' => $request->Direction,
                 'department_id' => $request->depart,
                 'box_name' => $request->box_name,
@@ -87,18 +88,16 @@ class LoanDemandController extends Controller
                 'Status' => 'created',
                 'Value_Status' => 1,
                 'user' => (Auth::user()->name),
-                'accept_reason' => '',
-                'rejection_reason' => '',
+                // 'accept_reason' => '',
+                // 'rejection_reason' => '',
             ]);
-            
-
         }
 
 
-
+        // $loan_Id = LoanDemand::latest()->first()->id;
         if ($request->has('sendNotificationButton')) {
-            $loan_Id = LoanDemand::latest()->first()->id;
             $loans = LoanDemand::latest()->first();
+
             $archivistRole = Role::where('name', 'Archiviste')->first();
             if ($archivistRole) {
                 $archivists = $archivistRole->users;
@@ -106,9 +105,72 @@ class LoanDemandController extends Controller
                     Notification::send($archivist, new \App\Notifications\Add_loanDemand($loans));
                 }
             }
-            LoanDemand::where('id', $loan_Id)->update(['Status' => 'Sent']);
-            LoanDetails::where('loan_demand_id', $loan_Id)->update(['Status' => 'Sent']);
+            LoanDemand::where('id', $id)->update(['Status' => 'Sent']);
+            LoanDetails::where('loan_demand_id', $id)->update(['Status' => 'Sent']);
             return redirect('/loanDemand')->with('Add', 'Demand sent successfully');
+        }
+
+
+
+        if ($request->has("sendResponseAEmail")) {
+            $loans = LoanDemand::latest()->first();
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+            // dd($userId);
+            if ($user) {
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+            }
+
+            LoanDemand::where('id', $id)->update(['Status' => 'Accepted']);
+            LoanDetails::where('archive_demand_id', $id)->update(['Status' => 'Accepted']);
+
+            // Vérifiez le type de prêt
+            if ($request->loan_type == 'Copy') {
+                // Redirigez vers l'onglet des pièces jointes avec un message
+                return redirect()->route('loanDetails.edit', ['id' => $id, 'activeTab' => 'tab3'])->with('message', 'Demand accepted, please insert an attachment.');
+            }
+
+            // Retourner avec un message de succès si le type de prêt est "Original"
+            return back()->with('Add', 'Réponse envoyée avec succès');
+        }
+
+
+        if ($request->has("sendResponseREmail")) {
+
+            $loans = LoanDemand::latest()->first();
+
+            $userId = $request->input('user');
+            $user = User::find($userId);
+
+            LoanDemand::where('id', $id)->update(['reason' => $request->reason]);
+
+            if ($user) {
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+            }
+
+            LoanDemand::where('id', $id)->update(['Status' => 'Refused']);
+            LoanDetails::where('loan_demand_id', $id)->update(['Status' => 'Refused']);
+
+            return back()->with('Add', 'Response sent successfully');
+        }
+
+
+        if ($request->has("sendResponseREmail")) {
+            $loans = LoanDemand::latest()->first();
+            $userId = $request->input('user');
+            $user = User::find($userId);
+
+            LoanDemand::where('id', $loan_Id)->update(['reason' => $request->reason]);
+
+            if ($user) {
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+            }
+
+            LoanDemand::where('id', $loan_Id)->update(['Status' => 'Refused']);
+            LoanDetails::where('loan_demand_id', $loan_Id)->update(['Status' => 'Refused']);
+
+            return back()->with('Add', 'Response sent successfully');
         }
         session()->flash('Add', 'Demand loan successfully added');
         return redirect('/loanDemand');
@@ -125,7 +187,7 @@ class LoanDemandController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit( $id)
+    public function edit($id)
     {
         $loans = LoanDemand::where('id', $id)->first();
         $directions = Direction::all();

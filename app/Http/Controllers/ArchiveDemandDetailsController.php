@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchiveDemandDetails;
 use App\Models\ArchiveDemand;
-
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AddDemand;
+use Spatie\Permission\Models\Role;
 
 use Illuminate\Http\Request;
 
@@ -15,7 +17,6 @@ class ArchiveDemandDetailsController extends Controller
      */
     public function index()
     {
-   
     }
 
     /**
@@ -31,7 +32,6 @@ class ArchiveDemandDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -39,7 +39,6 @@ class ArchiveDemandDetailsController extends Controller
      */
     public function show(ArchiveDemandDetails $ArchiveDemandDetails)
     {
-        
     }
 
     /**
@@ -47,12 +46,10 @@ class ArchiveDemandDetailsController extends Controller
      */
     public function edit($id)
     {
-        $demands = ArchiveDemand::where('id',$id)->first();
-        $details  = ArchiveDemandDetails::where('archive_demand_id',$id)->get();
-        
+        $demands = ArchiveDemand::where('id', $id)->first();
+        $details  = ArchiveDemandDetails::where('archive_demand_id', $id)->get();
 
-
-        return view('archiveDemandsDetails.archiveDemandsDetails',compact('demands','details'));
+        return view('archiveDemandsDetails.archiveDemandsDetails', compact('demands', 'details'));
     }
 
     /**

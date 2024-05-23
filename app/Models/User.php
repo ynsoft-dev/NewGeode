@@ -22,7 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'roles_name',
-        'Status'
+        'Status',
+        'unread_notifications_count'
 
     ];
 
@@ -57,4 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(LoanDemand::class);
     }
+    public function decrementUnreadNotificationsCount($amount = 1)
+    {
+        $this->unread_notifications_count = max(0, $this->unread_notifications_count - $amount);
+        $this->save();
+    }
+    
 }

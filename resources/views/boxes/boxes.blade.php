@@ -6,8 +6,8 @@
 <x-adminlte-card title="Info Demand" theme="info" icon="fas fa-lg fa-bell" collapsible maximizable>
     <!-- An info theme card with all the tool buttons... -->
 
-    <p name="name_request"><b>Name of the request : </b> {{ $lastDemand->name }}</p>
-    <p name="date_request"><b>Request date : </b> {{ $lastDemand->request_date }}</p>
+    <p name="name_request"><b>Name of the demand : </b> {{ $lastDemand->name }}</p>
+    <p name="date_request"><b>Demand date : </b> {{ $lastDemand->request_date }}</p>
     <p name="Direction"><b>Direction : </b> {{ $lastDemand->direction->name }}</p>
     <p name="depart"><b>Department : </b> {{ $lastDemand->department->name}}</p>
     <p name="details"><b>Details : </b> {{ $lastDemand->details_request}}</p>
@@ -16,7 +16,7 @@
 
 </x-adminlte-card>
 
-<h1>List of boxes in the request</h1>
+<h1>List of boxes in the demand</h1>
 <div class="text-center">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
         <i class="fas fa-plus"> </i>

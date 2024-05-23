@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -49,6 +50,8 @@ class PostController extends Controller
 
         $posts = Post::create([
             'name' => $request->name,
+            'loan_detail_id' => $request->loan_detail_id,
+
         ]);
         // $posts->addMediaFromRequest('image')->toMediaCollection('images');
         if ($request->hasFile('image')) {
@@ -56,7 +59,7 @@ class PostController extends Controller
             $mediaCollection = $file->getMimeType() === 'application/pdf' ? 'files' : 'images';
             $posts->addMediaFromRequest('image')->toMediaCollection($mediaCollection);
         }
-        session()->flash('Add', 'posts added successfully');
+        session()->flash('Add', 'Attachment sent successfully');
         return redirect()->route('loanDetails.edit', ['id' => $request->loan_id])->with('activeTab', 'tab3');
     }
 
@@ -107,9 +110,11 @@ class PostController extends Controller
      */
     public function destroy(Request $request)
     {
-        $id = $request->id;
-        Post::find($id)->delete();
-        session()->flash('delete', 'post has been successfully removed');
-        return redirect('/posts');
+
+
+         $posts = Post::findOrFail($request->id);
+        $posts->delete();
+        session()->flash('delete', 'The Attachment has been successfully deleted');
+        return back();
     }
 }

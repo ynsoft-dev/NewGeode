@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class LoanDetails extends Model
@@ -21,13 +22,17 @@ class LoanDetails extends Model
         'Status',
         'Value_Status',
         'user',
-        'accept_reason',
-        'rejection_reason',
+        // 'accept_reason',
+        // 'rejection_reason',
 
     ];
     public function loan(): BelongsTo
     {
         return $this->belongsTo(LoanDemand::class, 'loan_demand_id');
+    }
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
  
 }

@@ -8,13 +8,20 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\File;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Post extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
     protected $fillable = [
         'name',
+        'loan_detail_id',
 
     ];
+    public function loanDetails(): BelongsTo
+    {
+        return $this->belongsTo(LoanDetails::class, 'loan_detail_id');
+    }
     public function registerMediaCollections(Media $media = null): void
     {
         $this
@@ -28,4 +35,5 @@ class Post extends Model implements HasMedia
             ->addMediaCollection('files')
             ->acceptsMimeTypes(['application/pdf']);
     }
+  
 }

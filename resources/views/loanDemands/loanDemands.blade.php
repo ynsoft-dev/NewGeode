@@ -95,26 +95,28 @@ $heads = [
                         <td>{{$loan->request_date}}</td>
                         <td>{{$loan->return_date}}</td>
                         <td>
-                            @if ($loan->Value_Status == 1)
-                            <span class="text-success">{{ $loan->Status }}</span>
-                            @elseif($loan->Value_Status == 2)
-                            <span class="text-danger">{{ $loan->Status }}</span>
-                            @else
-                            <span class="text-warning">{{ $loan->Status }}</span>
+                            @if ($loan->Status == 'created')
+                            <span class="badge badge-secondary">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Sent')
+                            <span class="badge badge-secondary">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Accepted')
+                            <span class="badge badge-success">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Refused')
+                            <span class="badge badge-danger">{{ $loan->Status }}</span>
                             @endif
-
+                        
                         </td>
 
                         <td class="actions-column">
                             <div class="d-flex align-items-center">
                                 <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
-                                @if ($loan->Status !== 'Sent')
+                                @if ($loan->Status !== 'Sent'&& $loan->Status !== 'Accepted')
                                 <a class="btn btn-xs btn-default text-danger mx-1 shadow btn-delete" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                                 <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ url('edit_loan') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
-                                <form id="sendNotificationForm" action="{{ route('loanDemand.store') }}" method="POST">
+                                <form id="sendNotificationForm" action="{{ route('loanDemand.store', ['id' => $loan->id]) }}" method="POST">
                                     @csrf
                                     <button type="submit" name="sendNotificationButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d" title="Send notfication" data-effect="effect-scale">
-                                        <i class="fas fa-envelope" style="color: #28a745"></i> 
+                                        <i class="fas fa-envelope" style="color: #28a745"></i>
                                     </button>
                                 </form>
                                 @endif
@@ -138,7 +140,7 @@ $heads = [
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('loanDemand.store', ['check' => true]) }}" method="post" autocomplete="off">
+                <form action="{{ route('loanDemand.store', ['id' => isset($loan) ? $loan->id : 0, 'check' => true]) }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
                     <div class="form-group row mb-0">

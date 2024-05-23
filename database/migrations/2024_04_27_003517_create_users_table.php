@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->text('roles_name');
             $table->string('Status', 10);
+            $table->unsignedInteger('unread_notifications_count')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('Status', 50);
             $table->integer('Value_Status');
             $table->string('user', 300);
-            $table->string('accept_reason')->nullable(); // Ajout de la colonne accept_reason
-            $table->string('rejection_reason')->nullable(); // Ajout de la colonne rejection_reason
+            // $table->string('accept_reason')->nullable(); // Ajout de la colonne accept_reason
+            // $table->string('rejection_reason')->nullable(); // Ajout de la colonne rejection_reason
             $table->timestamps();
         });
     }

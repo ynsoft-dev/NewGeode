@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-@can('notifications')
+<!-- @can('notifications')
 <x-adminlte-card title="Notifications" theme="info" icon="fas fa-lg fa-bell" collapsible removable maximizable>
 
     <div class="menu-header-content" style="padding: 10px; border-radius: 5px;">
@@ -53,7 +53,7 @@
     </div>
 
 </x-adminlte-card>
-@endcan
+@endcan -->
 @stop
 
 @section('content')

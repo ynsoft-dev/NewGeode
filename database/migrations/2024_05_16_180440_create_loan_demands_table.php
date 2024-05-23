@@ -23,6 +23,8 @@ return new class extends Migration
             $table->date('return_date');
             $table->string('Status', 50);
             $table->integer('Value_Status');
+            $table->string('reason')->nullable();
+
             $table->timestamps();
         });
     }
