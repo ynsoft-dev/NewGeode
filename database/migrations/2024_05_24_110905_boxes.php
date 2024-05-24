@@ -26,6 +26,9 @@ return new class extends Migration
 
             $table->foreignId('archive_demand_id')->constrained()->cascadeOnDelete();
             $table->foreignId('archive_demand_details_id')->constrained()->cascadeOnDelete();
+
+            $table->unsignedBigInteger('shelf_id')->nullable()->constrained('shelves');
+
             
             $table->timestamps();
         });

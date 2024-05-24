@@ -23,6 +23,7 @@ class Box extends Model
 
         'archive_demand_id',  
         'archive_demand_details_id',
+        'shelf_id'
 
     ];
     
@@ -34,6 +35,11 @@ class Box extends Model
     public function boxArchiveRequest(): BelongsTo
     {
         return $this->belongsTo(Box::class,'archive_demand_details_id');
+    }
+
+    public function shelf(): BelongsTo
+    {
+        return $this->belongsTo(Shelf::class,'shelf_id');
     }
 
 

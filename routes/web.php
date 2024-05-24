@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
 
     Route::resource('archiveDemand', ArchiveDemandController::class);
-    Route::get('/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
+    Route::get('archiveDemand/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
 
     Route::get('/edit_archive/{id}', [ArchiveDemandController::class, 'edit']);
     Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class,'update'])->name('archiveDemand.update');
@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::get('MarkAsRead_all', [LoanRequestController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
 
     Route::resource('boxArchived', BoxArchivedController::class);
+    Route::get('boxArchived/site/{id}', [BoxArchivedController::class, 'getRays']);
+    Route::get('boxArchived/col/{id}', [BoxArchivedController::class, 'getColumns']);
+    Route::get('boxArchived/shelves/{id}', [BoxArchivedController::class, 'getShelves']);
 
 
 

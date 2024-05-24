@@ -17,8 +17,8 @@
         max-width: 70%;
     } */
     .fa-custom-size {
-    font-size: 17px; 
-}
+        font-size: 17px;
+    }
 </style>
 
 @if ($errors->any())
@@ -78,7 +78,7 @@ $heads = [
 'Extreme date',
 'Status',
 
-['label' => 'Location', 'no-export' => true, 'width' => 15],
+['label' => 'Location', 'no-export' => true, 'width' => 30 ],
 
 ];
 
@@ -115,9 +115,15 @@ $heads = [
 
 
                         <td>
-                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Add location" data-id="{{ $box->id }}"  data-toggle="modal" href="#exampleModal2">
-                                <i class="fas fa-map-marked-alt fa-custom-size"></i> 
+
+                            {{$box->location}}
+                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Add location" data-id="{{ $box->id }}" data-toggle="modal" href="#exampleModal2">
+                                <i class="fas fa-map-marked-alt fa-custom-size"></i>
                             </a>
+
+                            <!-- <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit location" data-id="{{ $box->id }}" data-toggle="modal" href="#exampleEdit">
+                                <i class="fas fa-map-marked-alt fa-custom-size"></i>
+                            </a> -->
 
                             <!-- <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a> -->
                         </td>
@@ -131,7 +137,7 @@ $heads = [
 
 
 
-<!-- Edit -->
+<!-- Add location -->
 <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -144,33 +150,35 @@ $heads = [
             <div class="modal-body">
 
                 <!-- <form action="boxes/update" method="post" autocomplete="off"> -->
-                <form action="" method="post" autocomplete="off">
+                <form action="boxArchived/update" method="post" autocomplete="off">
 
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
-                    <input type="hidden" name="editBoxes" value="true">
-                    <div class="form-group">
-                        <input type="hidden" name="id" id="id">
-                        <label for="recipient-name" class="col-form-label">Site:</label>
-                        <input class="form-control" name="ref" id="ref" type="text">
-                    </div>
+                    <input type="hidden" name="id" id="id">
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Site</label>
+                    <select name="Site" class="form-control" required>
+                        <option value="" selected disabled> -- Select site --</option>
+                        @foreach ($sites as $site)
+                        <option value="{{ $site->id }}">{{ $site->name }}</option>
+                        @endforeach
+                    </select>
 
-                    <div class="form-group">
-                        <label for="message-text" class="col-form-label">Ray:</label>
-                        <input type="text" class="form-control" id="content" name="content"></input>
-                    </div>
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Ray</label>
+                    <select name="ray" id="ray" class="form-control" required>
+                    </select>
 
-                    <div class="form-group">
-                        <label for="message-text" class="col-form-label">Column:</label>
-                        <input type="text" class="form-control" id="content" name="content"></input>
-                    </div>
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
+                    <select name="column" id="column" class="form-control" required>
+                    </select>
 
-                    <div class="form-group">
-                        <label for="message-text" class="col-form-label">Shelf:</label>
-                        <input type="text" class="form-control" id="content" name="content"></input>
-                    </div>
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Shelf</label>
+                    <select name="shelf" id="shelf" class="form-control" required>
+                    </select>
 
-               
+                    <input type="hidden" name="location" id="location">
+                    <input type="hidden" name="shelf_id" id="shelf_id">
+
+
 
             </div>
 
@@ -182,6 +190,59 @@ $heads = [
         </div>
     </div>
 </div>
+
+<!-- Edit location -->
+<!-- <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add location</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"> -->
+
+<!-- <form action="boxes/update" method="post" autocomplete="off"> -->
+<!-- <form action="{{ route('archiveDemand.update', ['id' => 'shelf_id']) }}" method="post" autocomplete="off">
+
+                    {{ method_field('patch') }}
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" id="id">
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Site</label>
+                    <select name="Site" class="form-control" required>
+                        <option value="" selected disabled> -- Select site --</option>
+                        @foreach ($sites as $site)
+                        <option value="{{ $site->id }}">{{ $site->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Ray</label>
+                    <select name="ray" id="ray" class="form-control" required>
+                    </select>
+
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Column</label>
+                    <select name="column" id="column" class="form-control" required>
+                    </select>
+
+                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Shelf</label>
+                    <select name="shelf" id="shelf" class="form-control" required>
+                    </select>
+
+                    <input type="hidden" name="location" id="location">
+
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div> -->
 
 
 
@@ -218,14 +279,8 @@ $heads = [
     $('#exampleModal2').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
-        var ref = button.data('ref')
-        var content = button.data('content')
-        var date = button.data('date')
         var modal = $(this)
         modal.find('.modal-body #id').val(id);
-        modal.find('.modal-body #ref').val(ref);
-        modal.find('.modal-body #content').val(content);
-        modal.find('.modal-body #date').val(date);
     })
 </script>
 
@@ -239,5 +294,109 @@ $heads = [
         modal.find('.modal-body #ref').val(ref);
     })
 </script>
+
+<script>
+    $(document).ready(function() {
+
+        $('select[name="Site"]').on('change', function() {
+            var SiteId = $(this).val();
+            console.log("site ID:", SiteId);
+
+         
+
+            if (SiteId) {
+                console.log("Déclenchement de la requête AJAX pour récupérer les rayons");
+                $.ajax({
+                    url: "{{ URL::to('boxArchived/site') }}/" + SiteId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+
+
+
+                        $('select[name="ray"]').empty();
+                        // Values from controller
+                        $.each(data, function(id, name) {
+                            $('select[name="ray"]').append('<option value="' +
+                                id + '">' + name + '</option>');
+                        });
+
+
+
+                        var selectedRayId = $('select[name="ray"]').val();
+                        console.log("Selected Ray ID:", selectedRayId);
+
+
+                        if (selectedRayId) {
+                            // Vérification si la deuxième requête AJAX est déclenchée
+                            console.log("Déclenchement de la requête AJAX pour récupérer les colonnes");
+                            $.ajax({
+                                url: "{{ URL::to('boxArchived/col') }}/" + selectedRayId,
+                                type: "GET",
+                                dataType: "json",
+                                success: function(data) {
+                                    $('select[name="column"]').empty();
+                                    $.each(data, function(id, name) {
+                                        $('select[name="column"]').append('<option value="' + id + '">' + name + '</option>');
+                                    });
+
+
+                                    var selectedColumnId = $('select[name="column"]').val();
+                                    console.log("Selected column ID:", selectedColumnId);
+
+                                    var columnName = $('select[name="column"] option:selected').text();
+                                    console.log("Column name", columnName);
+
+                                    if (selectedColumnId) {
+                                        // Vérification si la deuxième requête AJAX est déclenchée
+                                        console.log("Déclenchement de la requête AJAX pour récupérer les étagères");
+                                        $.ajax({
+                                            url: "{{ URL::to('boxArchived/shelves') }}/" + selectedColumnId,
+                                            type: "GET",
+                                            dataType: "json",
+                                            success: function(data) {
+                                                $('select[name="shelf"]').empty();
+                                                $.each(data, function(id, name) {
+                                                    $('select[name="shelf"]').append('<option value="' + id + '">' + name + '</option>');
+                                                });
+
+                                              
+
+
+                                                var shelf_id = $('select[name="shelf"] option:selected').val();
+                                                console.log("shelfid ", shelf_id);
+                                                $('#shelf_id').val(shelf_id);
+
+                                             
+                                            },
+
+                                        });
+
+
+
+                                    } else {
+                                        console.log('AJAX load did not work');
+                                    }
+                                },
+                            });
+
+                        } else {
+                            console.log('AJAX load did not work');
+                        }
+                    },
+                });
+            } else {
+                console.log('AJAX load did not work');
+            }
+
+
+        });
+
+
+    });
+</script>
+
+
+
 
 @stop
