@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -18,7 +20,7 @@ class NotificationController extends Controller
                 'icon' => 'fas fa-fw fa-envelope',
                 'text' => $notification->data['borrow'] . ' by ' . $notification->data['user'],
                 'time' => $notification->created_at->diffForHumans(),
-                'url' => url('loanDetails/' . $notification->data['id']),
+                'url' => route('notifications.redirectToNotification', ['id' => $notification->id]),
             ];
         }
 
@@ -37,12 +39,12 @@ class NotificationController extends Controller
             $dropdownHtml .= "<div class='dropdown-divider'></div>";
         }
 
-        $dropdownHtml .= "<a href='".route('notifications.markAsReadAll')."' class='dropdown-item dropdown-footer'>Read All</a>";
+        $dropdownHtml .= "<a href='" . route('notifications.markAsReadAll') . "' class='dropdown-item dropdown-footer'>Read All</a>";
 
         return [
             'label' => $unreadNotifications->count(),
             'label_color' => $unreadNotifications->count() > 0 ? 'danger' : 'success',
-            'icon_color' => $unreadNotifications->count() > 0 ? 'dark' : 'light',
+            'icon_color' => $unreadNotifications->count() > 0 ? 'dark' : 'dark',
             'dropdown' => $dropdownHtml,
         ];
     }
@@ -51,22 +53,49 @@ class NotificationController extends Controller
     {
         $user = Auth::user();
         $user->unreadNotifications->markAsRead();
-        return redirect()->back();
+        return redirect('/home');
     }
 
     public function markAsRead($id)
     {
-        $user = Auth::user();
-        
-        dd($user->unread_notifications_count);
-        $notification = $user->unreadNotifications->find($id);
-        if ($notification) {
-            $notification->markAsRead();
-            // Appel à la méthode pour décrémenter le compteur de notifications non lues
-            $user->decrementUnreadNotificationsCount;
-        }
+        // Récupérer la notification par son ID
+        $notification = auth()->user()->notifications->where('id', $id)->first();
 
-        return redirect(url('loanDetails/' . $id));
+        // Vérifier si la notification existe
+        if ($notification) {
+            // Marquer la notification comme lue en mettant à jour la valeur de 'read_at'
+            $notification->markAsRead();
+
+            // Mise à jour de la colonne 'read_at' dans la table 'notifications' directement
+            DB::table('notifications')->where('id', $id)->update(['read_at' => now()]);
+
+            // Retourner une réponse JSON
+            return response()->json(['message' => 'Notification marked as read']);
+        } else {
+            // Si la notification n'est pas trouvée, retourner une réponse d'erreur
+            return response()->json(['error' => 'Notification not found'], 404);
+        }
+    }
+
+    public function redirectToNotification($id)
+    {
+        // Récupérer la notification par son ID
+        $notification = auth()->user()->notifications->where('id', $id)->first();
+
+        // Vérifier si la notification existe
+        if ($notification) {
+            // Marquer la notification comme lue
+            $notification->markAsRead();
+
+            // Mise à jour de la colonne 'read_at' dans la table 'notifications' directement
+            DB::table('notifications')->where('id', $id)->update(['read_at' => now()]);
+
+            // Rediriger vers l'URL de la notification
+            return redirect(url('loanDetails/' . $notification->data['id']));
+        } else {
+            // Si la notification n'est pas trouvée, retourner une réponse d'erreur
+            return redirect()->back()->withErrors(['error' => 'Notification not found']);
+        }
     }
 
     public function unreadNotificationsCount()
@@ -80,7 +109,7 @@ class NotificationController extends Controller
     {
         $unreadNotifications = Auth::user()->unreadNotifications;
         $notifications = [];
-        
+
         foreach ($unreadNotifications as $notification) {
             $notifications[] = [
                 'borrow' => $notification->data['borrow'],
@@ -89,7 +118,7 @@ class NotificationController extends Controller
                 'id' => $notification->id
             ];
         }
-        
+
         return response()->json($notifications);
     }
 }

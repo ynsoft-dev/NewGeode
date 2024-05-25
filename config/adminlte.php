@@ -312,7 +312,7 @@ return [
             'url' => 'notifications/show',            // The url to access all notifications/elements (required).
             'topnav_right' => true,                   // Or "topnav => true" to place on the left (required).
             'dropdown_mode' => true,                  // Enables the dropdown mode (optional).
-            'dropdown_flabel' => 'All notifications', // The label for the dropdown footer link (optional).
+            'dropdown_flabel' => '', // The label for the dropdown footer link (optional).
             'update_cfg' => [
                 'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
                 'period' => 300,                       // The update period for get new data (in seconds, optional).
@@ -535,21 +535,22 @@ return [
         ['header' => 'ARCHIVISTE', 'can' => 'structureArchiviste'],
         [
             'text' => 'Boxes archived',
-            'url' => '#',
+            'url' => 'boxArchived',
             'icon' => 'fas fa-file-import',
             'can' => 'archive_boxes',
 
         ],
-        [
-            'text' => 'Box payments',
-            'url' => '#',
-            'icon' => 'fas fa-file-import',
-        ],
+       
         [
             'text' => 'Box Loaned',
-            'url' => '#',
+            'url' => 'boxLoaned',
             'icon' => 'fas fa-file-import',
             'can' => 'loans',
+        ],
+        [
+            'text' => 'Box Overdue',
+            'url' => 'boxOverdue',
+            'icon' => 'fas fa-file-import',
         ],
 
 

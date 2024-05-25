@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class ArchiveDemand extends Model
 {
     protected $fillable = [
+        'demand_archive_id',
         'name',
         'details_request',
         'box_quantity',
@@ -31,7 +33,7 @@ class ArchiveDemand extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function boxes(): HasMany
@@ -39,14 +41,19 @@ class ArchiveDemand extends Model
         return $this->hasMany(Box::class);
     }
 
-    
+
     public function getRealBoxQuantity(): int
     {
         return $this->boxes()->count();
     }
 
-//     public function lastBox(): ?Box
-// {
-//     return $this->boxes()->latest()->first();
-// }
+    public function scopeAccepted($query)
+    {
+        return $query->where('status', 'Accepted');
+    }
+
+    public function getDemandArchiveId(): string
+    {
+        return $this->demand_archive_id;
+    }
 }

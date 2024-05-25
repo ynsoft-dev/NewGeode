@@ -7,7 +7,7 @@
 <div class="text-center">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        Add Loan
+        Add Loan Demand
     </button>
 
 </div>

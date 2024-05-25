@@ -3,11 +3,12 @@ namespace App\Helpers;
 
 class Helper
 {
-
-    public static function IDGenerator($model, $trow, $length = 4)
+    public static function IDGenerator($model, $trow, $length = 6, $prefix = '')
     {
         $year = date('y'); // Récupère les deux derniers chiffres de l'année actuelle (ex : 2024 -> 24)
-        $prefix = 'DP' . $year . '-'; // Concatène 'DP', l'année et un tiret
+        $yearPrefix = $year; // Les deux derniers chiffres de l'année
+        $prefix .= $yearPrefix; // Ajoute les deux derniers chiffres de l'année au préfixe
+
         $data = $model::orderBy('id', 'desc')->first();
 
         if (!$data) {

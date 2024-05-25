@@ -8,7 +8,8 @@
 <div class="text-center">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        Add demand
+        <i class="fas fa-plus"></i>
+        <span class="ml-1"> Add demand</span>
     </button>
 
 
@@ -183,7 +184,7 @@
                     <form id="myForm" action="{{ route('archiveDemand.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
-                        <div class="form-group row mb-0"> <!-- Ajoutez la classe mb-0 ici -->
+                        <div class="form-group row mb-0"> 
                             <div class="col">
                                 <x-adminlte-button class="btn-sm float-right mr-2" type="reset" label="Reset" theme="outline-danger" icon="fas fa-trash" width="100px" />
                             </div>

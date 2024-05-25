@@ -17,7 +17,6 @@ use Spatie\Permission\Models\Role;
 use App\Helpers\Helper;
 use PgSql\Lob;
 use App\Notifications\Add_loanDemandEmail;
-use App\Notifications\AddLoanResponseMail;
 class LoanDemandController extends Controller
 {
     /**
@@ -62,7 +61,7 @@ class LoanDemandController extends Controller
 
             $loanRequest = LoanDemand::create([
                 /** Generate id */
-                'borrow_id' => Helper::IDGenerator(new LoanDemand, 'borrow_id', 6, 'DP'),
+                'borrow_id' =>  Helper::IDGenerator(new LoanDemand, 'borrow_id', 4, 'DP'),
                 'direction_id' => $request->Direction,
                 'department_id' => $request->depart,
                 'box_name' => $request->box_name,
@@ -95,9 +94,9 @@ class LoanDemandController extends Controller
         }
 
 
+        // $loan_Id = LoanDemand::latest()->first()->id;
         if ($request->has('sendNotificationButton')) {
             $loans = LoanDemand::latest()->first();
-            $loan_Id = LoanDemand::latest()->first()->id;
 
             $archivistRole = Role::where('name', 'Archiviste')->first();
             if ($archivistRole) {
@@ -123,8 +122,6 @@ class LoanDemandController extends Controller
             // dd($userId);
             if ($user) {
                 Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
-                $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Accepted']);
@@ -152,8 +149,6 @@ class LoanDemandController extends Controller
 
             if ($user) {
                 Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
-                $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Refused']);

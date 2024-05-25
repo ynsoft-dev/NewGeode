@@ -16,7 +16,10 @@
     use App\Http\Controllers\LoanDemandController;
     use App\Http\Controllers\LoanDetailsController;
     use App\Http\Controllers\NotificationController;
+    use App\Http\Controllers\BoxArchivedController;
+    use App\Http\Controllers\BoxLoanedController;
     use App\Http\Controllers\PostController;
+    use App\Http\Controllers\BoxOverdueController;
 
     // Définir la route d'accueil pour rediriger vers la page de connexion
     Route::get('/', function () {
@@ -50,21 +53,19 @@
 
 
         Route::resource('archiveDemand', ArchiveDemandController::class);
-        Route::get('/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
+        Route::get('archiveDemand/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
 
         Route::get('/edit_archive/{id}', [ArchiveDemandController::class, 'edit']);
         Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class, 'update'])->name('archiveDemand.update');
         Route::post('/archiveDemand/{id}', [ArchiveDemandController::class, 'store'])->name('archiveDemand.store');
 
-
         Route::resource('boxes', BoxController::class);
-        Route::get('/edit_box/{id}', [BoxController::class, 'edit']);
+        // Route::get('/edit_box/{id}', [BoxController::class, 'edit']);
 
         Route::get('/archiveDemandDetails/{id}', [ArchiveDemandDetailsController::class, 'edit']);
 
         Route::resource('loanDemand', LoanDemandController::class);
         Route::post('/loanDemand/{id}', [LoanDemandController::class, 'store'])->name('loanDemand.store');
-
         Route::get('/direction/{id}', [LoanDemandController::class, 'getDepartments']);
         Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
         Route::get('/edit_loan/{id}', [LoanDemandController::class, 'edit']);
@@ -74,16 +75,26 @@
         Route::delete('posts/destroy', [PostController::class, 'destroy'])->name('posts.destroy');
 
         // Ajoute une route PUT pour la mise à jour du statut dans LoanDetailsController
-        Route::put('/loanDetails/{id}', [LoanDetailsController::class, 'update'])->name('loanDetails.update');
+        // Route::put('/loanDetails/{id}', [LoanDetailsController::class, 'update'])->name('loanDetails.update');
 
-        // Route::get('/notifications/show', [NotificationController::class, 'show'])->name('notifications.show');
-        // Route::get('notifications/show', [NotificationController::class, 'show'])->name('notifications.show');
-        // Route::get('notifications/get', [NotificationController::class, 'getNotificationsData'])->name('notifications.get');
-        // Route::get('notifications/markAsRead_all', [NotificationController::class, 'markAsReadAll'])->name('notifications.markAsReadAll');
-        // Route::get('notifications/markAsRead/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+
+        Route::get('notifications/redirectToNotification/{id}', [NotificationController::class, 'redirectToNotification'])->name('notifications.redirectToNotification');
         Route::get('notifications/get', [NotificationController::class, 'getNotificationsData'])->name('notifications.get');
         Route::get('notifications/markAsReadAll', [NotificationController::class, 'markAsReadAll'])->name('notifications.markAsReadAll');
         Route::get('notifications/markAsRead/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         Route::get('notifications/unreadNotificationsCount', [NotificationController::class, 'unreadNotificationsCount'])->name('notifications.unreadNotificationsCount');
         Route::get('notifications/unreadNotifications', [NotificationController::class, 'unreadNotifications'])->name('notifications.unreadNotifications');
+
+        Route::resource('boxArchived', BoxArchivedController::class);
+        Route::get('boxArchived/site/{id}', [BoxArchivedController::class, 'getRays']);
+        Route::get('boxArchived/col/{id}', [BoxArchivedController::class, 'getColumns']);
+        Route::get('boxArchived/shelves/{id}', [BoxArchivedController::class, 'getShelves']);
+        // pour modifer le status availaible
+        Route::patch('/boxes/{id}/borrow', [BoxArchivedController::class, 'borrow'])->name('boxes.borrow');
+        Route::resource('boxLoaned', BoxLoanedController::class);
+        Route::patch('/boxes/{id}/return', [BoxLoanedController::class, 'returnBox'])->name('boxes.return');
+
+        Route::resource('boxOverdue', BoxOverdueController::class);
+        
     });

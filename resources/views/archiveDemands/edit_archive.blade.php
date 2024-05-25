@@ -69,7 +69,7 @@ $config = ['format' => 'YYYY'];
                         <div class="col">
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                             <select name="depart" id="depart" class="form-control" required>
-                            <option value="{{ $demands->department->id }}">{{ $demands->department->name }} </option>
+                                <option value="{{ $demands->department->id }}">{{ $demands->department->name }} </option>
                                 <!-- <option value="{{ $demands->depart }}" >{{ $demands->department->name }} </option> -->
                             </select>
                         </div>
@@ -78,12 +78,12 @@ $config = ['format' => 'YYYY'];
                     <br>
 
                     <!-- <div class="text-center"> -->
-                        <!-- <button name="updateBoxButton" type="submit" class="btn btn-primary" style="width: 130px;">
+                    <!-- <button name="updateBoxButton" type="submit" class="btn btn-primary" style="width: 130px;">
                             <i class="fa fa-md fa-fw fa-pen"></i> Update box
                         </button> -->
-                        <!-- <a href="{{ url('edit_box') }}/{{ $demands->id }}" name="updateBoxButton"  class="btn btn-primary" title="Update"><i class="fa fa-md fa-fw fa-pen"></i> Update box</a> -->
+                    <!-- <a href="{{ url('edit_box') }}/{{ $demands->id }}" name="updateBoxButton"  class="btn btn-primary" title="Update"><i class="fa fa-md fa-fw fa-pen"></i> Update box</a> -->
 
-                        <!-- <form action="{{ url('edit_box') }}/{{ $demands->id }}" method="GET">
+                    <!-- <form action="{{ url('edit_box') }}/{{ $demands->id }}" method="GET">
                             <button type="submit" name="updateBoxButton" class="btn btn-primary" title="Update">
                                 <i class="fa fa-md fa-fw fa-pen"></i> Update box
                             </button>
@@ -107,6 +107,7 @@ $config = ['format' => 'YYYY'];
     $(document).ready(function() {
         $('select[name="direction"]').on('change', function() {
             var DirectionId = $(this).val();
+
             if (DirectionId) {
                 $.ajax({
                     url: "{{ URL::to('direction') }}/" + DirectionId,
@@ -120,8 +121,18 @@ $config = ['format' => 'YYYY'];
                             $('select[name="depart"]').append('<option value="' +
                                 key + '">' + value + '</option>');
                         });
+
                     },
                 });
+
+                // var siteName = $('select[name="direction"] option:selected').text();
+                // console.log("direction:", siteName);
+
+                // var rayName = $('select[name="depart"] option:selected').text();
+                // console.log("depart:", rayName);
+
+                // var location = siteName + '-' + rayName;
+                // console.log(location);
             } else {
                 console.log('AJAX load did not work');
             }

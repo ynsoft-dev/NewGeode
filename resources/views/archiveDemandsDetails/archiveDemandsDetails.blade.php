@@ -25,14 +25,27 @@
     @endif
 
 </x-adminlte-card>
-@if ($demands->status === 'created' || $demands->status === 'Refused' && !auth()->user()->hasRole('Archiviste'))
-<div class="text-left">
+@if (($demands->status === 'created' || $demands->status === 'Refused') && !auth()->user()->hasRole('Archiviste'))
+
+
+<form action="{{ route('archiveDemand.store', ['id' => $demands->id]) }}" method="POST">
+    @csrf
+    <div class="text-left">
+        <button type="submit" name="check_boxes_edit" class="btn btn-secondary" style="width: 110px;">
+            <i class="fas fa-arrow-left"></i>
+            <span class="ml-1">Back</span>
+        </button>
+    </div>
+</form>
+
+<br>
+<!-- <div class="text-left">
     <a href="/archiveDemand" class="btn btn-secondary" style="width: 110px;">
         <i class="fas fa-arrow-left"></i>
         <span class="ml-1">Back</span>
     </a>
 </div>
-<br>
+<br> -->
 
 <h1>List of boxes in the demand</h1>
 
@@ -43,6 +56,7 @@
     </button>
 </div>
 @endif
+
 @stop
 
 
@@ -135,15 +149,11 @@ $config = ['format' => 'YYYY'];
 
                         ];
 
-                        if ($demands->status === 'created' ) {
-                        $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 30];
+                        if (($demands->status === 'created' || $demands->status === 'Refused') && !auth()->user()->hasRole('Archiviste')) {
+                        $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 15];
                         }
                         @endphp
 
-                        @if ($demands->status === 'Sent')
-                        <!-- <h3>List of boxes in the demand</h3>
-                        <br> -->
-                        @endif
 
                         <!-- {{-- Minimal example / fill data using the component slot --}} -->
                         <x-adminlte-datatable id="table1" :heads="$heads" striped hoverable with-buttons>
@@ -177,6 +187,7 @@ $config = ['format' => 'YYYY'];
                                             @endforeach
                                             @endforeach
                         </x-adminlte-datatable>
+                        <br>
                         @if ($demands->status === 'Sent')
                     </div>
                     <div class="tab-pane fade text-center" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
@@ -202,16 +213,7 @@ $config = ['format' => 'YYYY'];
             </div>
             @endif
 
-            @if ($demands->status === 'created' || $demands->status === 'Refused')
-            <br>
-            <form action="{{ route('archiveDemand.store', ['id' => $demands->id]) }}" method="POST">
-                @csrf
-                <button type="submit" name="check_boxes_edit" class="btn btn-success float-right mr-4" style="width: 150px;">Save</button>
-                <!-- <input type="hidden" name="check_boxes_edit" value="2"> -->
-            </form>
-            <br>
-            <br>
-            @endif
+
 
 
             <!-- Add -->

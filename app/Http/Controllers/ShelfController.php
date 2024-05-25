@@ -97,11 +97,8 @@ class ShelfController extends Controller
 
     public function getRays($id)
     {
-
-
         // Fetch rays based on the received site ID
         $rays = DB::table("rays")->where("site_id", $id)->pluck("name", "id");
-
 
         // Return the rays as JSON
         return json_encode($rays);
@@ -112,11 +109,7 @@ class ShelfController extends Controller
         // Fetch columns based on the received ray ID
         $columns = DB::table("columns")->where("ray_id", $id)->pluck("name", "id");
 
-
-
         // Return the columns as JSON
         return json_encode($columns);
-
-        // dd($columns);
     }
 }
