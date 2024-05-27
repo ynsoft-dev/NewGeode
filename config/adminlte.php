@@ -449,8 +449,8 @@ return [
             'can' => 'archiveRequest',
         ],
         [
-            'text' => 'Loan request ',
-            'url' => 'loanRequest',
+            'text' => 'Loan demand ',
+            'url' => 'loanDemand',
             'icon' => 'fas fa-file-export',
             'can' => 'loanRequest',
         ],

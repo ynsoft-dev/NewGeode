@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Models\LoanRequest;
+use App\Models\LoanDemand;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
-class Add_loanRequest extends Notification
+
+class Add_loanDemandEmail extends Notification
 {
     use Queueable;
     private $loans;
@@ -16,7 +16,7 @@ class Add_loanRequest extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(LoanRequest $loans)
+    public function __construct(LoanDemand $loans)
     {
         $this->loans = $loans;
     }
@@ -26,30 +26,34 @@ class Add_loanRequest extends Notification
      *
      * @return array<int, string>
      */
-    public function via( $notifiable)
+    public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
      */
-   
+    public function toMail(object $notifiable): MailMessage
+    {
+        $url = url('/loanDetails/'.$this->loans->id);
+    
+        return (new MailMessage)
+            ->subject('New loan demand added')
+            ->line('New loan demand added')
+            ->action('Show demand', $url)
+            ->line('Thank you for using NewGeode !');
+    }
 
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
-    public function toDatabase($notifiable)
+    public function toArray(object $notifiable): array
     {
         return [
-
-            //'data' => $this->details['body']
-            'id'=> $this->loans->id,
-            'title'=>'Loan request added by:',
-            'user'=> Auth::user()->name,
-
+            //
         ];
     }
 }

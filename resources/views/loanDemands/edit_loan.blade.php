@@ -30,17 +30,21 @@
         <div class="card">
             <div class="card-body">
 
-                <form action="{{ url('loanRequest/update') }}" method="post" autocomplete="off">
+                <form action="{{ url('loanDemand/update') }}" method="post" autocomplete="off">
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
                     {{-- 1 --}}
 
                     <div class="form-group row">
                         <div class="col">
-                            <label for="inputName" class="control-label">Box name </label>
+                            <label for="inputName" class="control-label">Demand Details: </label>
                             <input type="hidden" name="loan_Id" value="{{ $loans->id }}">
-                            <input type="text" class="form-control" id="inputName" name="box_name" title=" Enter the name of box" value="{{ $loans->box_name }}" required>
+                            <textarea type="text" class="form-control" id="box_name" name="box_name" title=" Enter the name of box" value="{{ $loans->box_name }}" required>{{ $loans->box_name }}</textarea>
                         </div>
+
+
+                    </div>
+                    <div class="form-group row">
                         <div class="col">
                             <label>Request date</label>
                             @php
@@ -55,9 +59,6 @@
                             </x-adminlte-input-date>
 
                         </div>
-
-                    </div>
-                    <div class="form-group row">
                         <div class="col">
                             <label>Return date</label>
                             @php
@@ -77,47 +78,42 @@
 
 
                     {{-- 2 --}}
-
-                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
-                    <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
-                        <!--placeholder-->
-                        <option value="{{ $loans->direction->id }}">{{ $loans->direction->name }} </option>
-                        @foreach ($directions as $direction)
-                        <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-                    <select id="depart" name="depart" class="form-control">
-                        <option value="{{ $loans->depart }}">{{ $loans->department->name }} </option>
-                    </select>
-
+                    <div class="form-group row">
+                        <div class="col">
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
+                            <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
+                                <!--placeholder-->
+                                <option value="{{ $loans->direction->id }}">{{ $loans->direction->name }} </option>
+                                @foreach ($directions as $direction)
+                                <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
+                            <select id="depart" name="depart" class="form-control">
+                                @foreach ($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
                     {{-- 3 --}}
 
                     <div class="row">
                         <div class="col">
-                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref" for="kind">Kind</label>
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref" for="type">Type</label>
                             <div>
                                 <label class="radio-inline">
-                                    <input type="radio" name="kind" value="Original" {{ $loans->kind === 'Original' ? 'checked' : '' }}> Original
+                                    <input type="radio" name="type" value="Original" {{ $loans->type === 'Original' ? 'checked' : '' }}> Original
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="kind" value="Copy" {{ $loans->kind === 'Copy' ? 'checked' : '' }}> Copy
+                                    <input type="radio" name="type" value="Copy" {{ $loans->type === 'Copy' ? 'checked' : '' }}> Copy
                                 </label>
                             </div>
                         </div>
-                        <div class="col">
-                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref" for="membership">Membership</label>
-                            <div>
-                                <label class="radio-inline">
-                                    <input type="radio" name="Membership" value="Belongs" {{ $loans->Membership === 'Belongs' ? 'checked' : '' }}> Depends on my direction
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="Membership" value="Not" {{ $loans->Membership === 'Not' ? 'checked' : '' }}> Not
-                                </label>
-                            </div>
-                        </div>
+
                     </div>
 
 

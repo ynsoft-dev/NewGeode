@@ -8,15 +8,16 @@ use App\Http\Controllers\RayController;
 use App\Http\Controllers\ColumnController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\ShelfController;
-use App\Models\Column;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ArchiveDemandController;
 use App\Http\Controllers\BoxController;
 use App\Http\Controllers\ArchiveDemandDetailsController;
 use App\Http\Controllers\BoxArchivedController;
-use App\Http\Controllers\LoanRequestController;
+use App\Http\Controllers\LoanDemandController;
 use App\Http\Controllers\LoanDetailsController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\NotificationController;
 
 // Définir la route d'accueil pour rediriger vers la page de connexion
 Route::get('/', function () {
@@ -50,9 +51,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('archiveDemand', ArchiveDemandController::class);
     Route::get('archiveDemand/direction/{id}', [ArchiveDemandController::class, 'getDepartments']);
-
     Route::get('/edit_archive/{id}', [ArchiveDemandController::class, 'edit']);
-    Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class,'update'])->name('archiveDemand.update');
+    // Route::patch('/archiveDemand/{id}', [ArchiveDemandController::class,'update'])->name('archiveDemand.update');
     Route::post('/archiveDemand/{id}', [ArchiveDemandController::class, 'store'])->name('archiveDemand.store');
 
     Route::resource('boxes', BoxController::class);
@@ -60,19 +60,30 @@ Route::middleware('auth')->group(function () {
    
     Route::get('/archiveDemandDetails/{id}', [ArchiveDemandDetailsController::class, 'edit']);
 
-    Route::resource('loanRequest', LoanRequestController::class);
-    Route::get('/direction/{id}', [LoanRequestController::class, 'getDepartments']);
+    Route::resource('loanDemand', LoanDemandController::class);
+    Route::post('/loanDemand/{id}', [LoanDemandController::class, 'store'])->name('loanDemand.store');
+    Route::get('/direction/{id}', [LoanDemandController::class, 'getDepartments']);
     Route::get('/loanDetails/{id}',  [LoanDetailsController::class, 'edit']);
-    Route::get('/edit_loan/{id}', [LoanRequestController::class, 'edit']);
-    Route::get('MarkAsRead_all', [LoanRequestController::class, 'MarkAsRead_all'])->name('MarkAsRead_all');
+    Route::get('/edit_loan/{id}', [LoanDemandController::class, 'edit']);
+    Route::get('/loanDetails/{id}/edit', [LoanDetailsController::class, 'edit'])->name('loanDetails.edit');
+
+    Route::resource('posts', PostController::class);
+    Route::delete('posts/destroy', [PostController::class, 'destroy'])->name('posts.destroy');
 
     Route::resource('boxArchived', BoxArchivedController::class);
+    Route::get('/boxArchived_edit/{id}',[BoxArchivedController::class,'edit']);
+    Route::patch('/boxArchived/{id}', [BoxArchivedController::class,'update'])->name('boxArchived.update');
     Route::get('boxArchived/site/{id}', [BoxArchivedController::class, 'getRays']);
     Route::get('boxArchived/col/{id}', [BoxArchivedController::class, 'getColumns']);
     Route::get('boxArchived/shelves/{id}', [BoxArchivedController::class, 'getShelves']);
 
 
-
+    Route::get('notifications/redirectToNotification/{id}', [NotificationController::class, 'redirectToNotification'])->name('notifications.redirectToNotification');
+    Route::get('notifications/get', [NotificationController::class, 'getNotificationsData'])->name('notifications.get');
+    Route::get('notifications/markAsReadAll', [NotificationController::class, 'markAsReadAll'])->name('notifications.markAsReadAll');
+    Route::get('notifications/markAsRead/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('notifications/unreadNotificationsCount', [NotificationController::class, 'unreadNotificationsCount'])->name('notifications.unreadNotificationsCount');
+    Route::get('notifications/unreadNotifications', [NotificationController::class, 'unreadNotifications'])->name('notifications.unreadNotifications');
 
 
 });

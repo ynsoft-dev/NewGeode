@@ -3,11 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1>Loan Request</h1>
+<h1>Loan demand</h1>
 <div class="text-center">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
-        Add Loan
+        Add Loan Demand
     </button>
 
 </div>
@@ -58,14 +58,13 @@
 <!-- {{-- Setup data for datatables --}} -->
 @php
 $heads = [
-'#',
+'Loan ID',
 'Direction',
 'Department',
-'Box name',
-'Kind',
+'Demand Details:',
+'Type',
 'Request date',
 'Return date',
-'Membership',
 'Status',
 
 
@@ -87,37 +86,43 @@ $heads = [
                     @foreach($loans as $loan)
                     <?php $i++ ?>
                     <tr>
-                        <td>{{$i}}</td>
+                        <!-- <td>{{$i}}</td> -->
+                        <td>{{ $loan->borrow_id }}</td>
                         <td>{{ $loan->Direction->name }}</td>
                         <td>{{$loan->department->name}}</td>
                         <td>{{$loan->box_name}}</td>
-                        <td>{{$loan->kind}}</td>
+                        <td>{{$loan->type}}</td>
                         <td>{{$loan->request_date}}</td>
                         <td>{{$loan->return_date}}</td>
-                        <td>{{$loan->Membership}}</td>
                         <td>
-                            @if ($loan->Value_Status == 1)
-                            <span class="text-success">{{ $loan->Status }}</span>
-                            @elseif($loan->Value_Status == 2)
-                            <span class="text-danger">{{ $loan->Status }}</span>
-                            @else
-                            <span class="text-warning">{{ $loan->Status }}</span>
+                            @if ($loan->Status == 'created')
+                            <span class="badge badge-secondary">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Sent')
+                            <span class="badge badge-secondary">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Accepted')
+                            <span class="badge badge-success">{{ $loan->Status }}</span>
+                            @elseif($loan->Status == 'Refused')
+                            <span class="badge badge-danger">{{ $loan->Status }}</span>
                             @endif
-
+                        
                         </td>
 
-                        <td>
-                            <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
-                            <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
-                            <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ url('edit_loan') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
-                            <form id="sendNotificationForm" action="{{ route('loanRequest.store') }}" method="POST">
-                                @csrf
-                                <button type="submit" name="sendNotificationButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d" title="Envoyer une notfication" data-effect="effect-scale">
-                                    <i class="fas fa-envelope" style="color: #28a745"></i> Send
-                                </button>
-                            </form>
-
+                        <td class="actions-column">
+                            <div class="d-flex align-items-center">
+                                <a class="btn btn-xs btn-default text-info mx-1 shadow" href="{{ url('loanDetails') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-eye"></i></a>
+                                @if ($loan->Status !== 'Sent'&& $loan->Status !== 'Accepted')
+                                <a class="btn btn-xs btn-default text-danger mx-1 shadow btn-delete" title="Delete" data-effect="effect-scale" data-id="{{ $loan->id }}" data-name="{{ $loan->box_name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                                <a class="btn btn-xs btn-default text-primary mx-1 shadow" href="{{ url('edit_loan') }}/{{ $loan->id }}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                                <form id="sendNotificationForm" action="{{ route('loanDemand.store', ['id' => $loan->id]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" name="sendNotificationButton" class="btn btn-xs btn-default mx-1 shadow" style="border-color: #28a745; color: #6c757d" title="Send notfication" data-effect="effect-scale">
+                                        <i class="fas fa-envelope" style="color: #28a745"></i>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
                         </td>
+
 
                     </tr>
                     @endforeach
@@ -129,46 +134,45 @@ $heads = [
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add Request</h4>
+                <h4 class="modal-title">Add Loan Demand</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('loanRequest.store') }}" method="post" autocomplete="off">
+                <form action="{{ route('loanDemand.store', ['id' => isset($loan) ? $loan->id : 0, 'check' => true]) }}" method="post" autocomplete="off">
                     {{ csrf_field() }}
 
-
-                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
-                    <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
-                        <!--placeholder-->
-                        <option value="" selected disabled>Select direction</option>
-                        @foreach ($directions as $direction)
-                        <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
-                        @endforeach
-                    </select>
-
-
-                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-                    <select id="depart" name="depart" class="form-control">
-                    </select>
-
-
-
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Box name:</label>
-                        <input type="text" class="form-control" id="box_name" name="box_name">
+                    <div class="form-group row mb-0">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="message-text">Demand Details:</label>
+                                <textarea type="text" class="form-control" id="box_name" name="box_name"></textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="Kind">Kind</label>
-                        <div>
-                            <label class="radio-inline">
-                                <input type="radio" name="kind" value="Original"> request loan Original
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="kind" value="Copy"> request loan Copy
-                            </label>
+
+                    <div class="form-group row">
+                        <div class="col">
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
+                            <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
+                                <!--placeholder-->
+                                <option value="" selected disabled>Select direction</option>
+                                @foreach ($directions as $direction)
+                                <option value="{{ $direction->id }}" {{ old('Direction') == $direction->id ? 'selected' : '' }}> {{ $direction->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="inputDepartment" class="control-label">Department</label>
+                            <select id="depart" name="depart" class="form-control">
+                                <!--placeholder-->
+                                <option value="" selected disabled>Select department</option>
+                                @foreach ($departments as $department)
+                                <option value="{{ $department->id }}" {{ old('depart') == $department->id ? 'selected' : '' }}> {{ $department->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
@@ -188,11 +192,8 @@ $heads = [
                                     </div>
                                 </x-slot>
                             </x-adminlte-input-date>
-
                         </div>
 
-                    </div>
-                    <div class="form-group row">
                         <div class="col">
                             <label>Return date</label>
                             <!-- <input class="form-control fc-datepicker" name="box_deposit_date" placeholder="YYYY-MM-DD" type="text" value="{{ date('Y-m-d') }}" required> -->
@@ -207,24 +208,24 @@ $heads = [
                                     </div>
                                 </x-slot>
                             </x-adminlte-input-date>
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label for="membership">Membership</label>
-                        <div>
-                            <label class="radio-inline">
-                                <input type="radio" name="Membership" value="Belongs"> Depends on my direction
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="Membership" value="Not"> Not
-                            </label>
                         </div>
                     </div>
 
-
+                    <div class="form-group row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="type">Type</label>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="type" value="Original">Original
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="type" value="Copy">Copy
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="modal-footer">
@@ -249,7 +250,7 @@ $heads = [
             <div class="modal-header">
                 <h6 class="modal-title">Delete Request Loan</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
             </div>
-            <form action="loanRequest/destroy" method="post">
+            <form action="loanDemand/destroy" method="post">
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">

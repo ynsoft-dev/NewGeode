@@ -58,9 +58,14 @@ class BoxArchivedController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $boxes = Box::where('id', $id)->first();
+        $sites = Site::all();
+        $columns = Column::all();
+        $rays = Ray::all();
+        $shelves = Shelf::all();
+        return view('boxes.boxes_archived_edit', compact('boxes', 'sites', 'columns', 'rays', 'shelves'));
     }
 
     /**
@@ -69,17 +74,33 @@ class BoxArchivedController extends Controller
     public function update(Request $request)
     {
 
+        $shelfId = $request->input('shelf_id');
+        $shelf = Shelf::find($shelfId);
+        $capacity = $shelf->capacity;
+        $numberOfBoxes = Box::where('shelf_id', $shelfId)->count();
+        // dd($shelfId, $capacity,$numberOfBoxes);
 
         $Id = $request->id;
-
+        // $Id = Box::where('shelf_id', $shelfId)->pluck('id');
         $boxes = Box::find($Id);
-
-        $boxes->update([
-            'shelf_id' => $request->input('shelf_id'),
-            'location' => $request->input('location'),
-        ]);
-        session()->flash('edit', 'Location added successfully');
-        return back();
+        if ($numberOfBoxes < $capacity) {
+            $boxes->update([
+                'shelf_id' => $request->input('shelf_id'),
+                'location' => $request->input('location'),
+            ]);
+            if ($request->has('editLocation')) {
+                session()->flash('edit', 'Location updated successfully');
+                // return back();
+            } else {
+                session()->flash('edit', 'Location added successfully');
+            }
+            return redirect('/boxArchived');
+        } else {
+            // dd('not');
+            session()->flash('delete', 'The shelf is full. Please change the location');
+            // return back();
+            return redirect('/boxArchived');
+        }
     }
 
     /**

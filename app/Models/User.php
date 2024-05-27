@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ArchiveDemand::class,'user_id');
     }
+
+    public function loanDemands()
+    {
+        return $this->hasMany(LoanDemand::class);
+    }
 }

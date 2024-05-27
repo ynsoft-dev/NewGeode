@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoanDemand;
 use App\Models\LoanDetails;
 use Illuminate\Http\Request;
 use App\Models\LoanRequest;
+use App\Models\Post;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use PgSql\Lob;
 
 class LoanDetailsController extends Controller
 {
@@ -29,7 +34,6 @@ class LoanDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -45,17 +49,28 @@ class LoanDetailsController extends Controller
      */
     public function edit($id)
     {
-        $loans = LoanRequest::where('id',$id)->first();
-        $details  = LoanDetails::where('loan_request_id',$id)->get();
-        return view('loanRequests.loanRequestsDetails',compact('loans','details'));
+        $loans = LoanDemand::where('id', $id)->first();
+        $details  = LoanDetails::where('loan_demand_id', $id)->get();
+
+        // $lastLoans = LoanDetails::latest()->first();
+
+        // $lastLoan = LoanDetails::latest()->first()->id;
+        // $posts = Post::where('loan_detail_id', $lastLoan)->get();
+
+        // Récupérer les IDs des LoanDetails associées
+        $loanDetailIds = $details->pluck('id');
+        // Récupérer les posts associés aux LoanDetails
+        $posts = Post::whereIn('loan_detail_id', $loanDetailIds)->get();
+        return view('loanDemands.loanDemandsDetails', compact('loans', 'details', 'posts'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LoanDetails $loanDetails)
+
+
+    public function update(Request $request, $id)
     {
-        //
     }
 
     /**
