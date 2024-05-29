@@ -18,6 +18,7 @@ use App\Helpers\Helper;
 use PgSql\Lob;
 use App\Notifications\Add_loanDemandEmail;
 use App\Notifications\AddLoanResponseMail;
+
 class LoanDemandController extends Controller
 {
     /**
@@ -34,7 +35,19 @@ class LoanDemandController extends Controller
 
         // Récupérer les demandes associées à l'utilisateur connecté
         $loans = $user->loanDemands;
-        return view('loanDemands.loanDemands', compact('directions', 'departments', 'loans'));
+
+
+
+       // Filtrer les demandes de prêt où le type_of_loan est "original" et le status est "accepted"
+    $loanDemands = LoanDemand::where('type', 'Original')
+                              ->where('Status', 'Accepted')
+                              ->get(['id', 'borrow_id', 'return_date', 'request_date']);
+
+    // Construire un tableau de borrow_id et return_date
+    $loanDemandNumbers = $loanDemands->pluck('borrow_id', 'id')->toArray();
+    $returnDates = $loanDemands->pluck('return_date', 'borrow_id')->toArray();
+    $requestDates = $loanDemands->pluck('request_date', 'borrow_id')->toArray();
+        return view('loanDemands.loanDemands', compact('directions', 'departments', 'loans', 'loanDemandNumbers', 'returnDates', 'requestDates',));
     }
 
     /**
@@ -106,7 +119,6 @@ class LoanDemandController extends Controller
                     Notification::send($archivist, new \App\Notifications\Add_loanDemand($loans));
                     $archivist->notify(new Add_loanDemandEmail($loans));
                 }
-               
             }
             LoanDemand::where('id', $id)->update(['Status' => 'Sent']);
             LoanDetails::where('loan_demand_id', $id)->update(['Status' => 'Sent']);
@@ -124,7 +136,6 @@ class LoanDemandController extends Controller
             if ($user) {
                 Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
                 $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Accepted']);
@@ -153,7 +164,6 @@ class LoanDemandController extends Controller
             if ($user) {
                 Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
                 $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Refused']);

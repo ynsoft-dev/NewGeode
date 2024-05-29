@@ -71,9 +71,11 @@ $heads = [
 'content',
 'Extreme date',
 'Status',
+'Location',
 'Loan demand number',
 'Transmission date',
 'Expected return date',
+'Overdue',
 
 ['label' => 'Actions', 'no-export' => true, 'width' => 30],
 
@@ -108,20 +110,76 @@ $heads = [
                             <span class="badge badge-danger">{{ ucfirst($box->status) }}</span>
                             @endif
                         </td>
+                        <td> {{$box->location}}</td>
+
                         <td> {{$box->request_number}}</td>
                         <td> {{$box->transmission_date}}</td>
                         <td> {{$box->return_date}}</td>
-                        
                         <td>
-                            <form action="{{ route('boxes.return', $box->id) }}" method="POST">
+                            @if($box->isOverdue())
+                            <span class="badge badge-danger">Overdue</span>
+                         
+                            @endif
+                        </td>
+                        <td>
+                            <!-- <form action="{{ route('boxes.return', $box->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm bg-gradient-info">Return</button>
-                            </form>
+                            </form> -->
+                            <button class="btn btn-sm bg-gradient-info" data-toggle="modal" data-target="#returnModal" data-id="{{ $box->id }}">Return</button>
+
                         </td>
-                        
+
 
                     </tr>
                     @endforeach
 </x-adminlte-datatable>
+<!-- Modal Retour -->
+<div class="modal fade" id="returnModal" tabindex="-1" role="dialog" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel">Return Archive Box</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="returnForm" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body">
+                    <input type="hidden" name="box_id" id="box_id">
+                    @php
+                    $config = ['format' => 'L'];
+                    @endphp
+                    <x-adminlte-input-date name="real_return_date" id="real_return_date" :config="$config" placeholder="Choose a date..." required>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-gradient-danger">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input-date>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Return</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@stop
+
+@section('js')
+<script>
+    $('#returnModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var boxId = button.data('id');
+        var modal = $(this);
+        modal.find('#box_id').val(boxId);
+        modal.find('#returnForm').attr('action', '/boxes/' + boxId + '/return');
+    });
+</script>
 @stop

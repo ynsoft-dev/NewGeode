@@ -238,7 +238,31 @@ $heads = [
   });
 </script>
 
+<script>
+$('select[name="ray"]').on('change', function() {
+  var selectedRayId = $('#ray').val();
+              console.log("Selected Ray ID:", selectedRayId);
 
+              if (selectedRayId) {
+                // Vérification si la deuxième requête AJAX est déclenchée
+                console.log("Déclenchement de la requête AJAX pour récupérer les colonnes");
+                $.ajax({
+                  url: "{{ URL::to('col') }}/" + selectedRayId,
+                  type: "GET",
+                  dataType: "json",
+                  success: function(data) {
+                    $('select[name="column"]').empty();
+                    $.each(data, function(id, name) {
+                      $('select[name="column"]').append('<option value="' + id + '">' + name + '</option>');
+                    });
+
+                  },
+                });
+              } else {
+                console.log('AJAX load did not work');
+              }
+});
+</script>
 
 <script>
   $('#modaldemo8').on('show.bs.modal', function(event) {

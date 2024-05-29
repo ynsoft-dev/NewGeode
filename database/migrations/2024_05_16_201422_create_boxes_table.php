@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('extreme_date');
         
             $table->string('ref')->nullable();
-            $table->date('destruction_date')->nullable();
+            $table->date('destruction_date')->nullable()->default('not defined');
             $table->string('location')->nullable();
             $table->string('status', 20)->default('Available');
 
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('request_number')->nullable();
             $table->date('transmission_date')->nullable();
             $table->date('return_date')->nullable();
+            $table->softDeletes(); // Ajout pour les suppressions douces
+
             $table->timestamps();
         });
     }

@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Box extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
     protected $fillable = [
       
         'ref',
@@ -21,7 +24,9 @@ class Box extends Model
         'archive_demand_id',  
         'archive_demand_details_id',
         'shelf_id',
-        'request_number', 'transmission_date', 'return_date'
+        'request_number', 'transmission_date', 'return_date',
+        'Deleted At' 
+
 
     ];
     
@@ -43,9 +48,14 @@ class Box extends Model
     {
         return $query->where('status', 'Not available');
     }
-    public function scopeOverdue($query)
+
+    public function isOverdue()
     {
-        return $query->where('return_date', '<', Carbon::now());
+        return $this->return_date && Carbon::parse($this->return_date)->isPast();
+    }
+    public function isPendingDestruction()
+    {
+        return $this->destruction_date !== null && $this->destruction_date !== 'not defined';
     }
    
 

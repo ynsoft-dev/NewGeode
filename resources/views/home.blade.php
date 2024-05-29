@@ -3,78 +3,143 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<!-- @can('notifications')
-<x-adminlte-card title="Notifications" theme="info" icon="fas fa-lg fa-bell" collapsible removable maximizable>
-
-    <div class="menu-header-content" style="padding: 10px; border-radius: 5px;">
-        <div class="d-flex align-items-center justify-content-between">
-            <button class="btn btn-primary">
-                <a href="\MarkAsRead_all" class="text-white">Read All</a>
-            </button>
-            <p class="mb-0 dropdown-title-text subtext text-blue op-6 tx-12" style="color: blue;">
-                <span class="font-weight-bold" id="notifications_count">
-                Number of unread Notifications: {{ auth()->user()->unreadNotifications->count() }} </span>
-            </p>
-        </div>
-    </div>
-    <div id="unreadNotifications">
-        @foreach (auth()->user()->unreadNotifications as $notification)
-        <div class="main-notification-list Notification-scroll">
-            <a class="d-flex p-3 border-bottom" href="{{ url('loanDetails') }}/{{ $notification->data['id'] }}">
-                <div class="notifyimg bg-pink">
-                    <i class="la la-file-alt text-white"></i>
-                </div>
-                <div class="container-fluid">
-                    <div class="row justify-content-between align-items-center">
-                        <div class="col-md-6">
-                            <div class="mr-3">
-                                <h5 class="notification-label mb-1">
-                                    {{ $notification->data['borrow'] }}
-                                </h5>
-                                <div class="notification-subtext">{{ $notification->created_at }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="text-right mb-3">
-                                <div class="mr-3">
-                                    <h5 class="notification-label mb-1">
-                                        {{ $notification->data['user'] }}
-                                    </h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        @endforeach
-
-    </div>
-    </div>
-
-</x-adminlte-card>
-@endcan -->
+<h1>Dashboard</h1>
 @stop
 
 @section('content')
-<!-- <p>Welcome to this beautiful admin panel.</p> -->
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ $boxesArchivedCount }}</h3>
+                <p>Boxes archived</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
 
-@stop
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $demandArchiveBoxesCount }}</h3>
+                <p>Demand archive Boxes</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-document"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
 
-@section('css')
-{{-- Add here extra stylesheets --}}
-{{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-@stop
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ $demandLoanBoxesCount }}</h3>
+                <p>Demand Loan Boxes</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-chatboxes"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ $borrowedBoxesCount }}</h3>
+                <p>Boxes Loaned</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-chatboxes"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
 
-@section('js')
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Boxes Archived</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="boxesArchivedChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Demand Archive Boxes</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="demandArchiveBoxesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('js')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    console.log("Hi, I'm using the Laravel-AdminLTE package!");
-</script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var boxesArchivedCtx = document.getElementById('boxesArchivedChart').getContext('2d');
+        var boxesArchivedChart = new Chart(boxesArchivedCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Archived Boxes'],
+                datasets: [{
+                    label: '# of Boxes Archived',
+                    data: [{{ $boxesArchivedCount }}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-<script>
-    setInterval(function() {
-        $("#notifications_count").load(window.location.href + " #notifications_count");
-        $("#unreadNotifications").load(window.location.href + " #unreadNotifications");
-    }, 5000);
+        var demandArchiveBoxesCtx = document.getElementById('demandArchiveBoxesChart').getContext('2d');
+        var demandArchiveBoxesChart = new Chart(demandArchiveBoxesCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Demand Archive Boxes', 'Others'],
+                datasets: [{
+                    label: '# of Demands',
+                    data: [{{ $demandArchiveBoxesCount }}, 100 - {{ $demandArchiveBoxesCount }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+    });
 </script>
+@endpush
+<style>
+    @font-face {
+        font-family: 'Source Sans Pro';
+        src: url('/fonts/SourceSansPro-Regular.woff2') format('woff2'),
+             url('/fonts/SourceSansPro-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+</style>
+
 @stop

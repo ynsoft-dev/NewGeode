@@ -20,6 +20,9 @@
     use App\Http\Controllers\BoxLoanedController;
     use App\Http\Controllers\PostController;
     use App\Http\Controllers\BoxOverdueController;
+    use App\Http\Controllers\BoxMovementController;
+use App\Http\Controllers\DestroyedBoxController;
+use App\Http\Controllers\PendingDestructionController;
 
     // Définir la route d'accueil pour rediriger vers la page de connexion
     Route::get('/', function () {
@@ -87,6 +90,8 @@
         Route::get('notifications/unreadNotifications', [NotificationController::class, 'unreadNotifications'])->name('notifications.unreadNotifications');
 
         Route::resource('boxArchived', BoxArchivedController::class);
+        Route::get('/boxArchived_edit/{id}', [BoxArchivedController::class, 'edit']);
+        Route::patch('/boxArchived/{id}', [BoxArchivedController::class, 'update'])->name('boxArchived.update');
         Route::get('boxArchived/site/{id}', [BoxArchivedController::class, 'getRays']);
         Route::get('boxArchived/col/{id}', [BoxArchivedController::class, 'getColumns']);
         Route::get('boxArchived/shelves/{id}', [BoxArchivedController::class, 'getShelves']);
@@ -96,5 +101,14 @@
         Route::patch('/boxes/{id}/return', [BoxLoanedController::class, 'returnBox'])->name('boxes.return');
 
         Route::resource('boxOverdue', BoxOverdueController::class);
-        
+        Route::resource('boxMovements', BoxMovementController::class);
+
+
+        Route::patch('/boxes/{id}/destroy', [BoxArchivedController::class, 'destroy'])->name('boxes.mark_for_destruction');
+        Route::get('/boxes/pending_destruction', [BoxArchivedController::class, 'pendingDestruction'])->name('boxes.pending_destruction');
+        Route::resource('boxpendingDestruction', PendingDestructionController::class);
+        Route::delete('/boxes/{id}/destroy', [PendingDestructionController::class, 'destroy'])->name('boxes.delete');
+        Route::get('/boxes/destroyed', [PendingDestructionController::class, 'showDeleted'])->name('boxes.deleted');
+        Route::resource('boxdestroyed', DestroyedBoxController::class);
+
     });

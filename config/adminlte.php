@@ -315,7 +315,7 @@ return [
             'dropdown_flabel' => '', // The label for the dropdown footer link (optional).
             'update_cfg' => [
                 'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
-                'period' => 300,                       // The update period for get new data (in seconds, optional).
+                'period' => 3000,                       // The update period for get new data (in seconds, optional).
             ],
         ],
         
@@ -547,9 +547,20 @@ return [
             'icon' => 'fas fa-file-import',
             'can' => 'loans',
         ],
+      
         [
-            'text' => 'Box Overdue',
-            'url' => 'boxOverdue',
+            'text' => 'Box Movement',
+            'url' => 'boxMovements',
+            'icon' => 'fas fa-file-import',
+        ],
+        [
+            'text' => 'Box Pending Destruction',
+            'url' => 'boxpendingDestruction',
+            'icon' => 'fas fa-file-import',
+        ],
+        [
+            'text' => 'Box Destroyed',
+            'url' => 'boxdestroyed',
             'icon' => 'fas fa-file-import',
         ],
 
