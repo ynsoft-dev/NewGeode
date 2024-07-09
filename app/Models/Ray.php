@@ -9,7 +9,7 @@ class Ray extends Model
 {
     protected $fillable = [
         'name',
-        'site_id',
+        'c',
        
     ];
 

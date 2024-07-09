@@ -42,7 +42,7 @@ class AddLoanResponseMail extends Notification
             ->subject('New loan demand RESPONSE added')
             ->line('New loan demand RESPONSE added')
             ->action('Show RESPONSE', $url)
-            ->line('Thank you for using NewGeode !');
+            ->line('Thank you for using BoxFlow !');
     }
 
     /**

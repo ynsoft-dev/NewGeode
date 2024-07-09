@@ -20,6 +20,8 @@ use App\Notifications\AddDemand;
 use App\Notifications\AddResponse;
 use App\Helpers\Helper;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+
 
 
 class ArchiveDemandController extends Controller
@@ -46,9 +48,9 @@ class ArchiveDemandController extends Controller
         $demands = $user->archiveRequests;
         // $demands = $user->archiveRequests()->orderBy('request_date', 'desc')->get();
 
-        
-        
-        
+
+
+
 
         return view('archiveDemands.archiveDemands', compact('directions', 'departments', 'demands'));
     }
@@ -64,7 +66,7 @@ class ArchiveDemandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$id)
+    public function store(Request $request, $id)
     {
 
 
@@ -72,27 +74,41 @@ class ArchiveDemandController extends Controller
             $validated = $request->validate([
                 'direction' => 'required|max:255',
                 // 'box_quantity' => 'required|numeric',
-                // 'depart' => 'required',
+                'depart' => 'required',
             ], [
                 'direction.required' => 'Please enter the name of the direction',
                 // 'box_quantity.numeric' => 'Box quantity must be a number',
-                // 'depart.required' => 'Please enter the name of the department',
+                'depart.required' => 'Please enter the name of the department',
 
             ]);
 
-            $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(),'demand_archive_id',6,'DA');
+            // $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(), 'demand_archive_id', 6, 'DA');
 
-            $dmd = new ArchiveDemand();
-            $dmd->demand_archive_id = $demand_archive_id;
-            $dmd->name = $request->name;
-            $dmd->request_date = $request->request_date;
-            // $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
-            $dmd->department_id = $request->depart;
-            $dmd->direction_id = $request->direction;
-            $dmd->details_request = $request->details_request;
-            $dmd->user_id = Auth::user()->id;
-            
-            $dmd->save();
+            // $dmd = new ArchiveDemand();
+            // $dmd->demand_archive_id = $demand_archive_id;
+            // $dmd->name = $request->name;
+            // $dmd->request_date = $request->request_date;
+            // // $dmd->request_date = Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y');
+            // $dmd->department_id = $request->depart;
+            // $dmd->direction_id = $request->direction;
+            // $dmd->details_request = $request->details_request;
+            // $dmd->user_id = Auth::user()->id;
+
+            // $dmd->save();
+
+            // $demand_archive_id = Helper::IDGenerator(new ArchiveDemand(), 'demand_archive_id', 6, 'DA');
+
+            ArchiveDemand::create([
+                'demand_archive_id' => Helper::IDGenerator(new ArchiveDemand(), 'demand_archive_id', 6, 'DA'),
+                'name' => $request->name,
+                'request_date' => $request->request_date,
+                // 'request_date' => Carbon::createFromFormat('m/d/Y', $request->request_date)->format('d/m/Y'),
+                'department_id' => $request->depart,
+                'direction_id' => $request->direction,
+                'details_request' => $request->details_request,
+                'user_id' => Auth::user()->id,
+            ]);
+
 
 
             $request_id = ArchiveDemand::latest()->first()->id;
@@ -123,8 +139,11 @@ class ArchiveDemandController extends Controller
             if ($realBoxQuantity === 0) {
                 return redirect()->back()->withErrors(['check_boxes' => 'Please insert at least one box.']);
             }
+            
+
 
             return redirect('/archiveDemand')->with('Add', 'Demand added successfully');
+
         }
 
         if ($request->has('check_boxes_edit')) {
@@ -143,16 +162,20 @@ class ArchiveDemandController extends Controller
         }
 
 
-        // $request_id = ArchiveRequest::latest()->first()->id;
-        // $request_id = ArchiveRequest::where('id', $id)->first();
-        // dd( $request_id);
+
+
 
         if ($request->has('sendEmailButton')) {
+
+            // $request_id = ArchiveDemand::latest()->first()->id;
+            $request_id = ArchiveDemand::where('id', $id)->first();
+
 
             $archivistRole = Role::where('name', 'Archiviste')->first();
             if ($archivistRole) {
                 $archivists = $archivistRole->users;
                 foreach ($archivists as $archivist) {
+                    Notification::send($archivist, new \App\Notifications\AddArchiveResponse($request_id, 'archive'));
                     $archivist->notify(new AddDemand($id));
                 }
             }
@@ -163,12 +186,14 @@ class ArchiveDemandController extends Controller
         }
 
         if ($request->has("sendResponseAEmail")) {
+            $request_id = ArchiveDemand::where('id', $id)->first();
 
             $userId = $request->input('user');
             $user = User::find($userId);
             // dd($userId);
             if ($user) {
-                $user->notify(new AddResponse($id)); // 
+                Notification::send($user, new \App\Notifications\AddArchiveResponse($request_id, 'archive'));
+                $user->notify(new AddResponse($id)); 
             }
 
             ArchiveDemand::where('id', $id)->update(['status' => 'Accepted']);
@@ -178,6 +203,7 @@ class ArchiveDemandController extends Controller
         }
 
         if ($request->has("sendResponseREmail")) {
+            $request_id = ArchiveDemand::where('id', $id)->first();
 
             $userId = $request->input('user');
             $user = User::find($userId);
@@ -185,6 +211,7 @@ class ArchiveDemandController extends Controller
             ArchiveDemand::where('id', $id)->update(['reason' => $request->reason]);
 
             if ($user) {
+                Notification::send($user, new \App\Notifications\AddArchiveResponse($request_id, 'archive'));
                 $user->notify(new AddResponse($id)); // 
             }
 
@@ -193,7 +220,6 @@ class ArchiveDemandController extends Controller
 
             return back()->with('Add', 'Response sent successfully');
         }
-  
     }
 
     /**
@@ -210,14 +236,15 @@ class ArchiveDemandController extends Controller
     {
         $demands = ArchiveDemand::where('id', $id)->first();
         $directions = Direction::all();
-        $departments = Department::all();
+        // $departments = Department::all();
+        $departments = Department::where('directions_id', $demands->direction_id)->get();
         return view('archiveDemands.edit_archive', compact('directions', 'departments', 'demands'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArchiveDemand $demands,$id)
+    public function update(Request $request, $id)
     {
 
         $demands = ArchiveDemand::find($id);
@@ -231,7 +258,7 @@ class ArchiveDemandController extends Controller
 
         ]);
 
-        
+
         if ($request->has('updateBoxButton')) {
             return redirect('/edit_box/' . $id);
         }
@@ -247,13 +274,45 @@ class ArchiveDemandController extends Controller
     {
         $demands = ArchiveDemand::findOrFail($request->id);
         $demands->delete();
+
         session()->flash('delete', 'The demand has been successfully deleted');
+        $value = session()->get('delete');
+        // dd(session()->all());
+        // dd($value);
         return back();
+        // return redirect('/archiveDemand')->with('delete', 'The demand has been successfully deleted');
+
+
     }
 
     public function getDepartments($id)
     {
         $departments = DB::table("departments")->where("directions_id", $id)->pluck("name", "id");
         return json_encode($departments);
+    }
+
+    public function MarkAsRead_all(Request $request)
+    {
+
+        $userUnreadNotification = auth()->user()->unreadNotifications;
+
+        if ($userUnreadNotification) {
+            $userUnreadNotification->markAsRead();
+            return back();
+        }
+    }
+    public function unreadNotifications_count()
+
+    {
+        return auth()->user()->unreadNotifications->count();
+    }
+
+    public function unreadNotifications()
+
+    {
+        foreach (auth()->user()->unreadNotifications as $notification) {
+
+            return $notification->data['borrow'];
+        }
     }
 }

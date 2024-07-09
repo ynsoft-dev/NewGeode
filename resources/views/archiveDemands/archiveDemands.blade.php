@@ -4,7 +4,7 @@
 
 @section('content_header')
 
-<h1>Demands list</h1>
+<h1>Archive demands</h1>
 <div class="text-center">
 
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" style="width: 170px;">
@@ -36,7 +36,10 @@
     } */
 </style>
 
+
 <body class="{{ session()->has('Add') ? 'sent-successfully' : '' }}">
+
+
 
     @if ($errors->any())
     <div class="alert alert-danger">
@@ -48,10 +51,9 @@
     </div>
     @endif
 
-    @section('plugins.Datatables', true)
-    @section('plugins.DatatablesPlugin', true)
 
-    @if (session()->has('Add'))
+
+     @if (session()->has('Add'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>{{ session()->get('Add') }}</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -59,8 +61,14 @@
         </button>
     </div>
     @endif
+  
+
+
+    
+
 
     @if (session()->has('delete'))
+
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>{{ session()->get('delete') }}</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -78,6 +86,8 @@
     </div>
     @endif
 
+    @section('plugins.Datatables', true)
+    @section('plugins.DatatablesPlugin', true)
 
     @php
     $config = ['format' => 'YYYY'];
@@ -184,7 +194,7 @@
                     <form id="myForm" action="{{ route('archiveDemand.store', ['id' => isset($demand) ? $demand->id : 0, 'check' => true]) }}" method="post" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
-                        <div class="form-group row mb-0"> 
+                        <div class="form-group row mb-0">
                             <div class="col">
                                 <x-adminlte-button class="btn-sm float-right mr-2" type="reset" label="Reset" theme="outline-danger" icon="fas fa-trash" width="100px" />
                             </div>

@@ -42,7 +42,7 @@ class Add_loanDemandEmail extends Notification
             ->subject('New loan demand added')
             ->line('New loan demand added')
             ->action('Show demand', $url)
-            ->line('Thank you for using NewGeode !');
+            ->line('Thank you for using BoxFlow !');
     }
 
     /**

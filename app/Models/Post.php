@@ -22,6 +22,7 @@ class Post extends Model implements HasMedia
     {
         return $this->belongsTo(LoanDetails::class, 'loan_detail_id');
     }
+ 
     public function registerMediaCollections(Media $media = null): void
     {
         

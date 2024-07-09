@@ -97,7 +97,7 @@
                                         <div class="table-responsive mt-15">
 
 
-                                            <x-adminlte-card title="Info Demand" theme="info" icon="fas fa-lg fa-bell" collapsible>
+                                            <x-adminlte-card title="Info Demand" theme="info" icon="fas fa-info-circle fa-lg" collapsible>
                                                 <!-- An info theme card with all the tool buttons... -->
 
                                                 <p><b>ID Loan:</b> {{ $loans->borrow_id}}</p>
@@ -267,9 +267,13 @@
                                                                     <a href="{{ $media->getUrl() }}" target="_blank" class="btn btn-xs btn-default text-info mx-1 shadow" title="Show">
                                                                         <i class="fa fa-lg fa-fw fa-eye"></i>
                                                                     </a>
-                                                                    <a href="{{ $media->getUrl() }}" download class="btn btn-xs btn-default text-info mx-1 shadow" title="Download">
+                                                                    <!-- <a href="{{ $media->getUrl() }}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Download" download>
+                                                                        <i class="fa fa-lg fa-fw fa-download"></i>
+                                                                    </a> -->
+                                                                    <a href="{{ route('media.download', $media->id) }}" class="btn btn-xs btn-default text-info mx-1 shadow" title="Download">
                                                                         <i class="fa fa-lg fa-fw fa-download"></i>
                                                                     </a>
+
                                                                     @can('process_loan')
                                                                     <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $x->id }}" data-name="{{ $x->name }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
                                                                     @endcan

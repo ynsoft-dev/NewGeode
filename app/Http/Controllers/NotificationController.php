@@ -15,6 +15,8 @@ class NotificationController extends Controller
         $unreadNotifications = $user->unreadNotifications;
 
         $notifications = [];
+
+        
         foreach ($unreadNotifications as $notification) {
             $notifications[] = [
                 'icon' => 'fas fa-fw fa-envelope',
@@ -82,20 +84,31 @@ class NotificationController extends Controller
         // Récupérer la notification par son ID
         $notification = auth()->user()->notifications->where('id', $id)->first();
 
+    
         // Vérifier si la notification existe
-        if ($notification) {
-            // Marquer la notification comme lue
-            $notification->markAsRead();
+if ($notification) {
+    // Marquer la notification comme lue
+    $notification->markAsRead();
 
-            // Mise à jour de la colonne 'read_at' dans la table 'notifications' directement
-            DB::table('notifications')->where('id', $id)->update(['read_at' => now()]);
+    // Mise à jour de la colonne 'read_at' dans la table 'notifications' directement
+    DB::table('notifications')->where('id', $id)->update(['read_at' => now()]);
 
-            // Rediriger vers l'URL de la notification
-            return redirect(url('loanDetails/' . $notification->data['id']));
-        } else {
-            // Si la notification n'est pas trouvée, retourner une réponse d'erreur
-            return redirect()->back()->withErrors(['error' => 'Notification not found']);
-        }
+    // Déterminer le type de la notification
+    $notificationType = $notification->type;
+
+    // Rediriger en fonction du type de notification
+    if ($notificationType === 'App\Notifications\Add_loanDemand'|| $notificationType === 'App\Notifications\AddLoanResponse') {
+        // Rediriger vers l'URL de détails de prêt
+        return redirect(url('loanDetails/' . $notification->data['id']));
+    } elseif ($notificationType === 'App\Notifications\AddArchiveResponse') {
+        // Rediriger vers une autre URL
+        return redirect(url('archiveDemandDetails/' . $notification->data['id']));
+    } else {
+        // Gérer le cas où le type de notification n'est pas reconnu
+        return redirect()->back()->withErrors(['error' => 'Invalid notification type']);
+    }
+}
+
     }
 
     public function unreadNotificationsCount()

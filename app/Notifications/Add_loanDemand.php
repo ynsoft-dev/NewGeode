@@ -13,13 +13,15 @@ class Add_loanDemand extends Notification
 {
     use Queueable;
     private $loans;
+    private $type;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(LoanDemand $loans)
+    public function __construct(LoanDemand $loans,$type)
     {
         $this->loans = $loans;
+        $this->type = $type;
     }
 
     /**

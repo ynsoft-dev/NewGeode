@@ -47,7 +47,7 @@ class AddDemand extends Notification
             ->subject('New archive demand added '. $demandArchiveId)
             ->line('New archive demand added')
             ->action('Show demand', $url)
-            ->line('Thank you for using NewGeode !');
+            ->line('Thank you for using BoxFlow !');
     }
 
     /**

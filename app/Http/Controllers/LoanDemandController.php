@@ -18,6 +18,7 @@ use App\Helpers\Helper;
 use PgSql\Lob;
 use App\Notifications\Add_loanDemandEmail;
 use App\Notifications\AddLoanResponseMail;
+
 class LoanDemandController extends Controller
 {
     /**
@@ -34,7 +35,20 @@ class LoanDemandController extends Controller
 
         // Récupérer les demandes associées à l'utilisateur connecté
         $loans = $user->loanDemands;
-        return view('loanDemands.loanDemands', compact('directions', 'departments', 'loans'));
+
+
+
+       // Filtrer les demandes de prêt où le type_of_loan est "original" et le status est "accepted"
+    $loanDemands = LoanDemand::where('type', 'Original')
+                              ->where('Status', 'Accepted')
+                              ->get(['id', 'borrow_id', 'return_date', 'request_date']);
+
+    // Construire un tableau de borrow_id et return_date
+    $loanDemandNumbers = $loanDemands->pluck('borrow_id', 'id')->toArray();
+    $returnDates = $loanDemands->pluck('return_date', 'borrow_id')->toArray();
+    $requestDates = $loanDemands->pluck('request_date', 'borrow_id')->toArray();
+
+        return view('loanDemands.loanDemands', compact('directions', 'departments', 'loans', 'loanDemandNumbers', 'returnDates', 'requestDates'));
     }
 
     /**
@@ -60,21 +74,21 @@ class LoanDemandController extends Controller
                 'return_date' => 'required',
             ]);
 
-            $loanRequest = LoanDemand::create([
-                /** Generate id */
-                'borrow_id' => Helper::IDGenerator(new LoanDemand, 'borrow_id', 6, 'DP'),
-                'direction_id' => $request->Direction,
-                'department_id' => $request->depart,
-                'box_name' => $request->box_name,
-                'type' => $request->type,
-                'request_date' => $request->request_date,
-                'return_date' => $request->return_date,
-                'Status' => 'created',
-                'Value_Status' => 1,
-                'user_id' => (Auth::user()->id),
+                $loanRequest = LoanDemand::create([
+                    /** Generate id */
+                    'borrow_id' => Helper::IDGenerator(new LoanDemand, 'borrow_id', 6, 'DP'),
+                    'direction_id' => $request->Direction,
+                    'department_id' => $request->depart,
+                    'box_name' => $request->box_name,
+                    'type' => $request->type,
+                    'request_date' => $request->request_date,
+                    'return_date' => $request->return_date,
+                    'Status' => 'created',
+                    'Value_Status' => 1,
+                    'user_id' => (Auth::user()->id),
 
 
-            ]);
+                ]);
 
             $loan_Id = LoanDemand::latest()->first()->id;
             LoanDetails::create([
@@ -96,17 +110,21 @@ class LoanDemandController extends Controller
 
 
         if ($request->has('sendNotificationButton')) {
-            $loans = LoanDemand::latest()->first();
-            $loan_Id = LoanDemand::latest()->first()->id;
+            // $loans = LoanDemand::latest()->first();
+            // $loan_Id = LoanDemand::latest()->first()->id;
+            $loans = LoanDemand::where('id', $id)->first();
 
+            // $user = Auth::user();
             $archivistRole = Role::where('name', 'Archiviste')->first();
             if ($archivistRole) {
                 $archivists = $archivistRole->users;
                 foreach ($archivists as $archivist) {
-                    Notification::send($archivist, new \App\Notifications\Add_loanDemand($loans));
+                    // dd($archivist);
+                    Notification::send($archivist, new \App\Notifications\Add_loanDemand($loans, 'loan'));
+                    // $archivist->notify(new \App\Notifications\Add_loanDemand($loans));
+
                     $archivist->notify(new Add_loanDemandEmail($loans));
                 }
-               
             }
             LoanDemand::where('id', $id)->update(['Status' => 'Sent']);
             LoanDetails::where('loan_demand_id', $id)->update(['Status' => 'Sent']);
@@ -116,15 +134,15 @@ class LoanDemandController extends Controller
 
 
         if ($request->has("sendResponseAEmail")) {
-            $loans = LoanDemand::latest()->first();
+            // $loans = LoanDemand::latest()->first();
+            $loans = LoanDemand::where('id', $id)->first();
 
             $userId = $request->input('user');
             $user = User::find($userId);
             // dd($userId);
             if ($user) {
-                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans,'loan'));
                 $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Accepted']);
@@ -143,7 +161,8 @@ class LoanDemandController extends Controller
 
         if ($request->has("sendResponseREmail")) {
 
-            $loans = LoanDemand::latest()->first();
+            // $loans = LoanDemand::latest()->first();
+            $loans = LoanDemand::where('id', $id)->first();
 
             $userId = $request->input('user');
             $user = User::find($userId);
@@ -151,9 +170,8 @@ class LoanDemandController extends Controller
             LoanDemand::where('id', $id)->update(['reason' => $request->reason]);
 
             if ($user) {
-                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans,'loan'));
                 $user->notify(new AddLoanResponseMail($loans));
-
             }
 
             LoanDemand::where('id', $id)->update(['Status' => 'Refused']);
@@ -163,23 +181,24 @@ class LoanDemandController extends Controller
         }
 
 
-        // if ($request->has("sendResponseREmail")) {
-        //     $loans = LoanDemand::latest()->first();
-        //     $userId = $request->input('user');
-        //     $user = User::find($userId);
+        if ($request->has("sendResponseREmail")) {
+            // $loans = LoanDemand::latest()->first();
+            $loans = LoanDemand::where('id', $id)->first();
 
-        //     LoanDemand::where('id', $loan_Id)->update(['reason' => $request->reason]);
+            $userId = $request->input('user');
+            $user = User::find($userId);
 
-        //     if ($user) {
-        //         Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
-        //     }
+            LoanDemand::where('id', $id)->update(['reason' => $request->reason]);
 
-        //     LoanDemand::where('id', $loan_Id)->update(['Status' => 'Refused']);
-        //     LoanDetails::where('loan_demand_id', $loan_Id)->update(['Status' => 'Refused']);
+            if ($user) {
+                Notification::send($user, new \App\Notifications\AddLoanResponse($loans));
+            }
 
-        //     return back()->with('Add', 'Response sent successfully');
-        // }
+            LoanDemand::where('id', $id)->update(['Status' => 'Refused']);
+            LoanDetails::where('loan_demand_id', $id)->update(['Status' => 'Refused']);
 
+            return back()->with('Add', 'Response sent successfully');
+        }
         session()->flash('Add', 'Demand loan successfully added');
         return redirect('/loanDemand');
     }

@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<x-adminlte-card title="Info Demand" theme="info" icon="fas fa-lg fa-bell" collapsible>
+<x-adminlte-card title="Info Demand" theme="info" icon="fas fa-info-circle fa-lg" collapsible>
     <!-- An info theme card with all the tool buttons... -->
 
     <p name="name_request"><b>Name of the demand : </b> {{ $demands->name }}</p>
@@ -145,12 +145,12 @@ $config = ['format' => 'YYYY'];
                         'Department',
                         'content',
                         'Extreme date',
-
+                        'Files'
 
                         ];
 
                         if (($demands->status === 'created' || $demands->status === 'Refused') && !auth()->user()->hasRole('Archiviste')) {
-                        $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 15];
+                        $heads[] = ['label' => 'Actions', 'no-export' => true, 'width' => 5];
                         }
                         @endphp
 
@@ -176,10 +176,49 @@ $config = ['format' => 'YYYY'];
                                                 <td>{{$detail->archiveRequest->department->name}}</td>
                                                 <td>{!! nl2br(e($box->content)) !!}</td>
                                                 <td>{!! nl2br(e($box->extreme_date)) !!}</td>
+
+
+                                                <td>
+                                                    @foreach($box->media as $media)
+                                                    @if (strpos($media->mime_type, 'pdf') !== false)
+                                                    <a href="{{ $media->getUrl() }}" target="_blank">
+                                                        <i class="fa fa-file-pdf"></i> {{ $media->name }}
+                                                    </a>
+                                                    @else
+                                                    <a href="{{ $media->getUrl() }}" target="_blank">
+                                                        <i class="fa fa-image"></i> {{ $media->name }}
+                                                    </a>
+                                                    @endif
+                                                    <br>
+                                                    @endforeach
+                                                </td>
+
+
+                                                <td>
+                                                    @if (!$box->media->isEmpty())
+                                                    <form id="downloadForm{{ $box->id }}" method="POST" action="{{ route('download') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="box_id" value="{{ $box->id }}">
+                                                        <button type="submit" class="btn btn-xs btn-default text-info mx-1 shadow" title="Download {{ $box->name }}">
+                                                            <i class="fa fa-lg fa-fw fa-download"></i>
+                                                        </button>
+                                                    </form>
+                                                    @endif
+
+
+                                                </td>
+
+
+
+
                                                 @if ($demands->status === 'created' || $demands->status === 'Refused' && !auth()->user()->hasRole('Archiviste'))
                                                 <td>
+
                                                     <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-content="{{ $box->content }}" data-date="{{ $box->extreme_date }}" data-toggle="modal" href="#exampleModal2"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                                                     <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale" data-id="{{ $box->id }}" data-ref="{{ $box->ref }}" data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+
+
+
                                                 </td>
                                                 @endif
                                             </tr>
@@ -227,7 +266,7 @@ $config = ['format' => 'YYYY'];
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('boxes.store', ['id' => $demands->id]) }}" method="post" autocomplete="off">
+                            <form action="{{ route('boxes.store', ['id' => $demands->id]) }}" enctype="multipart/form-data" method="post" autocomplete="off">
                                 {{ csrf_field() }}
 
 
@@ -259,6 +298,15 @@ $config = ['format' => 'YYYY'];
                                         </div>
                                     </x-slot>
                                 </x-adminlte-input-date>
+
+                                <div class="form-group">
+                                    <label for="image">Media:</label>
+                                    <div id="fileInputs">
+                                        <input type="file" class="form-control" name="image[]" accept="image/jpeg,application/pdf" multiple>
+                                    </div>
+                                    <br>
+                                    <!-- <button type="button" id="addFile">Add file by file</button> -->
+                                </div>
 
 
                                 <div class="modal-footer">

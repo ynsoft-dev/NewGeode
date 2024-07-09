@@ -25,9 +25,8 @@ $config = ['format' => 'YYYY'];
     <div class="col-lg-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <!--  -->
-                
-                <form action="{{ url('archiveDemand/update') }}" method="post" autocomplete="off">
+               
+                <form action="{{ route('archiveDemand.update', ['id' => $demands->id]) }}"  method="post" autocomplete="off">
                     {{ method_field('patch') }}
                     {{ csrf_field() }}
 
@@ -61,17 +60,21 @@ $config = ['format' => 'YYYY'];
                     <div class="form-group row mb-0">
                         <div class="col">
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
-                            <select name="direction" id="direction" class="custom-select "  onclick="console.log($(this).val())" onchange="console.log('change is firing')" >
+                            <select name="direction" class="custom-select " onclick="console.log($(this).val())" onchange="console.log('change is firing')">
                                 <option value="{{ $demands->direction->id }}">{{ $demands->direction->name }} </option>
                                 @foreach ($directions as $direction)
-                                <option value="{{ $direction->id }}" > {{ $direction->name }}</option>
+                                <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col">
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-                            <select name="depart" id="depart" class="form-control" >
-                                <option value="{{ $demands->department->id }}">{{ $demands->department->name }} </option>
+                            <select name="depart" id="depart" class="form-control">
+                                <!-- <option value="{{ $demands->department->id }}">{{ $demands->department->name }} </option> -->
+                                @foreach ($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+
                                 <!-- <option value="{{ $demands->depart }}" >{{ $demands->department->name }} </option> -->
                             </select>
                         </div>
@@ -79,18 +82,6 @@ $config = ['format' => 'YYYY'];
 
                     <br>
 
-                    <!-- <div class="text-center"> -->
-                    <!-- <button name="updateBoxButton" type="submit" class="btn btn-primary" style="width: 130px;">
-                            <i class="fa fa-md fa-fw fa-pen"></i> Update box
-                        </button> -->
-                    <!-- <a href="{{ url('edit_box') }}/{{ $demands->id }}" name="updateBoxButton"  class="btn btn-primary" title="Update"><i class="fa fa-md fa-fw fa-pen"></i> Update box</a> -->
-
-                    <!-- <form action="{{ url('edit_box') }}/{{ $demands->id }}" method="GET">
-                            <button type="submit" name="updateBoxButton" class="btn btn-primary" title="Update">
-                                <i class="fa fa-md fa-fw fa-pen"></i> Update box
-                            </button>
-                        </form>
-                    </div> -->
 
                     <div class="text-right">
                         <button name="confirmButton" type="submit" class="btn btn-success" style="width: 120px">
@@ -109,7 +100,6 @@ $config = ['format' => 'YYYY'];
     $(document).ready(function() {
         $('select[name="direction"]').on('change', function() {
             var DirectionId = $(this).val();
-
             if (DirectionId) {
                 $.ajax({
                     url: "{{ URL::to('direction') }}/" + DirectionId,
@@ -123,7 +113,6 @@ $config = ['format' => 'YYYY'];
                             $('select[name="depart"]').append('<option value="' +
                                 key + '">' + value + '</option>');
                         });
-
                     },
                 });
             } else {
@@ -132,31 +121,5 @@ $config = ['format' => 'YYYY'];
         });
     });
 </script>
-<script>
-    $(document).ready(function() {
-        $('select[name="direction"]').on('change', function() {
-            var DirectionId = $(this).val();
 
-            if (DirectionId) {
-                $.ajax({
-                    url: "{{ URL::to('direction') }}/" + DirectionId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('select[name="depart"]').empty();
-                        // Values from controller
-                        $.each(data, function(key, value) {
-                            // Append option with ray ID as value
-                            $('select[name="depart"]').append('<option value="' +
-                                key + '">' + value + '</option>');
-                        });
-
-                    },
-                });
-            } else {
-                console.log('AJAX load did not work');
-            }
-        });
-    });
-</script>
 @stop

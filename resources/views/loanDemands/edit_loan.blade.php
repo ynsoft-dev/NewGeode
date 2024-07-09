@@ -83,6 +83,7 @@
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Direction</label>
                             <select name="Direction" class="form-control SlectBox" onclick="console.log($(this).val())" onchange="console.log('change is firing')">
                                 <!--placeholder-->
+    
                                 <option value="{{ $loans->direction->id }}">{{ $loans->direction->name }} </option>
                                 @foreach ($directions as $direction)
                                 <option value="{{ $direction->id }}"> {{ $direction->name }}</option>
@@ -92,6 +93,7 @@
                         <div class="col">
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
                             <select id="depart" name="depart" class="form-control">
+                                
                                 @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                                 @endforeach

@@ -13,14 +13,17 @@ class AddLoanResponse extends Notification
 {
     use Queueable;
     private $loans;
+    private $type;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(LoanDemand $loans)
+
+    //  , $type = 'loan'y
+    public function __construct(LoanDemand $loans , $type = 'loan')
     {
         $this->loans = $loans;
-
+        $this->type = $type;
     }
 
     /**
@@ -28,7 +31,7 @@ class AddLoanResponse extends Notification
      *
      * @return array<int, string>
      */
-    public function via( $notifiable)
+    public function via($notifiable)
     {
         return ['database'];
     }
@@ -36,7 +39,7 @@ class AddLoanResponse extends Notification
     /**
      * Get the mail representation of the notification.
      */
-   
+
 
     /**
      * Get the array representation of the notification.
@@ -48,10 +51,10 @@ class AddLoanResponse extends Notification
         return [
 
             // 'data' => $this->details['body'],
-            'id'=> $this->loans->id,
-            'borrow'=> $this->loans->borrow_id,
-            'title'=>'Votre demande à été traité:',
-            'user'=> Auth::user()->name,
+            'id' => $this->loans->id,
+            'borrow' => $this->loans->borrow_id,
+            'title' => 'Votre demande à été traité:',
+            'user' => Auth::user()->name,
 
         ];
     }

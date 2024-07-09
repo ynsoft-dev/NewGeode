@@ -30,7 +30,7 @@ class LoanDetails extends Model
     {
         return $this->belongsTo(LoanDemand::class, 'loan_demand_id');
     }
-    public function posts(): HasMany
+    public function post(): HasMany
     {
         return $this->hasMany(Post::class);
     }

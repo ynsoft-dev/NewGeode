@@ -47,7 +47,7 @@ class AddResponse extends Notification
             ->subject('Archive demand RESPONSE added '.$demandArchiveId)
             ->line('Achive demand RESPONSE added')
             ->action('Show RESPONSE', $url)
-            ->line('Thank you for using NewGeode !');
+            ->line('Thank you for using BoxFlow !');
     }
 
     /**

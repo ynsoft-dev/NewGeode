@@ -13,6 +13,17 @@
 </div>
 @stop
 
+<style>
+    .badge-orange {
+    background-color: orange;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: inline-block;
+}
+</style>
+
 @section('content')
 
 @if ($errors->any())
@@ -98,13 +109,13 @@ $heads = [
                             @if ($loan->Status == 'created')
                             <span class="badge badge-secondary">{{ $loan->Status }}</span>
                             @elseif($loan->Status == 'Sent')
-                            <span class="badge badge-secondary">{{ $loan->Status }}</span>
+                            <span class="badge badge-orange">{{ $loan->Status }}</span>
                             @elseif($loan->Status == 'Accepted')
                             <span class="badge badge-success">{{ $loan->Status }}</span>
                             @elseif($loan->Status == 'Refused')
                             <span class="badge badge-danger">{{ $loan->Status }}</span>
                             @endif
-                        
+
                         </td>
 
                         <td class="actions-column">

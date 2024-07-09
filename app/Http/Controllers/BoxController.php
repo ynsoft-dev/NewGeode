@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 
+
 class BoxController extends Controller
 {
     /**
@@ -31,7 +32,7 @@ class BoxController extends Controller
         $numberOfBoxes = $boxes->count();
 
 
-     
+
 
 
 
@@ -51,7 +52,9 @@ class BoxController extends Controller
      */
     public function store(Request $request)
     {
-        Box::create([
+     
+
+        $box = Box::create([
             'content' => $request->content,
             'ref' => $request->ref,
             // 'direction'=> $request->Direction,
@@ -60,14 +63,24 @@ class BoxController extends Controller
             // 'destruction_date'=> $request->destruction_date,
             'archive_demand_id' => $request->archive_requests_id,
             'archive_demand_details_id' => $request->archieve_request_detail_id,
-
-
             // 'site_id' => $request->site_id,
         ]);
 
-        // $id = ArchiveRequest::latest()->first()->id;
+   
+        if ($request->hasFile('image')) {
+            $fileCount = count($request->file('image'));
+            // dd($fileCount); 
+            foreach ($request->file('image') as $file) {
+
+
+                $mediaCollection = $file->getMimeType() === 'application/pdf' ? 'files' : 'images';
+
+                $box->addMedia($file)->toMediaCollection($mediaCollection);
+            }
+        }
+
+
         session()->flash('Add', 'Box successfully added');
-        // return redirect('/boxes');
         return back();
     }
 
@@ -86,7 +99,6 @@ class BoxController extends Controller
      */
     public function edit($id)
     {
-      
     }
 
     /**
@@ -94,20 +106,20 @@ class BoxController extends Controller
      */
     public function update(Request $request, Box $boxes)
     {
-            $id = $request->id;
-            $boxes = Box::find($id);
-            $boxes->update([
-                'ref' => $request->ref,
-                'content' => $request->content,
-                'extreme_date' => $request->date,
-            ]);
-        
+        $id = $request->id;
+        $boxes = Box::find($id);
+        $boxes->update([
+            'ref' => $request->ref,
+            'content' => $request->content,
+            'extreme_date' => $request->date,
+        ]);
+
         session()->flash('edit', 'Box updated successfully');
         // return redirect('/boxes');
         return back();
     }
 
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -115,6 +127,13 @@ class BoxController extends Controller
     public function destroy(Request $request)
     {
         $boxes = Box::findOrFail($request->id);
+        $boxes->update([
+            'shelf_id' => null,
+            'location' => null,
+            'site_id' => null,
+            'ray_id' => null,
+            'column_id' => null,
+        ]);
         $boxes->delete();
         session()->flash('delete', 'The box has been successfully deleted');
         return back();
