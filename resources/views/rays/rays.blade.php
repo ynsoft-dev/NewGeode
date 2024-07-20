@@ -74,13 +74,13 @@
             <td>{{ $x->name }}</td>
             <td>{{ $x->site->name }}</td>
             <td>
-                <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="Update" data-effect="effect-scale"
-                    data-id="{{ $x->id }}" data-name="{{ $x->name }}"
+                <a class="btn btn-xs btn-default text-primary mx-1 shadow" title="{{ __('boxflow.update') }}"
+                    data-effect="effect-scale" data-id="{{ $x->id }}" data-name="{{ $x->name }}"
                     data-site_name="{{ $x->site->name }}" data-toggle="modal" href="#exampleModal2"><i
                         class="fa fa-lg fa-fw fa-pen"></i></a>
-                <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" data-effect="effect-scale"
-                    data-id="{{ $x->id }}" data-name="{{ $x->name }}" data-toggle="modal"
-                    href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
+                <a class="btn btn-xs btn-default text-danger mx-1 shadow" title="{{ __('boxflow.delete') }}"
+                    data-effect="effect-scale" data-id="{{ $x->id }}" data-name="{{ $x->name }}"
+                    data-toggle="modal" href="#modaldemo8"><i class="fa fa-lg fa-fw fa-trash"></i></a>
             </td>
         </tr>
     @endforeach
@@ -183,7 +183,7 @@
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">
-                    <p>{{ __('boxflow.confirmDelete') }}</p><br>
+                    <p>{{ __('boxflow.confirmDeleteRay') }}</p><br>
                     <input type="hidden" name="id" id="id" value="">
                     <input class="form-control" name="name" id="name" type="text" readonly>
                 </div>

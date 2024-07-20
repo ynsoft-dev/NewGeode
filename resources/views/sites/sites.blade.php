@@ -168,7 +168,7 @@
                 {{ method_field('delete') }}
                 {{ csrf_field() }}
                 <div class="modal-body">
-                    <p>{{ __('boxflow.confirmDelete') }}</p><br>
+                    <p>{{ __('boxflow.confirmDeleteSite') }}</p><br>
                     <input type="hidden" name="id" id="id" value="">
                     <input class="form-control" name="name" id="name" type="text" readonly>
                 </div>
